@@ -2,9 +2,11 @@
 node-osc
 --------
 
-A very basic OSC client (so far) implementation based heavily on pyOSC.
+A very basic OSC client (so far) implementation based heavily on pyOSC_.
 
 Relies on current trunk of node.js for the dgram library.
+
+_: https://trac.v2.nl/wiki/pyOSC
 
 Example
 -------
