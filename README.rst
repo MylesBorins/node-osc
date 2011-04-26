@@ -75,4 +75,4 @@ Example of received TUIO (based on OSC) messages:
 Licensing
 ---------
 
-pyOSC looks to be GPL so I guess this is too. More formalities later on.
+LGPL.  Please see the file lesser.txt for details.
