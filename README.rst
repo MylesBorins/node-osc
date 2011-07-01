@@ -16,30 +16,23 @@ Sending OSC messages:
 
 ::
   
-  var osc = require('osc');
-
-  var client = osc.Client(10000, '127.0.0.1');
-  client.sendSimple('/oscAddress', [200]);
-
-  // slightly more complex
-  var msg = osc.Message('/oscAddress');
-  msg.append(200);
-  msg.append(10);
-
-  client.send(msg);
-
+  var osc = require('./lib/osc');
+  
+  var client = new osc.Client('127.0.0.1', 3333);
+  client.send('/oscAddress', 200);
+  
 Listening for OSC messages:
 
 ::
   
-  var osc = require('osc');
-
+  var osc = require('./lib/osc');
+  
   var oscServer = new osc.Server(3333, '0.0.0.0');
   oscServer.on("message", function (msg, rinfo) {
-    console.log("TUIO message:");
-    console.log(msg);
-  }
-
+  	console.log("TUIO message:");
+  	console.log(msg);
+  });
+  
 Example of received TUIO (based on OSC) messages:
 
 ::
