@@ -1,0 +1,32 @@
+{
+	"name": "node-osc",
+	"description": "pyOSC inspired library",
+	"version": "1.0",
+	"main": "index",
+	"athor": {
+		"name": "Myles Borins",
+		"email": "myles.borins@gmail.com"""
+	},
+	"contributors": [
+	{
+		"name": "Hans Hübner",
+		"email": "hans.huebner@gmail.com"
+	},
+	{
+		"name": "Andy Smith",
+		"email": "jabber@term.ie"
+	}	
+	],
+	"dependencies": {
+		"jspack": "0.0.1",
+		"osc-min": "0.0.3"
+	},
+	"keywords": [
+		"osc",
+		"udp"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:TheAlphaNerd/node-osc.git"
+	}
+}
