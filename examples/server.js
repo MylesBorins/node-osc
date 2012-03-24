@@ -1,4 +1,4 @@
-var osc = require('./lib/osc');
+var osc = require('node-osc');
 
 
 var oscServer = new osc.Server(3333, '0.0.0.0');

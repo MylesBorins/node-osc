@@ -1,4 +1,4 @@
-var osc = require('./lib/osc');
+var osc = require('node-osc');
 
 var client = new osc.Client('127.0.0.1', 3333);
 client.send('/oscAddress', 1, 1, 2, 3, 5, 8);

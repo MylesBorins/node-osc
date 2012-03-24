@@ -1,11 +1,11 @@
 {
 	"name": "node-osc",
 	"description": "pyOSC inspired library",
-	"version": "1.0",
+	"version": "0.1.0",
 	"main": "index",
 	"athor": {
 		"name": "Myles Borins",
-		"email": "myles.borins@gmail.com"""
+		"email": "myles.borins@gmail.com"
 	},
 	"contributors": [
 	{

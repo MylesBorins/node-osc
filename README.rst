@@ -9,6 +9,10 @@ Relies on current trunk of node.js for the dgram library.
 
 .. _pyOSC: https://trac.v2.nl/wiki/pyOSC
 
+Install using npm
+
+npm install node-osc
+
 Example
 -------
 
@@ -16,7 +20,7 @@ Sending OSC messages:
 
 ::
   
-  var osc = require('./lib/osc');
+  var osc = require('node-osc');
   
   var client = new osc.Client('127.0.0.1', 3333);
   client.send('/oscAddress', 200);
