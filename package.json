@@ -19,7 +19,7 @@
 	],
 	"dependencies": {
 		"jspack": "0.0.1",
-		"osc-min": "https://github.com/TheAlphaNerd/node-osc-min/tarball/master"
+		"osc-min": "0.0.5"
 	},
 	"keywords": [
 		"osc",
