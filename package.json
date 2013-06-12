@@ -1,7 +1,7 @@
 {
 	"name": "node-osc",
 	"description": "pyOSC inspired library",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"main": "index",
 	"athor": {
 		"name": "Myles Borins",
@@ -27,6 +27,6 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git@github.com:TheAlphaNerd/node-osc.git"
+		"url": "git://github.com/TheAlphaNerd/node-osc.git"
 	}
 }
