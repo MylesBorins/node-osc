@@ -10,7 +10,7 @@
   "scripts": {
     "test": "npm run lint && npm run tape",
     "tape": "tape test/*.js | tap-spec",
-    "watch": "nodemon --ignore node_modules/ -e js,json --exec 'npm run tape'",
+    "watch": "nodemon --ignore node_modules/ -e js,json --exec 'npm test'",
     "lint": "eslint **/*.js"
   },
   "contributors": [
