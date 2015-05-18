@@ -1,32 +1,47 @@
 {
-	"name": "node-osc",
-	"description": "pyOSC inspired library",
-	"version": "0.3.1",
-	"main": "index",
-	"athor": {
-		"name": "Myles Borins",
-		"email": "myles.borins@gmail.com"
-	},
-	"contributors": [
-	{
-		"name": "Hans Hübner",
-		"email": "hans.huebner@gmail.com"
-	},
-	{
-		"name": "Andy Smith",
-		"email": "jabber@term.ie"
-	}	
-	],
-	"dependencies": {
-		"jspack": "0.0.1",
-		"osc-min": "0.0.5"
-	},
-	"keywords": [
-		"osc",
-		"udp"
-	],
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/TheAlphaNerd/node-osc.git"
-	}
+  "name": "node-osc",
+  "description": "pyOSC inspired library",
+  "version": "0.3.1",
+  "main": "lib/index.js",
+  "author": {
+    "name": "Myles Borins",
+    "email": "myles.borins@gmail.com"
+  },
+  "scripts": {
+    "test": "npm run-script lint && tape test/*.js | tap-spec",
+    "watch": "nodemon --ignore node_modules/ -e js,json --exec 'npm test'",
+    "lint": "eslint **/*.js"
+  },
+  "contributors": [
+    {
+      "name": "Hans Hübner",
+      "email": "hans.huebner@gmail.com"
+    },
+    {
+      "name": "Andy Smith",
+      "email": "jabber@term.ie"
+    },
+    {
+      "name": "Myles Borins",
+      "email": "myles.borins@gmail.com"
+    }
+  ],
+  "dependencies": {
+    "jspack": "0.0.1",
+    "osc-min": "0.0.5"
+  },
+  "keywords": [
+    "osc",
+    "udp"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/TheAlphaNerd/node-osc.git"
+  },
+  "devDependencies": {
+    "eslint": "^0.11.0",
+    "nodemon": "^1.2.1",
+    "tap-spec": "^2.1.2",
+    "tape": "^3.0.3"
+  }
 }
