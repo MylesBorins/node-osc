@@ -28,8 +28,8 @@
     }
   ],
   "dependencies": {
-    "jspack": "0.0.1",
-    "osc-min": "0.0.5"
+    "jspack": "0.0.4",
+    "osc-min": "^0.2.0"
   },
   "keywords": [
     "osc",
