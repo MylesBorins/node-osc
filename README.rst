@@ -23,13 +23,15 @@ Sending OSC messages:
   var osc = require('node-osc');
   
   var client = new osc.Client('127.0.0.1', 3333);
-  client.send('/oscAddress', 200);
+  client.send('/oscAddress', 200, function () {
+    client.kill();
+  });
   
 Listening for OSC messages:
 
 ::
   
-  var osc = require('./lib/osc');
+  var osc = require('node-osc');
   
   var oscServer = new osc.Server(3333, '0.0.0.0');
   oscServer.on("message", function (msg, rinfo) {
