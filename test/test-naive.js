@@ -9,12 +9,11 @@ test('osc: message', function (t) {
   var client = new osc.Client('0.0.0.0', 3333);
 
   oscServer.on('message', function (msg) {
-    console.log('Message: ' + msg);
-    t.ok(msg, 'this should exist');
+    t.deepEqual(msg, ['/test', 1, 2, 'testing'], 'We should receive expected payload');
     oscServer.kill();
     client.kill();
     t.end();
   });
 
-  client.send('/test', 1, 2.3, 'testing');
+  client.send('/test', 1, 2, 'testing');
 });
