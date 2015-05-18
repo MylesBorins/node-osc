@@ -40,9 +40,9 @@
     "url": "git://github.com/TheAlphaNerd/node-osc.git"
   },
   "devDependencies": {
-    "eslint": "^0.11.0",
+    "eslint": "^0.21.1",
     "nodemon": "^1.2.1",
-    "tap-spec": "^2.1.2",
-    "tape": "^3.0.3"
+    "tap-spec": "^3.0.0",
+    "tape": "^4.0.0"
   }
 }
