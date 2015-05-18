@@ -1,7 +1,9 @@
 var osc = require('../lib');
 
 var client = new osc.Client('127.0.0.1', 3333);
-client.send('/oscAddress', 1, 1, 2, 3, 5, 8);
+client.send('/oscAddress', 1, 1, 2, 3, 5, 8, function (err) {
+  client.kill();
+});
 
 // or
 // var msg =  new osc.Message('/address')
