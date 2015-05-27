@@ -5,6 +5,11 @@ client.send('/oscAddress', 1, 1, 2, 3, 5, 8, function (err) {
   client.kill();
 });
 
+var client = new osc.Client('255.255.255.255', 3334);
+client.send('/oscAddress', 1, 1, 2, 3, 5, 8, function (err) {
+  client.kill();
+});
+
 // or
 // var msg =  new osc.Message('/address')
 // msg.append("testing");
