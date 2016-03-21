@@ -11,7 +11,6 @@
   "scripts": {
     "test": "npm run lint && npm run tape",
     "tape": "tape test/*.js | tap-spec",
-    "watch": "nodemon --ignore node_modules/ -e js,json --exec 'npm test'",
     "lint": "eslint **/*.js"
   },
   "contributors": [
@@ -42,7 +41,6 @@
   },
   "devDependencies": {
     "eslint": "^2.4.0",
-    "nodemon": "^1.2.1",
     "tap-spec": "^4.1.1",
     "tape": "^4.0.0"
   }
