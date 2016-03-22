@@ -29,7 +29,8 @@
   ],
   "dependencies": {
     "jspack": "0.0.4",
-    "osc-min": "^1.1.1"
+    "osc-min": "^1.1.1",
+    "semver": "^5.1.0"
   },
   "keywords": [
     "osc",
