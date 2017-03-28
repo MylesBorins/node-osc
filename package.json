@@ -30,8 +30,7 @@
   "dependencies": {
     "jspack": "0.0.4",
     "osc-min": "^1.1.1",
-    "semver": "^5.1.0",
-    "tap": "^10.3.0"
+    "semver": "^5.1.0"
   },
   "keywords": [
     "osc",
@@ -42,6 +41,7 @@
     "url": "git://github.com/MylesBorins/node-osc.git"
   },
   "devDependencies": {
-    "eslint": "^2.4.0"
+    "eslint": "^3.18.0",
+    "tap": "^10.3.0"
   }
 }
