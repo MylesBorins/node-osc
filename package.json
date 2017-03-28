@@ -9,8 +9,8 @@
   },
   "license": "LGPL-2.1",
   "scripts": {
-    "test": "npm run lint && npm run tape",
-    "tape": "tape test/*.js | tap-spec",
+    "test": "npm run lint && npm run tap",
+    "tap": "tap test/*.js",
     "lint": "eslint **/*.js"
   },
   "contributors": [
@@ -30,7 +30,8 @@
   "dependencies": {
     "jspack": "0.0.4",
     "osc-min": "^1.1.1",
-    "semver": "^5.1.0"
+    "semver": "^5.1.0",
+    "tap": "^10.3.0"
   },
   "keywords": [
     "osc",
@@ -41,8 +42,6 @@
     "url": "git://github.com/MylesBorins/node-osc.git"
   },
   "devDependencies": {
-    "eslint": "^2.4.0",
-    "tap-spec": "^4.1.1",
-    "tape": "^4.0.0"
+    "eslint": "^2.4.0"
   }
 }

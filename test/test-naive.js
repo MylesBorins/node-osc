@@ -1,6 +1,6 @@
 'use strict';
 
-var test = require('tape');
+var test = require('tap').test;
 
 var osc = require('../lib');
 
