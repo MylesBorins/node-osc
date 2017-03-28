@@ -38,7 +38,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/TheAlphaNerd/node-osc.git"
+    "url": "git://github.com/MylesBorins/node-osc.git"
   },
   "devDependencies": {
     "eslint": "^2.4.0",
