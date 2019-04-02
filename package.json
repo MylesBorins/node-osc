@@ -8,12 +8,13 @@
     "email": "myles.borins@gmail.com"
   },
   "engines": {
-    "node": ">6"
+    "node": ">8"
   },
   "license": "LGPL-2.1",
   "scripts": {
     "test": "npm run lint && npm run tap",
-    "tap": "tap test/*.js",
+    "tap": "tap test/*.js --coverage",
+    "coverage-html": "npm run tap -- --coverage-report=html",
     "lint": "eslint **/*.js"
   },
   "contributors": [
@@ -30,10 +31,6 @@
       "email": "myles.borins@gmail.com"
     }
   ],
-  "dependencies": {
-    "jspack": "0.0.4",
-    "osc-min": "^1.1.1"
-  },
   "keywords": [
     "osc",
     "udp"
@@ -42,8 +39,12 @@
     "type": "git",
     "url": "git://github.com/MylesBorins/node-osc.git"
   },
+  "dependencies": {
+    "jspack": "0.0.4",
+    "osc-min": "^1.1.1"
+  },
   "devDependencies": {
-    "eslint": "^5.9.0",
+    "eslint": "^5.16.0",
     "tap": "^12.6.1"
   }
 }
