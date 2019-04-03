@@ -45,7 +45,6 @@ test('message: object', (t) => {
   const oscServer = new osc.Server(3333, '0.0.0.0');
   const client = new osc.Client('0.0.0.0', 3333);
   const m = new osc.Message('/address');
-  const date = new Date();
   m.append({
     type: 'string',
     value: 'test'
@@ -54,13 +53,9 @@ test('message: object', (t) => {
     type: 'double',
     value: 100
   });
-  m.append({
-    type: 'date',
-    value: date.toISOString()
-  });
 
   oscServer.on('message', (msg) => {
-    const expected = ['/address', 'test', 100, date.toISOString()];
+    const expected = ['/address', 'test', 100];
     t.deepEqual(msg, expected, `We reveived the payload: ${msg}`);
     oscServer.close();
     t.end();
@@ -93,28 +88,6 @@ test('message: float', (t) => {
   });
 });
 
-// test('message: blob', (t) => {
-//   const oscServer = new osc.Server(3333, '0.0.0.0');
-//   const client = new osc.Client('0.0.0.0', 3333);
-//   const m = new osc.Message('/address');
-//   m.append(3.14);
-//
-//   oscServer.on('message', (msg) => {
-//     const expected = [
-//       '/address',
-//       3.14
-//     ];
-//     t.equals(msg[0], expected[0], `We reveived the payload: ${msg}`);
-//     t.equals(msg[1][0], expected[1][0], 'pie please');
-//     oscServer.close();
-//     t.end();
-//   });
-//
-//   client.send(m, () => {
-//     client.close();
-//   });
-// });
-
 test('message: boolean', (t) => {
   const oscServer = new osc.Server(3333, '0.0.0.0');
   const client = new osc.Client('0.0.0.0', 3333);
@@ -136,16 +109,39 @@ test('message: boolean', (t) => {
   });
 });
 
-// test('message: time', (t) => {
+test('message: blob', (t) => {
+  const oscServer = new osc.Server(3333, '0.0.0.0');
+  const client = new osc.Client('0.0.0.0', 3333);
+  const buf = Buffer.from('test');
+  const m = new osc.Message('/address');
+  m.append({
+    type: 'blob',
+    value: buf
+  });
+
+  oscServer.on('message', (msg) => {
+    const expected = [
+      '/address',
+      buf
+    ];
+    t.same(msg, expected, `We reveived the payload: ${msg}`);
+    oscServer.close();
+    t.end();
+  });
+
+  client.send(m, () => {
+    client.close();
+  });
+});
+
+// test('message: timetag', (t) => {
 //   const oscServer = new osc.Server(3333, '0.0.0.0');
 //   const client = new osc.Client('0.0.0.0', 3333);
-//   const m = new osc.Message('/address');
-//   m.append();
+//   const m = new osc.Message('/address');z
 //
 //   oscServer.on('message', (msg) => {
 //     const expected = [
-//       '/address',
-//       true
+//       '/address'
 //     ];
 //     t.same(msg, expected, `We reveived the payload: ${msg}`);
 //     oscServer.close();
