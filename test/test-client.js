@@ -11,13 +11,13 @@ test('client: with array', (t) => {
   t.plan(2);
 
   oscServer.on('message', (msg) => {
-    oscServer.kill();
+    oscServer.close();
     t.deepEqual(msg, ['/test', 0, 1, 'testing'], 'We should receive expected payload');
   });
 
   client.send(['/test', 0, 1, 'testing'], (err) => {
     t.error(err, 'there should be no error');
-    client.kill();
+    client.close();
   });
 });
 
@@ -28,13 +28,13 @@ test('client: with string', (t) => {
   t.plan(2);
 
   oscServer.on('message', (msg) => {
-    oscServer.kill();
+    oscServer.close();
     t.deepEqual(msg, ['/test'], `We should receive expected payload: ${msg}`);
   });
 
   client.send('/test', (err) => {
     t.error(err, 'there should be no error');
-    client.kill();
+    client.close();
   });
 });
 
@@ -45,7 +45,7 @@ test('client: with object', (t) => {
   t.plan(2);
 
   oscServer.on('message', (msg) => {
-    oscServer.kill();
+    oscServer.close();
     t.deepEqual(msg, ['/test', 1, 2, 3, 'lol'], `we received the payload: ${msg}`);
   });
 
@@ -59,7 +59,7 @@ test('client: with object', (t) => {
     ]
   }, (err) => {
     t.error(err, 'there should be no error');
-    client.kill();
+    client.close();
   });
 });
 
@@ -72,5 +72,5 @@ test('client: failure', (t) => {
       t.error(err, 'there should be no error');
     });
   });
-  client.kill();
+  client.close();
 });

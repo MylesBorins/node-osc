@@ -15,12 +15,12 @@ test('message: basic usage', (t) => {
   oscServer.on('message', (msg) => {
     const expected = ['/address', 'testing', 123, 456, 789];
     t.deepEqual(msg, expected, `We reveived the payload: ${msg}`);
-    oscServer.kill();
+    oscServer.close();
     t.end();
   });
 
   client.send(m, () => {
-    client.kill();
+    client.close();
   });
 });
 
@@ -32,12 +32,12 @@ test('message: multiple args', (t) => {
   oscServer.on('message', (msg) => {
     const expected = ['/address', 'testing', 123];
     t.deepEqual(msg, expected, `We reveived the payload: ${msg}`);
-    oscServer.kill();
+    oscServer.close();
     t.end();
   });
 
   client.send(m, () => {
-    client.kill();
+    client.close();
   });
 });
 
@@ -53,12 +53,12 @@ test('message: object', (t) => {
   oscServer.on('message', (msg) => {
     const expected = ['/address', 'test'];
     t.deepEqual(msg, expected, `We reveived the payload: ${msg}`);
-    oscServer.kill();
+    oscServer.close();
     t.end();
   });
 
   client.send(m, () => {
-    client.kill();
+    client.close();
   });
 });
 
@@ -75,12 +75,12 @@ test('message: float', (t) => {
     ];
     t.equals(msg[0], expected[0], `We reveived the payload: ${msg}`);
     t.equals(msg[1][0], expected[1][0], 'pie please');
-    oscServer.kill();
+    oscServer.close();
     t.end();
   });
 
   client.send(m, () => {
-    client.kill();
+    client.close();
   });
 });
 
@@ -93,12 +93,12 @@ test('message: float', (t) => {
 //   oscServer.on('message', (msg) => {
 //     const expected = ['/address', true];
 //     t.deepEqual(msg, expected, `We reveived the payload: ${msg}`);
-//     oscServer.kill();
+//     oscServer.close();
 //     t.end();
 //   });
 //
 //   client.send(m, () => {
-//     client.kill();
+//     client.close();
 //   });
 // });
 

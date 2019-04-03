@@ -11,8 +11,8 @@ test('osc: argument message no callback', (t) => {
   t.plan(1);
 
   oscServer.on('message', (msg) => {
-    oscServer.kill();
-    client.kill();
+    oscServer.close();
+    client.close();
     t.deepEqual(msg, ['/test', 1, 2, 'testing'], 'We should receive expected payload');
   });
 
@@ -26,13 +26,13 @@ test('osc: client with callback and message as arguments', (t) => {
   t.plan(2);
 
   oscServer.on('message', (msg) => {
-    oscServer.kill();
+    oscServer.close();
     t.deepEqual(msg, ['/test', 1, 2, 'testing'], 'We should receive expected payload');
   });
 
   client.send('/test', 1, 2, 'testing', (err) => {
     t.error(err, 'there should be no error');
-    client.kill();
+    client.close();
   });
 });
 

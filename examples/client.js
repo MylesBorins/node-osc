@@ -8,7 +8,7 @@ client.send('/oscAddress', 1, 1, 2, 3, 5, 8, function (err) {
   if (err) {
     console.error(new Error(err));
   }
-  client.kill();
+  client.close();
 });
 
 // or
