@@ -12,10 +12,10 @@ test('client: with array', (t) => {
 
   oscServer.on('message', (msg) => {
     oscServer.close();
-    t.deepEqual(msg, ['/test', 0, 1, 'testing'], 'We should receive expected payload');
+    t.deepEqual(msg, ['/test', 0, 1, 'testing', true], 'We should receive expected payload');
   });
 
-  client.send(['/test', 0, 1, 'testing'], (err) => {
+  client.send(['/test', 0, 1, 'testing', true], (err) => {
     t.error(err, 'there should be no error');
     client.close();
   });
@@ -46,7 +46,7 @@ test('client: with object', (t) => {
 
   oscServer.on('message', (msg) => {
     oscServer.close();
-    t.deepEqual(msg, ['/test', 1, 2, 3, 'lol'], `we received the payload: ${msg}`);
+    t.deepEqual(msg, ['/test', 1, 2, 3, 'lol', false], `we received the payload: ${msg}`);
   });
 
   client.send({
@@ -55,7 +55,8 @@ test('client: with object', (t) => {
       1,
       2,
       3,
-      'lol'
+      'lol',
+      false
     ]
   }, (err) => {
     t.error(err, 'there should be no error');

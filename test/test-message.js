@@ -45,13 +45,22 @@ test('message: object', (t) => {
   const oscServer = new osc.Server(3333, '0.0.0.0');
   const client = new osc.Client('0.0.0.0', 3333);
   const m = new osc.Message('/address');
+  const date = new Date();
   m.append({
     type: 'string',
     value: 'test'
   });
+  m.append({
+    type: 'double',
+    value: 100
+  });
+  m.append({
+    type: 'date',
+    value: date.toISOString()
+  });
 
   oscServer.on('message', (msg) => {
-    const expected = ['/address', 'test'];
+    const expected = ['/address', 'test', 100, date.toISOString()];
     t.deepEqual(msg, expected, `We reveived the payload: ${msg}`);
     oscServer.close();
     t.end();
