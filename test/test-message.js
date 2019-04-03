@@ -27,10 +27,10 @@ test('message: basic usage', (t) => {
 test('message: multiple args', (t) => {
   const oscServer = new osc.Server(3333, '0.0.0.0');
   const client = new osc.Client('0.0.0.0', 3333);
-  const m = new osc.Message('/address', 'testing', 123);
+  const m = new osc.Message('/address', 'testing', 123, true);
 
   oscServer.on('message', (msg) => {
-    const expected = ['/address', 'testing', 123];
+    const expected = ['/address', 'testing', 123, true];
     t.deepEqual(msg, expected, `We reveived the payload: ${msg}`);
     oscServer.close();
     t.end();
