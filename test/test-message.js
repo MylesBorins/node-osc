@@ -93,15 +93,61 @@ test('message: float', (t) => {
   });
 });
 
-// test('message: boolean', (t) => {
+// test('message: blob', (t) => {
 //   const oscServer = new osc.Server(3333, '0.0.0.0');
 //   const client = new osc.Client('0.0.0.0', 3333);
 //   const m = new osc.Message('/address');
-//   m.append(true);
+//   m.append(3.14);
 //
 //   oscServer.on('message', (msg) => {
-//     const expected = ['/address', true];
-//     t.deepEqual(msg, expected, `We reveived the payload: ${msg}`);
+//     const expected = [
+//       '/address',
+//       3.14
+//     ];
+//     t.equals(msg[0], expected[0], `We reveived the payload: ${msg}`);
+//     t.equals(msg[1][0], expected[1][0], 'pie please');
+//     oscServer.close();
+//     t.end();
+//   });
+//
+//   client.send(m, () => {
+//     client.close();
+//   });
+// });
+
+test('message: boolean', (t) => {
+  const oscServer = new osc.Server(3333, '0.0.0.0');
+  const client = new osc.Client('0.0.0.0', 3333);
+  const m = new osc.Message('/address');
+  m.append(true);
+
+  oscServer.on('message', (msg) => {
+    const expected = [
+      '/address',
+      true
+    ];
+    t.same(msg, expected, `We reveived the payload: ${msg}`);
+    oscServer.close();
+    t.end();
+  });
+
+  client.send(m, () => {
+    client.close();
+  });
+});
+
+// test('message: time', (t) => {
+//   const oscServer = new osc.Server(3333, '0.0.0.0');
+//   const client = new osc.Client('0.0.0.0', 3333);
+//   const m = new osc.Message('/address');
+//   m.append();
+//
+//   oscServer.on('message', (msg) => {
+//     const expected = [
+//       '/address',
+//       true
+//     ];
+//     t.same(msg, expected, `We reveived the payload: ${msg}`);
 //     oscServer.close();
 //     t.end();
 //   });
