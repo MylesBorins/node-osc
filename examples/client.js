@@ -1,10 +1,16 @@
 /* eslint-disable no-console */
 
 'use strict';
-var osc = require('../lib');
+const { Client, Message } = require('../lib');
 
-var client = new osc.Client('127.0.0.1', 3333);
-client.send('/oscAddress', 1, 1, 2, 3, 5, 8, function (err) {
+const client = new Client('127.0.0.1', 3333);
+
+const message = new Message('/address');
+message.append('testing');
+message.append('testing');
+message.append(123);
+
+client.send(message, (err) => {
   if (err) {
     console.error(new Error(err));
   }
@@ -12,12 +18,8 @@ client.send('/oscAddress', 1, 1, 2, 3, 5, 8, function (err) {
 });
 
 // or
-// var msg =  new osc.Message('/address')
-// msg.append("testing");
-// msg.append("testing");
-// msg.append(123);
-// client.send(msg)
+// client.send('/address', 'testing', 'testing', 123);
 
 // or
-// var msg = new osc.Message('/address', 1, 2, 3);
+// const msg = new Message('/address', 1, 2, 3);
 // client.send(msg);
