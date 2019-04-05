@@ -34,6 +34,25 @@ oscServer.on('message', function (msg) {
 });
 ```
 
+### Now with ESM!
+
+```js
+import { Client, Server } from 'node-osc/esm.mjs'
+
+const client = new Client('127.0.0.1', 3333);
+var server = new Server(3333, '0.0.0.0');
+
+server.on('message', function (msg) {
+  console.log(`Message: ${msg}`);
+  server.close();
+});
+
+client.send('/hello', 'world', (err) => {
+  if (err) console.error(err);
+  client.close();
+});
+```
+
 ## License
 
 LGPL.  Please see the file lesser.txt for details.
