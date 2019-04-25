@@ -1,10 +1,11 @@
 'use strict';
 
-const test = require('tap').test;
+import tap from 'tap';
+import util from './util.js';
+import osc from '../lib/index.mjs'
 
-const { generatePort } = require('./util');
-
-const osc = require('../cjs');
+const {generatePort} = util;
+const test = tap.test;
 
 test('osc: argument message no callback', (t) => {
   const port = generatePort();

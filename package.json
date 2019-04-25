@@ -4,21 +4,21 @@
   "version": "5.0.0",
   "main": "lib/index.js",
   "exports": {
-    ".": "lib/index.js",
-    "./": "./",
-    "esm": "lib/index.mjs"
+    ".": "lib/index.mjs",
+    "esm": "lib/index.mjs",
+    "cjs": "lib/index.js"
   },
   "author": {
     "name": "Myles Borins",
     "email": "myles.borins@gmail.com"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=12"
   },
   "license": "LGPL-2.1",
   "scripts": {
     "test": "npm run lint && npm run tap",
-    "tap": "tap test/test-*.js",
+    "tap": "tap --node-arg=--experimental-modules test/test-*{.js,.mjs}",
     "coverage": "npm run tap -- --coverage",
     "coverage-html": "npm run tap -- --coverage-report=html",
     "lint": "eslint **/*.js"

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 'use strict';
-const { Client, Message } = require('../lib');
+const { Client, Message } = require('../cjs');
 
 const client = new Client('127.0.0.1', 3333);
 
