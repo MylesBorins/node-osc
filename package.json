@@ -36,7 +36,7 @@
     "osc-min": "^1.1.1"
   },
   "devDependencies": {
-    "eslint": "^5.16.0",
+    "eslint": "^6.0.1",
     "tap": "^12.6.1"
   }
 }
