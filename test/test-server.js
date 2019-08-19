@@ -2,19 +2,23 @@
 
 const test = require('tap').test;
 
+const { generatePort } = require('./util');
+
 const osc = require('../lib');
 
 test('server: create and close', (t) => {
+  const port = generatePort();
   t.plan(1);
-  const oscServer = new osc.Server(3333, '0.0.0.0');
+  const oscServer = new osc.Server(port, '0.0.0.0');
   oscServer.close((err) => {
     t.error(err);
   });
 });
 
 test('client: listen to message', (t) => {
-  const oscServer = new osc.Server(3333, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', 3333);
+  const port = generatePort();
+  const oscServer = new osc.Server(port, '0.0.0.0');
+  const client = new osc.Client('0.0.0.0', port);
 
   t.plan(3);
 
@@ -37,8 +41,9 @@ test('client: listen to message', (t) => {
 });
 
 test('server: bad message', (t) => {
+  const port = generatePort();
   t.plan(2);
-  const oscServer = new osc.Server(3333, '0.0.0.0');
+  const oscServer = new osc.Server(port, '0.0.0.0');
   t.throws(() => {
     oscServer._sock.emit('message', 'whoops');
   }, /can't decode incoming message:/);
@@ -48,8 +53,9 @@ test('server: bad message', (t) => {
 });
 
 test('server: legacy kill alias', (t) => {
+  const port = generatePort();
   t.plan(1);
-  const oscServer = new osc.Server(3333, '0.0.0.0');
+  const oscServer = new osc.Server(port, '0.0.0.0');
   process.noDeprecation = true;
   oscServer.kill((err) => {
     process.noDeprecation = false;

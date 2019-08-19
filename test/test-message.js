@@ -2,11 +2,14 @@
 
 const test = require('tap').test;
 
+const { generatePort } = require('./util');
+
 const osc = require('../lib');
 
 test('message: basic usage', (t) => {
-  const oscServer = new osc.Server(3333, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', 3333);
+  const port = generatePort();
+  const oscServer = new osc.Server(port, '0.0.0.0');
+  const client = new osc.Client('0.0.0.0', port);
   const m = new osc.Message('/address');
   m.append('testing');
   m.append(123);
@@ -25,8 +28,9 @@ test('message: basic usage', (t) => {
 });
 
 test('message: multiple args', (t) => {
-  const oscServer = new osc.Server(3333, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', 3333);
+  const port = generatePort();
+  const oscServer = new osc.Server(port, '0.0.0.0');
+  const client = new osc.Client('0.0.0.0', port);
   const m = new osc.Message('/address', 'testing', 123, true);
 
   oscServer.on('message', (msg) => {
@@ -42,8 +46,9 @@ test('message: multiple args', (t) => {
 });
 
 test('message: object', (t) => {
-  const oscServer = new osc.Server(3333, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', 3333);
+  const port = generatePort();
+  const oscServer = new osc.Server(port, '0.0.0.0');
+  const client = new osc.Client('0.0.0.0', port);
   const m = new osc.Message('/address');
   m.append({
     type: 'string',
@@ -67,8 +72,9 @@ test('message: object', (t) => {
 });
 
 test('message: float', (t) => {
-  const oscServer = new osc.Server(3333, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', 3333);
+  const port = generatePort();
+  const oscServer = new osc.Server(port, '0.0.0.0');
+  const client = new osc.Client('0.0.0.0', port);
   const m = new osc.Message('/address');
   m.append(3.14);
 
@@ -89,8 +95,9 @@ test('message: float', (t) => {
 });
 
 test('message: boolean', (t) => {
-  const oscServer = new osc.Server(3333, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', 3333);
+  const port = generatePort();
+  const oscServer = new osc.Server(port, '0.0.0.0');
+  const client = new osc.Client('0.0.0.0', port);
   const m = new osc.Message('/address');
   m.append(true);
 
@@ -110,8 +117,9 @@ test('message: boolean', (t) => {
 });
 
 test('message: blob', (t) => {
-  const oscServer = new osc.Server(3333, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', 3333);
+  const port = generatePort();
+  const oscServer = new osc.Server(port, '0.0.0.0');
+  const client = new osc.Client('0.0.0.0', port);
   const buf = Buffer.from('test');
   const m = new osc.Message('/address');
   m.append({

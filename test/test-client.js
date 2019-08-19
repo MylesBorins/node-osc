@@ -2,11 +2,14 @@
 
 const test = require('tap').test;
 
+const { generatePort } = require('./util');
+
 const osc = require('../lib');
 
 test('client: with array', (t) => {
-  const oscServer = new osc.Server(3333, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', 3333);
+  const port = generatePort();
+  const oscServer = new osc.Server(port, '0.0.0.0');
+  const client = new osc.Client('0.0.0.0', port);
 
   t.plan(2);
 
@@ -22,8 +25,9 @@ test('client: with array', (t) => {
 });
 
 test('client: with string', (t) => {
-  const oscServer = new osc.Server(3333, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', 3333);
+  const port = generatePort();
+  const oscServer = new osc.Server(port, '0.0.0.0');
+  const client = new osc.Client('0.0.0.0', port);
 
   t.plan(2);
 
@@ -39,8 +43,9 @@ test('client: with string', (t) => {
 });
 
 test('client: with object', (t) => {
-  const oscServer = new osc.Server(3333, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', 3333);
+  const port = generatePort();
+  const oscServer = new osc.Server(port, '0.0.0.0');
+  const client = new osc.Client('0.0.0.0', port);
 
   t.plan(2);
 
@@ -65,7 +70,8 @@ test('client: with object', (t) => {
 });
 
 test('client: failure', (t) => {
-  const client = new osc.Client('0.0.0.0', 3333);
+  const port = generatePort();
+  const client = new osc.Client('0.0.0.0', port);
 
   t.plan(1);
   t.throws(() => {

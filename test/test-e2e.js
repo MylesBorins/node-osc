@@ -2,11 +2,14 @@
 
 const test = require('tap').test;
 
+const { generatePort } = require('./util');
+
 const osc = require('../lib');
 
 test('osc: argument message no callback', (t) => {
-  const oscServer = new osc.Server(3333, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', 3333);
+  const port = generatePort();
+  const oscServer = new osc.Server(port, '0.0.0.0');
+  const client = new osc.Client('0.0.0.0', port);
 
   t.plan(1);
 
@@ -20,8 +23,9 @@ test('osc: argument message no callback', (t) => {
 });
 
 test('osc: client with callback and message as arguments', (t) => {
-  const oscServer = new osc.Server(3333, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', 3333);
+  const port = generatePort();
+  const oscServer = new osc.Server(port, '0.0.0.0');
+  const client = new osc.Client('0.0.0.0', port);
 
   t.plan(2);
 
