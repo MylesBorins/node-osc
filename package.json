@@ -1,7 +1,7 @@
 {
   "name": "node-osc",
   "description": "pyOSC inspired library",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "main": "lib/index.js",
   "author": {
     "name": "Myles Borins",
