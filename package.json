@@ -17,7 +17,7 @@
   "license": "LGPL-2.1",
   "scripts": {
     "test": "npm run lint && npm run tap",
-    "tap": "tap --node-arg=--experimental-modules test/test-*{.js,.mjs}",
+    "tap": "tap --no-esm --node-arg=--experimental-modules test/test-*{.js,.mjs}",
     "coverage": "npm run tap -- --coverage",
     "coverage-html": "npm run tap -- --coverage-report=html",
     "lint": "eslint **/*.js"

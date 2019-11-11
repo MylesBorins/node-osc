@@ -2,7 +2,7 @@
 
 import tap from 'tap';
 import util from './util.js';
-import osc from '../lib/index.mjs'
+import osc from 'node-osc';
 
 const {generatePort} = util;
 const test = tap.test;

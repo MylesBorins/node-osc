@@ -4,7 +4,7 @@ const test = require('tap').test;
 
 const { generatePort } = require('./util');
 
-const osc = require('../');
+const osc = require('node-osc');
 
 test('osc: argument message no callback', (t) => {
   const port = generatePort();
