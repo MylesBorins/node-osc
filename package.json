@@ -4,9 +4,8 @@
   "version": "5.0.0",
   "main": "lib/index.js",
   "exports": {
-    ".": "lib/index.mjs",
-    "esm": "lib/index.mjs",
-    "cjs": "lib/index.js"
+    "default": "./lib/index.mjs",
+    "require": "./lib/index.js"
   },
   "author": {
     "name": "Myles Borins",

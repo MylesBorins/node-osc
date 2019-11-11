@@ -4,7 +4,7 @@ const test = require('tap').test;
 
 const { generatePort } = require('./util');
 
-const osc = require('../cjs');
+const osc = require('../');
 
 test('client: with array', (t) => {
   const port = generatePort();
