@@ -10,7 +10,7 @@ npm install node-osc
 
 ## ⚠️ Experimental ⚠️
 
-This is an experimental ESM version of node-osc make sure to run node with the `--experimental-modules` flag. This version require at minimum Node.js 12.0.0
+This is an experimental ESM version of node-osc make sure to run node with the `--experimental-modules` flag. This version require at minimum Node.js 13.2.0
 
 ## Example
 
@@ -37,26 +37,6 @@ oscServer.on('message', function (msg) {
   oscServer.close();
 });
 ```
-
-### Legacy CJS support
-
-```js
-const { Client, Server } = require('node-osc/cjs');
-
-const client = new Client('127.0.0.1', 3333);
-var server = new Server(3333, '0.0.0.0');
-
-server.on('message', function (msg) {
-  console.log(`Message: ${msg}`);
-  server.close();
-});
-
-client.send('/hello', 'world', (err) => {
-  if (err) console.error(err);
-  client.close();
-});
-```
-
 ## License
 
 LGPL.  Please see the file lesser.txt for details.
