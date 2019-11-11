@@ -3,6 +3,11 @@
   "description": "pyOSC inspired library",
   "version": "4.1.2",
   "main": "lib/index.js",
+  "exports": {
+    ".": "lib/index.js",
+    "./": "./",
+    "esm": "lib/index.mjs"
+  },
   "author": {
     "name": "Myles Borins",
     "email": "myles.borins@gmail.com"

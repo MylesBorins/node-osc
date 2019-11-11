@@ -37,7 +37,7 @@ oscServer.on('message', function (msg) {
 ### Now with ESM!
 
 ```js
-import { Client, Server } from 'node-osc/esm.mjs'
+import { Client, Server } from 'node-osc/esm'
 
 const client = new Client('127.0.0.1', 3333);
 var server = new Server(3333, '0.0.0.0');
