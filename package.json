@@ -2,10 +2,10 @@
   "name": "node-osc",
   "description": "pyOSC inspired library",
   "version": "5.0.0",
-  "main": "lib/index.js",
+  "main": "./dist/bundle.js",
   "exports": {
     "default": "./lib/index.mjs",
-    "require": "./lib/index.js"
+    "require": "./dist/bundle.js"
   },
   "author": {
     "name": "Myles Borins",
@@ -16,11 +16,13 @@
   },
   "license": "LGPL-2.1",
   "scripts": {
-    "test": "npm run lint && npm run tap",
+    "build": "rollup lib/index.mjs --file dist/bundle.js --format cjs",
+    "prepublishOnly": "npm run build",
+    "test": "npm run lint && npm run build && npm run tap",
     "tap": "tap --no-esm --node-arg=--experimental-modules test/test-*{.js,.mjs}",
     "coverage": "npm run tap -- --coverage",
     "coverage-html": "npm run tap -- --coverage-report=html",
-    "lint": "eslint **/*.js"
+    "lint": "eslint lib/* test/* examples/*"
   },
   "contributors": [
     "Hans Hübner <hans.huebner@gmail.com>",
@@ -41,6 +43,7 @@
   },
   "devDependencies": {
     "eslint": "^6.0.1",
+    "rollup": "^1.27.9",
     "tap": "^14.6.1"
   }
 }
