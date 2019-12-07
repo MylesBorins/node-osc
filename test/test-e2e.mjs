@@ -1,15 +1,11 @@
-'use strict';
+import { Server, Client } from 'node-osc';
 
-const test = require('tap').test;
-
-const { generatePort } = require('./util');
-
-const osc = require('node-osc');
+import { generatePort, test } from './util.mjs';
 
 test('osc: argument message no callback', (t) => {
   const port = generatePort();
-  const oscServer = new osc.Server(port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', port);
+  const oscServer = new Server(port, '0.0.0.0');
+  const client = new Client('0.0.0.0', port);
 
   t.plan(1);
 
@@ -24,8 +20,8 @@ test('osc: argument message no callback', (t) => {
 
 test('osc: client with callback and message as arguments', (t) => {
   const port = generatePort();
-  const oscServer = new osc.Server(port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', port);
+  const oscServer = new Server(port, '0.0.0.0');
+  const client = new Client('0.0.0.0', port);
 
   t.plan(2);
 

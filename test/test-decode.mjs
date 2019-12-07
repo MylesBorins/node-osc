@@ -1,6 +1,6 @@
 'use strict';
 
-const test = require('tap').test;
+import { test } from './util.mjs';
 
 // var decode = require('../cjs/decode.js');
 

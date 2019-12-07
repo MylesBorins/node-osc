@@ -1,15 +1,11 @@
-'use strict';
+import { Server, Client } from 'node-osc';
 
-const test = require('tap').test;
-
-const { generatePort } = require('./util');
-
-const osc = require('node-osc');
+import { generatePort, test } from './util.mjs';
 
 test('client: with array', (t) => {
   const port = generatePort();
-  const oscServer = new osc.Server(port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', port);
+  const oscServer = new Server(port, '0.0.0.0');
+  const client = new Client('0.0.0.0', port);
 
   t.plan(2);
 
@@ -26,8 +22,8 @@ test('client: with array', (t) => {
 
 test('client: with string', (t) => {
   const port = generatePort();
-  const oscServer = new osc.Server(port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', port);
+  const oscServer = new Server(port, '0.0.0.0');
+  const client = new Client('0.0.0.0', port);
 
   t.plan(2);
 
@@ -44,8 +40,8 @@ test('client: with string', (t) => {
 
 test('client: with object', (t) => {
   const port = generatePort();
-  const oscServer = new osc.Server(port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', port);
+  const oscServer = new Server(port, '0.0.0.0');
+  const client = new Client('0.0.0.0', port);
 
   t.plan(2);
 
@@ -71,7 +67,7 @@ test('client: with object', (t) => {
 
 test('client: failure', (t) => {
   const port = generatePort();
-  const client = new osc.Client('0.0.0.0', port);
+  const client = new Client('0.0.0.0', port);
 
   t.plan(1);
   t.throws(() => {
