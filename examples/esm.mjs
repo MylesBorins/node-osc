@@ -1,4 +1,4 @@
-import { Client, Server } from 'node-osc'
+import { Client, Server } from 'node-osc';
 
 const client = new Client('127.0.0.1', 3333);
 var server = new Server(3333, '0.0.0.0');

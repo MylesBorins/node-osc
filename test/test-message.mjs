@@ -1,20 +1,13 @@
-'use strict';
+import { Server, Client, Message } from 'node-osc';
 
-const t = require('tap');
-const test = t.test;
+import { beforeEach, tap, test } from './util.mjs';
 
-const getPort = require('get-port');
-
-const osc = require('../lib');
-
-t.beforeEach(async (done, t) => {
-  t.context.port = await getPort();
-});
+tap.beforeEach(beforeEach);
 
 test('message: basic usage', (t) => {
-  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
-  const client = new osc.Client('127.0.0.1', t.context.port);
-  const m = new osc.Message('/address');
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+  const m = new Message('/address');
   m.append('testing');
   m.append(123);
   m.append([456, 789]);
@@ -32,9 +25,9 @@ test('message: basic usage', (t) => {
 });
 
 test('message: multiple args', (t) => {
-  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
-  const client = new osc.Client('127.0.0.1', t.context.port);
-  const m = new osc.Message('/address', 'testing', 123, true);
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+  const m = new Message('/address', 'testing', 123, true);
 
   oscServer.on('message', (msg) => {
     const expected = ['/address', 'testing', 123, true];
@@ -49,9 +42,9 @@ test('message: multiple args', (t) => {
 });
 
 test('message: object', (t) => {
-  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
-  const client = new osc.Client('127.0.0.1', t.context.port);
-  const m = new osc.Message('/address');
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+  const m = new Message('/address');
   m.append({
     type: 'string',
     value: 'test'
@@ -74,9 +67,9 @@ test('message: object', (t) => {
 });
 
 test('message: float', (t) => {
-  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
-  const client = new osc.Client('127.0.0.1', t.context.port);
-  const m = new osc.Message('/address');
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+  const m = new Message('/address');
   m.append(3.14);
 
   oscServer.on('message', (msg) => {
@@ -96,9 +89,9 @@ test('message: float', (t) => {
 });
 
 test('message: boolean', (t) => {
-  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
-  const client = new osc.Client('127.0.0.1', t.context.port);
-  const m = new osc.Message('/address');
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+  const m = new Message('/address');
   m.append(true);
 
   oscServer.on('message', (msg) => {
@@ -117,10 +110,10 @@ test('message: boolean', (t) => {
 });
 
 test('message: blob', (t) => {
-  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
-  const client = new osc.Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+  const m = new Message('/address');
   const buf = Buffer.from('test');
-  const m = new osc.Message('/address');
   m.append({
     type: 'blob',
     value: buf
@@ -161,7 +154,7 @@ test('message: blob', (t) => {
 // });
 
 test('message: error', (t) => {
-  const m = new osc.Message('/address');
+  const m = new Message('/address');
   t.plan(2);
   t.throws(() => {
     m.append({

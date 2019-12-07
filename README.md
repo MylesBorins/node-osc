@@ -8,12 +8,16 @@ Install using npm
 npm install node-osc
 ```
 
+## ⚠️ Experimental ⚠️
+
+This is an experimental ESM version of node-osc make sure to run node with the `--experimental-modules` flag. This version require at minimum Node.js 13.2.0
+
 ## Example
 
 ### Sending OSC messages:
 
 ```js
-const { Client } = require('node-osc');
+import { Client } from 'node-osc';
 
 const client = new Client('127.0.0.1', 3333);
 client.send('/oscAddress', 200, () => {
@@ -24,7 +28,7 @@ client.send('/oscAddress', 200, () => {
 ### Listening for OSC messages:
 
 ```js
-var { Server } = require('../lib');
+import { Server } from 'node-osc';
 
 var oscServer = new Server(3333, '0.0.0.0');
 
@@ -34,10 +38,12 @@ oscServer.on('message', function (msg) {
 });
 ```
 
-### Now with ESM!
+### Legacy API
+
+This just works due to conditional exports, isn't that cool!
 
 ```js
-import { Client, Server } from 'node-osc';
+const { Client, Server } = require('node-osc');
 
 const client = new Client('127.0.0.1', 3333);
 var server = new Server(3333, '0.0.0.0');

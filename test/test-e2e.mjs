@@ -1,19 +1,12 @@
-'use strict';
+import { Server, Client } from 'node-osc';
 
-const t = require('tap');
-const test = t.test;
+import { beforeEach, tap, test } from './util.mjs';
 
-const getPort = require('get-port');
-
-const osc = require('../lib');
-
-t.beforeEach(async (done, t) => {
-  t.context.port = await getPort();
-});
+tap.beforeEach(beforeEach);
 
 test('osc: argument message no callback', (t) => {
-  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
-  const client = new osc.Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(t.context.port, '0.0.0.0');
+  const client = new Client('0.0.0.0', t.context.port);
 
   t.plan(1);
 
@@ -27,8 +20,8 @@ test('osc: argument message no callback', (t) => {
 });
 
 test('osc: client with callback and message as arguments', (t) => {
-  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
-  const client = new osc.Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(t.context.port, '0.0.0.0');
+  const client = new Client('0.0.0.0', t.context.port);
 
   t.plan(2);
 

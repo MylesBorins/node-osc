@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 'use strict';
-var { Server } = require('../lib');
+var { Server } = require('node-osc');
 
 var oscServer = new Server(3333, '0.0.0.0');
 

@@ -1,27 +1,20 @@
-'use strict';
+import { Server, Client } from 'node-osc';
 
-const t = require('tap');
-const test = t.test;
+import { beforeEach, tap, test } from './util.mjs';
 
-const getPort = require('get-port');
-
-const osc = require('../lib');
-
-t.beforeEach(async (done, t) => {
-  t.context.port = await getPort();
-});
+tap.beforeEach(beforeEach);
 
 test('server: create and close', (t) => {
   t.plan(1);
-  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const oscServer = new Server(t.context.port, '127.0.0.1');
   oscServer.close((err) => {
     t.error(err);
   });
 });
 
 test('client: listen to message', (t) => {
-  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
-  const client = new osc.Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
 
   t.plan(3);
 
@@ -45,7 +38,7 @@ test('client: listen to message', (t) => {
 
 test('server: bad message', (t) => {
   t.plan(2);
-  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const oscServer = new Server(t.context.port, '127.0.0.1');
   t.throws(() => {
     oscServer._sock.emit('message', 'whoops');
   }, /can't decode incoming message:/);

@@ -33,5 +33,10 @@ jobs:
     - name: Install Dependencies
       run: npm ci
 
+    - name: Test-Legacy
+      if: matrix.node-version == '10.x'
+      run: npm run test-legacy
+
     - name: Test
-      run: npm run test-ci
+      if: matrix.node-version != '10.x'
+      run: npm test

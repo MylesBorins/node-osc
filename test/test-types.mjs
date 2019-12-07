@@ -1,8 +1,6 @@
-'use strict';
+import { test } from './util.mjs';
 
-var test = require('tap').test;
-
-var {
+import {
   TString,
   TInt,
   TTime,
@@ -11,7 +9,7 @@ var {
   TDouble,
   TTrue,
   TFalse
-} = require('../lib/types.js');
+} from '../lib/types.mjs';
 
 test('Type: string', async (t) => {
   const str = new TString('come on fhqwhgads');
