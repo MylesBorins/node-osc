@@ -1,5 +1,3 @@
-'use strict';
-
 import { Server, Client, Message } from 'node-osc';
 
 import { generatePort, test } from './util.mjs';

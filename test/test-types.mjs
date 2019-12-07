@@ -2,9 +2,7 @@
 
 import { generatePort, test } from './util.mjs';
 
-import types from '../lib/types.js';
-
-var {
+import {
   TString,
   TInt,
   // TTime,
@@ -13,7 +11,7 @@ var {
   TDouble,
   // TTrue,
   // TFalse
-} = types;
+} from '../lib/types.mjs';
 
 test('Type: string', async (t) => {
   const str = new TString('come on fhqwhgads');
