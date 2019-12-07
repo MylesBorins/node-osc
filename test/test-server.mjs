@@ -1,4 +1,4 @@
-import { Server, Client, Message } from 'node-osc';
+import { Server, Client } from 'node-osc';
 
 import { generatePort, test } from './util.mjs';
 

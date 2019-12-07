@@ -1,7 +1,7 @@
 // const used = [];
 
 import tap from 'tap';
-import generatePort from './generate-port.js'
+import generatePort from './generate-port.js';
 
 const { test } = tap;
 

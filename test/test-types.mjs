@@ -1,6 +1,6 @@
 'use strict';
 
-import { generatePort, test } from './util.mjs';
+import { test } from './util.mjs';
 
 import {
   TString,
