@@ -53,13 +53,3 @@ test('server: bad message', (t) => {
     t.error(err);
   });
 });
-
-test('server: legacy kill alias', (t) => {
-  t.plan(1);
-  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
-  process.noDeprecation = true;
-  oscServer.kill((err) => {
-    process.noDeprecation = false;
-    t.error(err);
-  });
-});
