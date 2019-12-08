@@ -1,5 +1,3 @@
-'use strict';
-
 import { test } from './util.mjs';
 
 // var decode = require('../cjs/decode.js');

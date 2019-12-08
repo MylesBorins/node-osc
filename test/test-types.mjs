@@ -1,5 +1,3 @@
-'use strict';
-
 import { test } from './util.mjs';
 
 import {

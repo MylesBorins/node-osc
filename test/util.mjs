@@ -1,5 +1,3 @@
-// const used = [];
-
 import tap from 'tap';
 import generatePort from './generate-port.js';
 
