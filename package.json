@@ -4,7 +4,10 @@
   "version": "4.1.4",
   "main": "lib/index.js",
   "exports": {
-    ".": "lib/index.js",
+    ".": {
+      "import": "lib/index.mjs",
+      "default": "lib/index.js"
+    },
     "./": "./",
     "esm": "lib/index.mjs"
   },
