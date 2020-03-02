@@ -73,11 +73,15 @@ test('client: failure', (t) => {
   const port = generatePort();
   const client = new osc.Client('0.0.0.0', port);
 
-  t.plan(1);
+  t.plan(2);
+
   t.throws(() => {
     client.send(123, (err) => {
       t.error(err, 'there should be no error');
     });
   });
   client.close();
+  client.send('/boom', (err) => {
+    t.equals(err.code, 'ERR_SOCKET_DGRAM_NOT_RUNNING');
+  });
 });
