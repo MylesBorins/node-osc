@@ -1,6 +1,6 @@
 # node-osc
 
-A very basic OSC client (so far) implementation based heavily on [pyOSC](https://trac.v2.nl/wiki/pyOSC).
+A very basic [Open Sound Control](http://opensoundcontrol.org/introduction-osc) client. Heavily inspired by [pyOSC](https://trac.v2.nl/wiki/pyOSC).
 
 Install using npm
 
