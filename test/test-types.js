@@ -5,18 +5,33 @@ var test = require('tap').test;
 var {
   TString,
   TInt,
-  // TTime,
+  TTime,
   TFloat,
   // TBlob,
   TDouble,
-  // TTrue,
-  // TFalse
+  TTrue,
+  TFalse
 } = require('../lib/types.js');
 
 test('Type: string', async (t) => {
   const str = new TString('come on fhqwhgads');
   t.equals(str.typetag, 's');
   t.equals(str.value, 'come on fhqwhgads');
+  t.done();
+});
+
+test('Type: string decode', async (t) => {
+  const str = new TString();
+  str.decode(Buffer.from('test\0/123\0'));
+  t.equals(str.value, 'test');
+  t.done();
+});
+
+test('Type: string bad message', async (t) => {
+  t.throws(() => {
+    const str = new TString();
+    str.decode(Buffer.from('test'));
+  }, 'OSC string not null terminated');
   t.done();
 });
 
@@ -65,15 +80,40 @@ test('Type: bad double decode', async (t) => {
   t.done();
 });
 
-// test('Type: false', async (t) => {
-//   const f = new TFalse(false);
-//   t.equals(f.value, false);
-//   // t.equals(f.encode(0, 0), 'test', 'decode is passthourgh');
-//   t.done();
-// });
-//
-// test('Type: true', async (t) => {
-//   const tt = new TTrue(true);
-//   t.equals(tt.value, true);
-//   t.done();
-// });
+test('Type: false', async (t) => {
+  const f = new TFalse(false);
+  t.equals(f.value, false);
+  t.equals(f.decode(0, 0), 0, 'decode is passthourgh');
+  t.done();
+});
+
+test('Type: true', async (t) => {
+  const tt = new TTrue(true);
+  t.equals(tt.value, true);
+  t.equals(tt.decode(0, 0), 0, 'decode is passthourgh');
+  t.done();
+});
+
+test('Type: time', async (t) => {
+  const date = new Date();
+  const time = new TTime(date);
+  t.equals(time.typetag, 't');
+  t.equals(time.value, date);
+  t.done();
+});
+
+test('Type: time decode', async (t) => {
+  const time = new TTime();
+  time.decode(Buffer.from('12345.12345\0'));
+  t.equals(time.typetag, 't');
+  t.equals(time.value, 825373492.2077361);
+  t.done();
+});
+
+test('Type: time bad buffer', async (t) => {
+  const time = new TTime();
+  t.throws(() => {
+    time.decode(Buffer.from(''));
+  }, /buffer \[\] too short for time, 8 bytes requiredLength/);
+  t.done();
+});
