@@ -39,4 +39,4 @@ jobs:
 
     - name: Test
       if: matrix.node-version != '10.x'
-      run: npm test
+      run: npm run test-ci
