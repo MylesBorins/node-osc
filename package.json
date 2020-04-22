@@ -1,7 +1,7 @@
 {
   "name": "node-osc",
   "description": "pyOSC inspired library",
-  "version": "4.1.9",
+  "version": "5.0.0",
   "main": "./dist/bundle.js",
   "exports": {
     "require": "./dist/bundle.js",
