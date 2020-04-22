@@ -1,15 +1,19 @@
 'use strict';
 
-const test = require('tap').test;
+const t = require('tap');
+const test = t.test;
 
-const { generatePort } = require('./util');
+const getPort = require('get-port');
 
 const osc = require('../lib');
 
+t.beforeEach(async (done, t) => {
+  t.context.port = await getPort({port: getPort.makeRange(3000, 3100)});
+});
+
 test('client: with array', (t) => {
-  const port = generatePort();
-  const oscServer = new osc.Server(port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', port);
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const client = new osc.Client('127.0.0.1', t.context.port);
 
   t.plan(2);
 
@@ -25,9 +29,8 @@ test('client: with array', (t) => {
 });
 
 test('client: with string', (t) => {
-  const port = generatePort();
-  const oscServer = new osc.Server(port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', port);
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const client = new osc.Client('127.0.0.1', t.context.port);
 
   t.plan(2);
 
@@ -43,9 +46,8 @@ test('client: with string', (t) => {
 });
 
 test('client: with object', (t) => {
-  const port = generatePort();
-  const oscServer = new osc.Server(port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', port);
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const client = new osc.Client('127.0.0.1', t.context.port);
 
   t.plan(2);
 
@@ -70,8 +72,7 @@ test('client: with object', (t) => {
 });
 
 test('client: failure', (t) => {
-  const port = generatePort();
-  const client = new osc.Client('0.0.0.0', port);
+  const client = new osc.Client('127.0.0.1', t.context.port);
 
   t.plan(2);
 

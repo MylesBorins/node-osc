@@ -22,8 +22,8 @@
   "scripts": {
     "test": "npm run lint && npm run tap",
     "tap": "tap test/test-*.js",
-    "coverage": "npm run tap -- --coverage",
     "coverage-html": "npm run tap -- --coverage-report=html",
+    "test-ci": "npm run lint && tap --no-coverage --no-esm test/test-*.js",
     "lint": "eslint **/*.js"
   },
   "contributors": [
@@ -40,6 +40,7 @@
     "url": "git://github.com/MylesBorins/node-osc.git"
   },
   "dependencies": {
+    "get-port": "^5.1.1",
     "jspack": "0.0.4",
     "osc-min": "^1.1.1"
   },

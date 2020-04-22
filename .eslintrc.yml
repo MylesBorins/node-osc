@@ -9,9 +9,6 @@ globals:
 parserOptions:
   ecmaVersion: 2018
 rules:
-  linebreak-style:
-    - error
-    - unix
   quotes:
     - error
     - single

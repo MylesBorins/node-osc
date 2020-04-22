@@ -1,24 +1,27 @@
 'use strict';
 
-const test = require('tap').test;
+const t = require('tap');
+const test = t.test;
 
-const { generatePort } = require('./util');
+const getPort = require('get-port');
 
 const osc = require('../lib');
 
+t.beforeEach(async (done, t) => {
+  t.context.port = await getPort();
+});
+
 test('server: create and close', (t) => {
-  const port = generatePort();
   t.plan(1);
-  const oscServer = new osc.Server(port, '0.0.0.0');
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
   oscServer.close((err) => {
     t.error(err);
   });
 });
 
 test('client: listen to message', (t) => {
-  const port = generatePort();
-  const oscServer = new osc.Server(port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', port);
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const client = new osc.Client('127.0.0.1', t.context.port);
 
   t.plan(3);
 
@@ -41,9 +44,8 @@ test('client: listen to message', (t) => {
 });
 
 test('server: bad message', (t) => {
-  const port = generatePort();
   t.plan(2);
-  const oscServer = new osc.Server(port, '0.0.0.0');
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
   t.throws(() => {
     oscServer._sock.emit('message', 'whoops');
   }, /can't decode incoming message:/);
@@ -53,9 +55,8 @@ test('server: bad message', (t) => {
 });
 
 test('server: legacy kill alias', (t) => {
-  const port = generatePort();
   t.plan(1);
-  const oscServer = new osc.Server(port, '0.0.0.0');
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
   process.noDeprecation = true;
   oscServer.kill((err) => {
     process.noDeprecation = false;

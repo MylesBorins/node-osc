@@ -1,15 +1,19 @@
 'use strict';
 
-const test = require('tap').test;
+const t = require('tap');
+const test = t.test;
 
-const { generatePort } = require('./util');
+const getPort = require('get-port');
 
 const osc = require('../lib');
 
+t.beforeEach(async (done, t) => {
+  t.context.port = await getPort();
+});
+
 test('osc: argument message no callback', (t) => {
-  const port = generatePort();
-  const oscServer = new osc.Server(port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', port);
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const client = new osc.Client('127.0.0.1', t.context.port);
 
   t.plan(1);
 
@@ -23,9 +27,8 @@ test('osc: argument message no callback', (t) => {
 });
 
 test('osc: client with callback and message as arguments', (t) => {
-  const port = generatePort();
-  const oscServer = new osc.Server(port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', port);
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const client = new osc.Client('127.0.0.1', t.context.port);
 
   t.plan(2);
 

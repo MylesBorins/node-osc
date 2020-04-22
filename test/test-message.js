@@ -1,15 +1,19 @@
 'use strict';
 
-const test = require('tap').test;
+const t = require('tap');
+const test = t.test;
 
-const { generatePort } = require('./util');
+const getPort = require('get-port');
 
 const osc = require('../lib');
 
+t.beforeEach(async (done, t) => {
+  t.context.port = await getPort();
+});
+
 test('message: basic usage', (t) => {
-  const port = generatePort();
-  const oscServer = new osc.Server(port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', port);
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const client = new osc.Client('127.0.0.1', t.context.port);
   const m = new osc.Message('/address');
   m.append('testing');
   m.append(123);
@@ -28,9 +32,8 @@ test('message: basic usage', (t) => {
 });
 
 test('message: multiple args', (t) => {
-  const port = generatePort();
-  const oscServer = new osc.Server(port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', port);
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const client = new osc.Client('127.0.0.1', t.context.port);
   const m = new osc.Message('/address', 'testing', 123, true);
 
   oscServer.on('message', (msg) => {
@@ -46,9 +49,8 @@ test('message: multiple args', (t) => {
 });
 
 test('message: object', (t) => {
-  const port = generatePort();
-  const oscServer = new osc.Server(port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', port);
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const client = new osc.Client('127.0.0.1', t.context.port);
   const m = new osc.Message('/address');
   m.append({
     type: 'string',
@@ -72,9 +74,8 @@ test('message: object', (t) => {
 });
 
 test('message: float', (t) => {
-  const port = generatePort();
-  const oscServer = new osc.Server(port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', port);
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const client = new osc.Client('127.0.0.1', t.context.port);
   const m = new osc.Message('/address');
   m.append(3.14);
 
@@ -95,9 +96,8 @@ test('message: float', (t) => {
 });
 
 test('message: boolean', (t) => {
-  const port = generatePort();
-  const oscServer = new osc.Server(port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', port);
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const client = new osc.Client('127.0.0.1', t.context.port);
   const m = new osc.Message('/address');
   m.append(true);
 
@@ -117,9 +117,8 @@ test('message: boolean', (t) => {
 });
 
 test('message: blob', (t) => {
-  const port = generatePort();
-  const oscServer = new osc.Server(port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', port);
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const client = new osc.Client('127.0.0.1', t.context.port);
   const buf = Buffer.from('test');
   const m = new osc.Message('/address');
   m.append({
@@ -143,8 +142,8 @@ test('message: blob', (t) => {
 });
 
 // test('message: timetag', (t) => {
-//   const oscServer = new osc.Server(3333, '0.0.0.0');
-//   const client = new osc.Client('0.0.0.0', 3333);
+//   const oscServer = new osc.Server(3333, '127.0.0.1');
+//   const client = new osc.Client('127.0.0.1', 3333);
 //   const m = new osc.Message('/address');z
 //
 //   oscServer.on('message', (msg) => {
