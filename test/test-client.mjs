@@ -1,8 +1,22 @@
+import { createRequire } from 'module';
 import { Server, Client } from 'node-osc';
 
 import { beforeEach, tap, test } from './util.mjs';
 
+const require = createRequire(import.meta.url);
+
 tap.beforeEach(beforeEach);
+
+test('client: instanceof check', (t) => {
+  const ClientToo = require('node-osc').Client;
+  const c1 = new Client('127.0.0.1', t.context.port);
+  const c2 = new ClientToo('127.0.0.1', t.context.port);
+  t.ok(c1 instanceof Client);
+  t.ok(c1 instanceof ClientToo);
+  t.ok(c2 instanceof Client);
+  t.ok(c2 instanceof ClientToo);
+  c1.close(c2.close(t.done));
+});
 
 test('client: with array', (t) => {
   const oscServer = new Server(t.context.port, '127.0.0.1');
