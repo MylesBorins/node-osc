@@ -8,9 +8,9 @@ Install using npm
 npm install node-osc
 ```
 
-## ⚠️ Experimental ⚠️
+## Written using ESM supports CJS
 
-This is an experimental ESM version of node-osc make sure to run node with the `--experimental-modules` flag. This version require at minimum Node.js 13.2.0
+If you are using Node.js 10+ you can use this library.
 
 ## Example
 
@@ -38,7 +38,7 @@ oscServer.on('message', function (msg) {
 });
 ```
 
-### Legacy API
+### CJS API
 
 This just works due to conditional exports, isn't that cool!
 
