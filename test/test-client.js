@@ -12,8 +12,8 @@ t.beforeEach(async (done, t) => {
 });
 
 test('client: with array', (t) => {
-  const oscServer = new osc.Server(t.context.port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', t.context.port);
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const client = new osc.Client('127.0.0.1', t.context.port);
 
   t.plan(2);
 
@@ -29,8 +29,8 @@ test('client: with array', (t) => {
 });
 
 test('client: with string', (t) => {
-  const oscServer = new osc.Server(t.context.port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', t.context.port);
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const client = new osc.Client('127.0.0.1', t.context.port);
 
   t.plan(2);
 
@@ -46,8 +46,8 @@ test('client: with string', (t) => {
 });
 
 test('client: with object', (t) => {
-  const oscServer = new osc.Server(t.context.port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', t.context.port);
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const client = new osc.Client('127.0.0.1', t.context.port);
 
   t.plan(2);
 
@@ -72,7 +72,7 @@ test('client: with object', (t) => {
 });
 
 test('client: failure', (t) => {
-  const client = new osc.Client('0.0.0.0', t.context.port);
+  const client = new osc.Client('127.0.0.1', t.context.port);
 
   t.plan(2);
 

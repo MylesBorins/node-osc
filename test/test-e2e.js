@@ -12,8 +12,8 @@ t.beforeEach(async (done, t) => {
 });
 
 test('osc: argument message no callback', (t) => {
-  const oscServer = new osc.Server(t.context.port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', t.context.port);
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const client = new osc.Client('127.0.0.1', t.context.port);
 
   t.plan(1);
 
@@ -27,8 +27,8 @@ test('osc: argument message no callback', (t) => {
 });
 
 test('osc: client with callback and message as arguments', (t) => {
-  const oscServer = new osc.Server(t.context.port, '0.0.0.0');
-  const client = new osc.Client('0.0.0.0', t.context.port);
+  const oscServer = new osc.Server(t.context.port, '127.0.0.1');
+  const client = new osc.Client('127.0.0.1', t.context.port);
 
   t.plan(2);
 
