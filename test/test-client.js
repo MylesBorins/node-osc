@@ -8,7 +8,7 @@ const getPort = require('get-port');
 const osc = require('../lib');
 
 t.beforeEach(async (done, t) => {
-  t.context.port = await getPort();
+  t.context.port = await getPort({port: getPort.makeRange(3000, 3100)});
 });
 
 test('client: with array', (t) => {
