@@ -4,6 +4,7 @@ const t = require('tap');
 const test = t.test;
 
 const getPort = require('get-port');
+const semver = require('semver');
 
 const osc = require('../');
 
@@ -37,4 +38,19 @@ test('osc: client with callback and message as arguments', (t) => {
   client.send('/test', 1, 2, 'testing', (err) => {
     t.error(err, 'there should be no error');
   });
+});
+
+test('osc: instance of checks', async (t) => {
+  if (semver.lt(process.version, '12.16.0')) {
+    t.skip();
+    return;
+  }
+  const oscToo = await import('node-osc');
+  const m1 = new osc.Message('/address');
+  const m2 = new oscToo.Message('/other-address');
+  t.ok(m1 instanceof osc.Message);
+  t.ok(m1 instanceof oscToo.Message);
+  t.ok(m2 instanceof osc.Message);
+  t.ok(m2 instanceof oscToo.Message);
+  return;
 });

@@ -7,7 +7,9 @@ export default {
   external: [
     'dgram',
     'events',
+    'module',
     'osc-min',
-    'jspack'
+    'jspack',
+    '../util/index.js'
   ]
 };

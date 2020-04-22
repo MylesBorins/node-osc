@@ -1,8 +1,22 @@
+import { createRequire } from 'module';
 import { Server, Client, Message } from 'node-osc';
 
 import { beforeEach, tap, test } from './util.mjs';
 
+const require = createRequire(import.meta.url);
+
 tap.beforeEach(beforeEach);
+
+test('message: instanceof check', (t) => {
+  const MessageToo = require('node-osc').Message;
+  const m1 = new Message('/address');
+  const m2 = new MessageToo('/another-address');
+  t.ok(m1 instanceof Message);
+  t.ok(m1 instanceof MessageToo);
+  t.ok(m2 instanceof Message);
+  t.ok(m2 instanceof MessageToo);
+  t.done();
+});
 
 test('message: basic usage', (t) => {
   const oscServer = new Server(t.context.port, '127.0.0.1');
