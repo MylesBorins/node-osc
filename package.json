@@ -20,7 +20,7 @@
     "prepublishOnly": "npm run build",
     "test-legacy": "npm run lint && npm run build && npm run tap -- test/test-*.js",
     "test": "npm run lint && npm run build && npm run tap -- test/test-*{.js,.mjs}",
-    "tap": "c8 tap --no-coverage --no-esm --node-arg=--experimental-modules",
+    "tap": "c8 tap -j4 --no-coverage --no-esm --node-arg=--experimental-modules",
     "lint": "eslint lib/* test/* examples/*"
   },
   "contributors": [
