@@ -30,7 +30,9 @@ client.send('/oscAddress', 200, () => {
 ```js
 import { Server } from 'node-osc';
 
-var oscServer = new Server(3333, '0.0.0.0');
+var oscServer = new Server(3333, '0.0.0.0', () => {
+  console.log('OSC Server is listening');
+});
 
 oscServer.on('message', function (msg) {
   console.log(`Message: ${msg}`);
@@ -48,7 +50,11 @@ const { Client, Server } = require('node-osc');
 const client = new Client('127.0.0.1', 3333);
 var server = new Server(3333, '0.0.0.0');
 
-server.on('message', function (msg) {
+server.on('listening', () => {
+  console.log('OSC Server is listening.);
+})
+
+server.on('message', (msg) => {
   console.log(`Message: ${msg}`);
   server.close();
 });
