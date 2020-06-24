@@ -1,6 +1,6 @@
-import { Server, Client, Message } from 'node-osc';
-
 import { beforeEach, tap, test } from './util.mjs';
+
+import { Server, Client, Message } from 'node-osc';
 
 tap.beforeEach(beforeEach);
 

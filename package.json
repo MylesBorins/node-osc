@@ -4,8 +4,18 @@
   "version": "5.1.0",
   "main": "./dist/bundle.js",
   "exports": {
-    "require": "./dist/bundle.js",
-    "default": "./lib/index.mjs"
+    ".": {
+      "require": "./dist/lib/index.js",
+      "default": "./lib/index.mjs"
+    },
+    "./decode": {
+      "require": "./dist/lib/decode.js",
+      "default": "./lib/decode.mjs"
+    },
+    "./types": {
+      "require": "./dist/lib/types.js",
+      "default": "./lib/types.mjs"
+    }
   },
   "author": {
     "name": "Myles Borins",
@@ -20,7 +30,8 @@
     "prepublishOnly": "npm run build",
     "test-ci": "npm run lint && npm run build && npm run tap -- -j1 test/test-*{.js,.mjs}",
     "test-legacy": "npm run lint && npm run build && npm run tap -- -j1 test/test-*.js",
-    "test": "npm run lint && npm run build && npm run tap -- -j4 test/test-*{.js,.mjs}",
+    "test": "npm run lint && npm run build && npm run tap -- -j4 test/test-*.mjs",
+    "test-cjs": "tap --no-esm -j4 dist/test/test-*.js",
     "tap": "c8 tap --no-coverage --no-esm --node-arg=--experimental-modules",
     "lint": "eslint lib/* test/* examples/*"
   },

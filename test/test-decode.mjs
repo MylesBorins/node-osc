@@ -1,6 +1,6 @@
 import { test } from './util.mjs';
 
-import decode from '../lib/decode.mjs';
+import decode from 'node-osc/decode';
 
 test('decode: empty', (t) => {
   const buf = Buffer.from('/test\0');
