@@ -32,7 +32,7 @@
     "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
     "test:esm": "c8 tap --no-coverage --no-esm -j1 test/test-*.mjs",
     "test:cjs": "tap --no-esm -j1 dist/test/test-*.js",
-    "test:legacy": "npm run lint && npm run build && node scripts/rewrite-exports.js && tap --timeout 480 --no-esm -j1 dist/test/test-*.js"
+    "test:legacy": "npm run lint && npm run build && node scripts/rewrite-exports.js && tap --no-esm -j1 dist/test/test-*.js"
   },
   "contributors": [
     "Hans Hübner <hans.huebner@gmail.com>",
