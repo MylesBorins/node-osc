@@ -6,7 +6,7 @@ const {
 
 const { join } = require('path');
 
-const root = join(__dirname, '../dist/test');
+const root = join(__dirname, '..', 'dist', 'test');
 const tests = readdirSync(root);
 
 console.log('reading files');
