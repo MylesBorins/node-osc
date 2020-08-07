@@ -9,7 +9,7 @@ import {
   TDouble,
   TTrue,
   TFalse
-} from '../lib/types.mjs';
+} from 'node-osc/types';
 
 test('Type: string', async (t) => {
   const str = new TString('come on fhqwhgads');

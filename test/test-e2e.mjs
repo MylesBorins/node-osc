@@ -1,10 +1,21 @@
-import { Server, Client } from 'node-osc';
-
 import { beforeEach, tap, test } from './util.mjs';
+
+import { Server, Client } from 'node-osc';
 
 tap.beforeEach(beforeEach);
 
+function flaky() {
+  return process.release.lts === 'Dubnium' && process.platform === 'win32';
+}
+
+function skip(t) {
+  t.skip(`flaky ~ ${t.name}`);
+  t.done();
+}
+
 test('osc: argument message no callback', (t) => {
+  if (flaky()) return skip(t);
+
   const oscServer = new Server(t.context.port, '0.0.0.0');
   const client = new Client('0.0.0.0', t.context.port);
 
@@ -20,6 +31,8 @@ test('osc: argument message no callback', (t) => {
 });
 
 test('osc: client with callback and message as arguments', (t) => {
+  if (flaky()) return skip(t);
+
   const oscServer = new Server(t.context.port, '0.0.0.0');
   const client = new Client('0.0.0.0', t.context.port);
 
@@ -35,5 +48,3 @@ test('osc: client with callback and message as arguments', (t) => {
     client.close();
   });
 });
-
-

@@ -6,7 +6,7 @@ jobs:
   run-tests:
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x]
+        node-version: [14.x, 12.x, 10.x]
         os: [ubuntu-latest, macos-latest, windows-latest]
 
     runs-on: ${{ matrix.os }}
@@ -20,10 +20,12 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: Get npm cache directory
+      if: matrix.os != 'windows-latest'
       id: npm-cache
       run: |
         echo "::set-output name=dir::$(npm config get cache)"
     - uses: actions/cache@v1
+      if: matrix.os != 'windows-latest'
       with:
         path: ${{ steps.npm-cache.outputs.dir }}
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -35,8 +37,8 @@ jobs:
 
     - name: Test-Legacy
       if: matrix.node-version == '10.x'
-      run: npm run test-legacy
+      run: npm run test:legacy
 
     - name: Test
       if: matrix.node-version != '10.x'
-      run: npm run test-ci
+      run: npm run test

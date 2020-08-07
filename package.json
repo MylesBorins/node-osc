@@ -4,8 +4,18 @@
   "version": "5.1.0",
   "main": "./dist/bundle.js",
   "exports": {
-    "require": "./dist/bundle.js",
-    "default": "./lib/index.mjs"
+    ".": {
+      "require": "./dist/lib/index.js",
+      "default": "./lib/index.mjs"
+    },
+    "./decode": {
+      "require": "./dist/lib/decode.js",
+      "default": "./lib/decode.mjs"
+    },
+    "./types": {
+      "require": "./dist/lib/types.js",
+      "default": "./lib/types.mjs"
+    }
   },
   "author": {
     "name": "Myles Borins",
@@ -18,11 +28,11 @@
   "scripts": {
     "build": "rollup --config rollup.config.mjs",
     "prepublishOnly": "npm run build",
-    "test-ci": "npm run lint && npm run build && npm run tap -- -j1 test/test-*{.js,.mjs}",
-    "test-legacy": "npm run lint && npm run build && npm run tap -- -j1 test/test-*.js",
-    "test": "npm run lint && npm run build && npm run tap -- -j4 test/test-*{.js,.mjs}",
-    "tap": "c8 tap --no-coverage --no-esm --node-arg=--experimental-modules",
-    "lint": "eslint lib/* test/* examples/*"
+    "lint": "eslint lib/* test/* examples/*",
+    "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
+    "test:esm": "c8 tap --no-coverage --no-esm -j1 test/test-*.mjs",
+    "test:cjs": "tap --no-esm -j1 dist/test/test-*.js",
+    "test:legacy": "npm run lint && npm run build && node scripts/rewrite-exports.js && tap --no-esm -j1 dist/test/test-*.js"
   },
   "contributors": [
     "Hans Hübner <hans.huebner@gmail.com>",
