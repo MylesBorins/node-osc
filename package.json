@@ -28,12 +28,10 @@
   "scripts": {
     "build": "rollup --config rollup.config.mjs",
     "prepublishOnly": "npm run build",
-    "test-ci": "npm run lint && npm run build && npm run tap -- -j1 test/test-*{.js,.mjs}",
-    "test-legacy": "npm run lint && npm run build && npm run tap -- -j1 test/test-*.js",
-    "test": "npm run lint && npm run build && npm run tap -- -j4 test/test-*.mjs",
-    "test-cjs": "tap --no-esm -j4 dist/test/test-*.js",
-    "tap": "c8 tap --no-coverage --no-esm --node-arg=--experimental-modules",
-    "lint": "eslint lib/* test/* examples/*"
+    "lint": "eslint lib/* test/* examples/*",
+    "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
+    "test:esm": "c8 tap --no-coverage --no-esm -j4 test/test-*.mjs",
+    "test:cjs": "tap --no-esm -j4 dist/test/test-*.js"
   },
   "contributors": [
     "Hans Hübner <hans.huebner@gmail.com>",

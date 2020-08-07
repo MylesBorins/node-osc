@@ -6,6 +6,7 @@ const config = [{
     entryFileNames: '[name].js',
     dir: 'dist/lib',
     format: 'cjs',
+    exports: 'auto'
   },
   preserveModules: true,
   external: [
