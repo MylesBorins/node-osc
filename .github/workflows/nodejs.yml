@@ -35,8 +35,8 @@ jobs:
 
     - name: Test-Legacy
       if: matrix.node-version == '10.x'
-      run: npm run test-legacy
+      run: npm run test:legacy
 
     - name: Test
       if: matrix.node-version != '10.x'
-      run: npm run test-ci
+      run: npm run test
