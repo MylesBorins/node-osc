@@ -1,21 +1,28 @@
 import { readdirSync } from 'fs';
 
-const config = [{
-  input: 'lib/index.mjs',
-  output: {
-    entryFileNames: '[name].js',
-    dir: 'dist/lib',
-    format: 'cjs',
-    exports: 'auto'
-  },
-  preserveModules: true,
-  external: [
-    'dgram',
-    'events',
-    'osc-min',
-    'jspack'
-  ]
-}];
+const files = readdirSync(new URL('./lib', import.meta.url));
+
+const config = [];
+
+files.forEach(file => {
+  config.push({
+    input: `lib/${file}`,
+    output: {
+      entryFileNames: '[name].js',
+      dir: 'dist/lib',
+      format: 'cjs',
+      exports: 'auto'
+    },
+    preserveModules: true,
+    external: [
+      'dgram',
+      'events',
+      'osc-min',
+      'jspack'
+    ]
+  });
+});
+
 
 const tests = readdirSync(new URL('./test', import.meta.url));
 
