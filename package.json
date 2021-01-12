@@ -2,7 +2,7 @@
   "name": "node-osc",
   "description": "pyOSC inspired library",
   "version": "5.2.1",
-  "main": "./dist/lib/bundle.js",
+  "main": "./dist/lib/index.js",
   "exports": {
     ".": {
       "require": "./dist/lib/index.js",
