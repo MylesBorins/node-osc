@@ -1,5 +1,6 @@
 import { beforeEach, tap, test } from './util.mjs';
 
+import { createServer } from 'net';
 import { Server, Client } from 'node-osc';
 
 tap.beforeEach(beforeEach);
@@ -77,5 +78,24 @@ test('client: failure', (t) => {
   client.close();
   client.send('/boom', (err) => {
     t.equals(err.code, 'ERR_SOCKET_DGRAM_NOT_RUNNING');
+  });
+});
+
+test('client: tcp', (t) => {
+
+  t.plan(2);
+  const server = createServer();
+  server.listen(t.context.port, '127.0.0.1');
+  server.on('connection', (socket) => {
+    socket.on('data', (data) => {
+     server.close();
+     t.deepEqual(data.toString('utf-8'), '/test\u0000\u0000\u0000,\u0000\u0000\u0000', 'We should receive expected payload');
+    });
+  });
+  
+  const client = new Client('127.0.0.1', t.context.port, 'tcp');
+  client.send('/test', (err) => {
+    t.error(err, 'there should be no error');
+    client.close();
   });
 });
