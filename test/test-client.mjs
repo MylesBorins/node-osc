@@ -81,7 +81,7 @@ test('client: failure', (t) => {
   });
 });
 
-test('client: tcp', (t) => {
+test('client: tcp and custom encoder', (t) => {
 
   t.plan(2);
   const server = createServer();
@@ -89,12 +89,15 @@ test('client: tcp', (t) => {
   server.on('connection', (socket) => {
     socket.on('data', (data) => {
      server.close();
-     t.deepEqual(data.toString('utf-8'), '/test\u0000\u0000\u0000,\u0000\u0000\u0000', 'We should receive expected payload');
+     t.deepEqual(data.toString('utf-8'), '{\"hello\":\"world\"}', 'We should receive expected payload');
     });
   });
   
   const client = new Client('127.0.0.1', t.context.port, 'tcp');
-  client.send('/test', (err) => {
+  client._encode = (message) => {
+    return JSON.stringify(message);
+  };
+  client.send({hello: 'world'}, (err) => {
     t.error(err, 'there should be no error');
     client.close();
   });
