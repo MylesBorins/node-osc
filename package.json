@@ -1,7 +1,7 @@
 {
   "name": "node-osc",
   "description": "pyOSC inspired library",
-  "version": "5.2.2",
+  "version": "5.2.3",
   "main": "./dist/lib/index.js",
   "exports": {
     ".": {
