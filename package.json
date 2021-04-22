@@ -26,13 +26,14 @@
   },
   "license": "LGPL-2.1",
   "scripts": {
-    "build": "rollup --config rollup.config.mjs",
+    "clean": "rm -rf dist/",
+    "build": "npm run clean && rollup --config rollup.config.mjs",
     "prepublishOnly": "npm run build",
     "lint": "eslint lib/* test/* examples/*",
     "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
     "test:esm": "c8 tap --no-coverage -j1 test/test-*.mjs",
     "test:cjs": "tap --no-coverage -j1 dist/test/test-*.js",
-    "test:legacy": "npm run lint && npm run build && node scripts/rewrite-exports.js && tap --no-esm -j1 dist/test/test-*.js"
+    "test:legacy": "npm run lint && npm run build && node scripts/rewrite-exports.js && tap --no-coverage -j1 dist/test/test-*.js"
   },
   "contributors": [
     "Hans Hübner <hans.huebner@gmail.com>",
