@@ -22,7 +22,7 @@
     "email": "myles.borins@gmail.com"
   },
   "engines": {
-    "node": ">=10"
+    "node": "^12.22 || ^14.13 || >16"
   },
   "license": "LGPL-2.1",
   "scripts": {
@@ -32,8 +32,7 @@
     "lint": "eslint lib/* test/* examples/*",
     "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
     "test:esm": "c8 tap --no-coverage -j1 test/test-*.mjs",
-    "test:cjs": "tap --no-coverage -j1 dist/test/test-*.js",
-    "test:legacy": "npm run lint && npm run build && node scripts/rewrite-exports.js && tap --no-coverage -j1 dist/test/test-*.js"
+    "test:cjs": "tap --no-coverage -j1 dist/test/test-*.js"
   },
   "contributors": [
     "Hans Hübner <hans.huebner@gmail.com>",
