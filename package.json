@@ -49,7 +49,6 @@
     "url": "git://github.com/MylesBorins/node-osc.git"
   },
   "dependencies": {
-    "jspack": "0.0.4",
     "osc-min": "^1.1.1"
   },
   "devDependencies": {
