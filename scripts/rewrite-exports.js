@@ -26,7 +26,6 @@ const processedFiles = files.map(file => {
     path: file.path,
     src: file.src
       .replace('\'node-osc\'', '\'../lib/index.js\'')
-      .replace('\'node-osc\/types\'', '\'../lib/types.js\'')
       .replace('\'node-osc\/decode\'', '\'../lib/decode.js\'')
   }
 })
