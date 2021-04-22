@@ -1,8 +1,9 @@
-import { beforeEach, tap, test } from './util.mjs';
+import { beforeEach, test } from 'tap';
+import { bootstrap } from './util.mjs';
 
 import { Server, Client } from 'node-osc';
 
-tap.beforeEach(beforeEach);
+beforeEach(bootstrap);
 
 function flaky() {
   return process.release.lts === 'Dubnium' && process.platform === 'win32';
@@ -10,7 +11,7 @@ function flaky() {
 
 function skip(t) {
   t.skip(`flaky ~ ${t.name}`);
-  t.done();
+  t.end();
 }
 
 test('osc: argument message no callback', (t) => {
@@ -24,7 +25,7 @@ test('osc: argument message no callback', (t) => {
   oscServer.on('message', (msg) => {
     oscServer.close();
     client.close();
-    t.deepEqual(msg, ['/test', 1, 2, 'testing'], 'We should receive expected payload');
+    t.same(msg, ['/test', 1, 2, 'testing'], 'We should receive expected payload');
   });
 
   client.send('/test', 1, 2, 'testing');
@@ -40,7 +41,7 @@ test('osc: client with callback and message as arguments', (t) => {
 
   oscServer.on('message', (msg) => {
     oscServer.close();
-    t.deepEqual(msg, ['/test', 1, 2, 'testing'], 'We should receive expected payload');
+    t.same(msg, ['/test', 1, 2, 'testing'], 'We should receive expected payload');
   });
 
   client.send('/test', 1, 2, 'testing', (err) => {

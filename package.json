@@ -30,8 +30,8 @@
     "prepublishOnly": "npm run build",
     "lint": "eslint lib/* test/* examples/*",
     "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
-    "test:esm": "c8 tap --no-coverage --no-esm -j1 test/test-*.mjs",
-    "test:cjs": "tap --no-esm -j1 dist/test/test-*.js",
+    "test:esm": "c8 tap --no-coverage -j1 test/test-*.mjs",
+    "test:cjs": "tap --no-coverage -j1 dist/test/test-*.js",
     "test:legacy": "npm run lint && npm run build && node scripts/rewrite-exports.js && tap --no-esm -j1 dist/test/test-*.js"
   },
   "contributors": [
@@ -56,6 +56,6 @@
     "eslint": "^7.6.0",
     "get-port": "^5.1.1",
     "rollup": "^2.23.0",
-    "tap": "^14.10.7"
+    "tap": "^15.0.4"
   }
 }

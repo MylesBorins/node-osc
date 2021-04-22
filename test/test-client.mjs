@@ -1,8 +1,9 @@
-import { beforeEach, tap, test } from './util.mjs';
+import { beforeEach, test } from 'tap';
+import { bootstrap } from './util.mjs';
 
 import { Server, Client } from 'node-osc';
 
-tap.beforeEach(beforeEach);
+beforeEach(bootstrap);
 
 test('client: with array', (t) => {
   const oscServer = new Server(t.context.port, '127.0.0.1');
@@ -12,7 +13,7 @@ test('client: with array', (t) => {
 
   oscServer.on('message', (msg) => {
     oscServer.close();
-    t.deepEqual(msg, ['/test', 0, 1, 'testing', true], 'We should receive expected payload');
+    t.same(msg, ['/test', 0, 1, 'testing', true], 'We should receive expected payload');
   });
 
   client.send(['/test', 0, 1, 'testing', true], (err) => {
@@ -29,7 +30,7 @@ test('client: with string', (t) => {
 
   oscServer.on('message', (msg) => {
     oscServer.close();
-    t.deepEqual(msg, ['/test'], `We should receive expected payload: ${msg}`);
+    t.same(msg, ['/test'], `We should receive expected payload: ${msg}`);
   });
 
   client.send('/test', (err) => {
@@ -46,7 +47,7 @@ test('client: with object', (t) => {
 
   oscServer.on('message', (msg) => {
     oscServer.close();
-    t.deepEqual(msg, ['/test', 1, 2, 3, 'lol', false], `we received the payload: ${msg}`);
+    t.same(msg, ['/test', 1, 2, 3, 'lol', false], `we received the payload: ${msg}`);
   });
 
   client.send({
@@ -76,6 +77,6 @@ test('client: failure', (t) => {
   });
   client.close();
   client.send('/boom', (err) => {
-    t.equals(err.code, 'ERR_SOCKET_DGRAM_NOT_RUNNING');
+    t.equal(err.code, 'ERR_SOCKET_DGRAM_NOT_RUNNING');
   });
 });

@@ -1,8 +1,9 @@
-import { beforeEach, tap, test } from './util.mjs';
+import { beforeEach, test } from 'tap';
+import { bootstrap } from './util.mjs';
 
 import { Server, Client } from 'node-osc';
 
-tap.beforeEach(beforeEach);
+beforeEach(bootstrap);
 
 test('server: create and close', (t) => {
   t.plan(1);
@@ -18,17 +19,17 @@ test('client: listen to message', (t) => {
 
   t.plan(3);
 
-  t.tearDown(() => {
+  t.teardown(() => {
     oscServer.close();
     client.close();
   });
 
   oscServer.on('message', (msg) => {
-    t.deepEqual(msg, ['/test'], 'We should receive expected payload');
+    t.same(msg, ['/test'], 'We should receive expected payload');
   });
   
   oscServer.on('/test', (msg) => {
-    t.deepEqual(msg, ['/test'], 'We should receive expected payload');
+    t.same(msg, ['/test'], 'We should receive expected payload');
   });
 
   client.send('/test', (err) => {

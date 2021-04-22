@@ -1,8 +1,9 @@
-import { beforeEach, tap, test } from './util.mjs';
+import { beforeEach, test } from 'tap';
+import { bootstrap } from './util.mjs';
 
 import { Server, Client, Message } from 'node-osc';
 
-tap.beforeEach(beforeEach);
+beforeEach(bootstrap);
 
 test('message: basic usage', (t) => {
   const oscServer = new Server(t.context.port, '127.0.0.1');
@@ -14,7 +15,7 @@ test('message: basic usage', (t) => {
   
   oscServer.on('message', (msg) => {
     const expected = ['/address', 'testing', 123, 456, 789];
-    t.deepEqual(msg, expected, `We reveived the payload: ${msg}`);
+    t.same(msg, expected, `We reveived the payload: ${msg}`);
     oscServer.close();
     t.end();
   });
@@ -31,7 +32,7 @@ test('message: multiple args', (t) => {
 
   oscServer.on('message', (msg) => {
     const expected = ['/address', 'testing', 123, true];
-    t.deepEqual(msg, expected, `We reveived the payload: ${msg}`);
+    t.same(msg, expected, `We reveived the payload: ${msg}`);
     oscServer.close();
     t.end();
   });
@@ -56,7 +57,7 @@ test('message: object', (t) => {
 
   oscServer.on('message', (msg) => {
     const expected = ['/address', 'test', 100];
-    t.deepEqual(msg, expected, `We reveived the payload: ${msg}`);
+    t.same(msg, expected, `We reveived the payload: ${msg}`);
     oscServer.close();
     t.end();
   });
@@ -77,8 +78,8 @@ test('message: float', (t) => {
       '/address',
       3.14
     ];
-    t.equals(msg[0], expected[0], `We reveived the payload: ${msg}`);
-    t.equals(msg[1][0], expected[1][0], 'pie please');
+    t.equal(msg[0], expected[0], `We reveived the payload: ${msg}`);
+    t.equal(msg[1][0], expected[1][0], 'pie please');
     oscServer.close();
     t.end();
   });

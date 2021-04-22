@@ -1,4 +1,4 @@
-import { test } from './util.mjs';
+import { test } from 'tap';
 
 import {
   TString,
@@ -13,16 +13,16 @@ import {
 
 test('Type: string', async (t) => {
   const str = new TString('come on fhqwhgads');
-  t.equals(str.typetag, 's');
-  t.equals(str.value, 'come on fhqwhgads');
-  t.done();
+  t.equal(str.typetag, 's');
+  t.equal(str.value, 'come on fhqwhgads');
+  t.end();
 });
 
 test('Type: string decode', async (t) => {
   const str = new TString();
   str.decode(Buffer.from('test\0/123\0'));
-  t.equals(str.value, 'test');
-  t.done();
+  t.equal(str.value, 'test');
+  t.end();
 });
 
 test('Type: string bad message', async (t) => {
@@ -30,14 +30,14 @@ test('Type: string bad message', async (t) => {
     const str = new TString();
     str.decode(Buffer.from('test'));
   }, 'OSC string not null terminated');
-  t.done();
+  t.end();
 });
 
 test('Type: int', async (t) => {
   const int = new TInt(13);
-  t.equals(int.typetag, 'i');
-  t.equals(int.value, 13);
-  t.done();
+  t.equal(int.typetag, 'i');
+  t.equal(int.value, 13);
+  t.end();
 });
 
 test('Type: bad int decode', async (t) => {
@@ -45,14 +45,14 @@ test('Type: bad int decode', async (t) => {
   t.throws(() => {
     int.decode('01');
   }, 'buffer [48, 49] too short for int, 4 bytes requiredLength');
-  t.done();
+  t.end();
 });
 
 test('Type: float', async (t) => {
   const float = new TFloat(3.14);
-  t.equals(float.typetag, 'f');
-  t.equals(float.value, 3.14);
-  t.done();
+  t.equal(float.typetag, 'f');
+  t.equal(float.value, 3.14);
+  t.end();
 });
 
 test('Type: bad float decode', async (t) => {
@@ -60,14 +60,14 @@ test('Type: bad float decode', async (t) => {
   t.throws(() => {
     float.decode('01');
   }, 'buffer [48, 49] too short for int, 4 bytes requiredLength');
-  t.done();
+  t.end();
 });
 
 test('Type: double', async (t) => {
   const double = new TDouble(1337);
-  t.equals(double.typetag, 'd');
-  t.equals(double.value, 1337);
-  t.done();
+  t.equal(double.typetag, 'd');
+  t.equal(double.value, 1337);
+  t.end();
 });
 
 test('Type: bad double decode', async (t) => {
@@ -75,37 +75,37 @@ test('Type: bad double decode', async (t) => {
   t.throws(() => {
     double.decode('01');
   }, 'buffer [48, 49] too short for int, 4 bytes requiredLength');
-  t.done();
+  t.end();
 });
 
 test('Type: false', async (t) => {
   const f = new TFalse(false);
-  t.equals(f.value, false);
-  t.equals(f.decode(0, 0), 0, 'decode is passthourgh');
-  t.done();
+  t.equal(f.value, false);
+  t.equal(f.decode(0, 0), 0, 'decode is passthourgh');
+  t.end();
 });
 
 test('Type: true', async (t) => {
   const tt = new TTrue(true);
-  t.equals(tt.value, true);
-  t.equals(tt.decode(0, 0), 0, 'decode is passthourgh');
-  t.done();
+  t.equal(tt.value, true);
+  t.equal(tt.decode(0, 0), 0, 'decode is passthourgh');
+  t.end();
 });
 
 test('Type: time', async (t) => {
   const date = new Date();
   const time = new TTime(date);
-  t.equals(time.typetag, 't');
-  t.equals(time.value, date);
-  t.done();
+  t.equal(time.typetag, 't');
+  t.equal(time.value, date);
+  t.end();
 });
 
 test('Type: time decode', async (t) => {
   const time = new TTime();
   time.decode(Buffer.from('12345.12345\0'));
-  t.equals(time.typetag, 't');
-  t.equals(time.value, 825373492.2077361);
-  t.done();
+  t.equal(time.typetag, 't');
+  t.equal(time.value, 825373492.2077361);
+  t.end();
 });
 
 test('Type: time bad buffer', async (t) => {
@@ -113,5 +113,5 @@ test('Type: time bad buffer', async (t) => {
   t.throws(() => {
     time.decode(Buffer.from(''));
   }, /buffer \[\] too short for time, 8 bytes requiredLength/);
-  t.done();
+  t.end();
 });
