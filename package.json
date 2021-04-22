@@ -2,20 +2,15 @@
   "name": "node-osc",
   "description": "pyOSC inspired library",
   "version": "5.2.3",
-  "main": "./dist/lib/index.js",
-  "exports": {
-    ".": {
-      "require": "./dist/lib/index.js",
-      "default": "./lib/index.mjs"
-    },
-    "./decode": {
-      "require": "./dist/lib/decode.js",
-      "default": "./lib/decode.mjs"
-    },
-    "./types": {
-      "require": "./dist/lib/types.js",
-      "default": "./lib/types.mjs"
+  "imports": {
+    "#internal/*": {
+      "require": "./dist/lib/internal/*.js",
+      "default": "./lib/internal/*.mjs"
     }
+  },
+  "exports": {
+    "require": "./dist/lib/index.js",
+    "default": "./lib/index.mjs"
   },
   "author": {
     "name": "Myles Borins",
@@ -29,7 +24,7 @@
     "clean": "rm -rf dist/",
     "build": "npm run clean && rollup --config rollup.config.mjs",
     "prepublishOnly": "npm run build",
-    "lint": "eslint lib/* test/* examples/*",
+    "lint": "eslint \"lib/**/*.mjs\" test/* examples/*",
     "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
     "test:esm": "c8 tap --no-coverage -j1 test/test-*.mjs",
     "test:cjs": "tap --no-coverage -j1 dist/test/test-*.js"

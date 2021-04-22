@@ -1,6 +1,6 @@
 import { test } from 'tap';
 
-import decode from 'node-osc/decode';
+import decode from '#internal/decode';
 
 test('decode: valid', (t) => {
   const buf = Buffer.from('/test\0\0\0,s\0,testing\0');
