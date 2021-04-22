@@ -40,6 +40,26 @@ oscServer.on('message', function (msg) {
 });
 ```
 
+### Listening for OSC bundles:
+
+**WARNING**: Bundle support is Experimental and subject to change at any point. 
+
+```js
+import { Server } from 'node-osc';
+
+var oscServer = new Server(3333, '0.0.0.0', () => {
+  console.log('OSC Server is listening');
+});
+
+oscServer.on('bundle', function (bundle) {
+  bundle.elements.forEach((element, i) => {
+    console.log(`Timestamp: ${bundle.timetag[i]}`);
+    console.log(`Message: ${element}`);
+  });
+  oscServer.close();
+});
+```
+
 ### CJS API
 
 This just works due to conditional exports, isn't that cool!
