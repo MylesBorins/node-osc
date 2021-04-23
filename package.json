@@ -1,7 +1,7 @@
 {
   "name": "node-osc",
   "description": "pyOSC inspired library",
-  "version": "6.0.0-rc.0",
+  "version": "6.0.0-rc.1",
   "imports": {
     "#internal/*": {
       "require": "./dist/lib/internal/*.js",
