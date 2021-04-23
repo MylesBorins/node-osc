@@ -10,7 +10,7 @@ npm install node-osc
 
 ## Written using ESM supports CJS
 
-If you are using Node.js 10+ you can use this library.
+Supports the latest versions of Node.js 12, 14, and 16 in both ESM + CJS
 
 ## Example
 
