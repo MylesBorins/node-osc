@@ -40,6 +40,23 @@ oscServer.on('message', function (msg) {
 });
 ```
 
+### Sending OSC bundles:
+
+**WARNING**: Bundle support is Experimental and subject to change at any point. 
+
+```js
+import { Bundle, Client } from 'node-osc';
+
+// a bundle without an explicit time tag
+const bundle = new Bundle(['/one', 1], ['/two', 2], ['/three', 3]);
+
+// a bundle with a timetag of 10
+bundle.append(new Bundle(10, ['/four', 4]));
+
+const client = new Client('127.0.0.1', 3333);
+client.send(bundle));
+```
+
 ### Listening for OSC bundles:
 
 **WARNING**: Bundle support is Experimental and subject to change at any point. 

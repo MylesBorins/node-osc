@@ -39,7 +39,33 @@ test('client: with string', (t) => {
   });
 });
 
-test('client: with object', (t) => {
+test('client: with Message object', (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+
+  t.plan(2);
+
+  oscServer.on('message', (msg) => {
+    oscServer.close();
+    t.same(msg, ['/test', 1, 2, 3, 'lol', false], `we received the payload: ${msg}`);
+  });
+
+  client.send({
+    address: '/test',
+    args: [
+      1,
+      2,
+      3,
+      'lol',
+      false
+    ]
+  }, (err) => {
+    t.error(err, 'there should be no error');
+    client.close();
+  });
+});
+
+test('client: with Bundle object', (t) => {
   const oscServer = new Server(t.context.port, '127.0.0.1');
   const client = new Client('127.0.0.1', t.context.port);
 

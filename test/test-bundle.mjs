@@ -1,85 +1,89 @@
-import {createSocket} from 'dgram';
-
-import osc from 'osc-min';
 import { beforeEach, test } from 'tap';
 
-import { Server } from 'node-osc';
+import { Client, Server, Bundle } from 'node-osc';
 
 import { bootstrap } from './util.mjs';
-
 beforeEach(bootstrap);
 
-test('bundle: simple bundle', (t) => {
-  t.plan(1);
+test('bundle: verbose bundle', (t) => {
+  const server = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+
+  t.plan(2);
 
   t.teardown(() => {
-    oscServer.close();
-    socket.close();
+    server.close();
+    client.close();
   });
-  const payload = {
-    timetag: 1,
-    elements: [
-      {
-        address: '/heartbeat',
-        args: [
-          123
-        ]
-      }
+
+  server.on('bundle', (bundle) => {
+    t.same(bundle.elements[0], ['/one', 1]);
+    t.same(bundle.elements[1], ['/two', 2]);
+  });
+
+  client.send(new Bundle(1, {
+    address: '/one',
+    args: [
+      1
     ]
-  };
+  }, {
+    address: '/two',
+    args: [
+      2
+    ]
+  }));
+});
 
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  
-  const socket = createSocket({
-    type: 'udp4',
-    reuseAddr: true
+test('bundle: array syntax', (t) => {
+  const server = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+
+  t.plan(2);
+
+  t.teardown(() => {
+    server.close();
+    client.close();
   });
 
-  oscServer.on('bundle', (bundle) => {
-    t.same(bundle.elements[0], ['/heartbeat', 123]);
+  server.on('bundle', (bundle) => {
+    t.same(bundle.elements[0], ['/one', 1]);
+    t.same(bundle.elements[1], ['/two', 2]);
   });
-  
-  const buf = osc.toBuffer(payload);
 
-  socket.send(buf, 0, buf.length, t.context.port, '127.0.0.1');
+  client.send(new Bundle(
+    ['/one', 1],
+    ['/two', 2]
+  ));
 });
 
 test('bundle: nested bundle', (t) => {
-  t.plan(1);
+  const server = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+
+  t.plan(4);
 
   t.teardown(() => {
-    oscServer.close();
-    socket.close();
-  });
-  
-  const payload = {
-    timetag: 1,
-    elements: [{
-      timetag: 1,
-      elements: [
-        {
-          address: '/heartbeat',
-          args: [
-            123
-          ]
-        }
-      ]
-    }]
-  };
-
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  
-  const socket = createSocket({
-    type: 'udp4',
-    reuseAddr: true
+    server.close();
+    client.close();
   });
 
-  oscServer.on('bundle', (bundle) => {
-    t.same(bundle.elements[0].elements[0], ['/heartbeat', 123]);
-  });
+  const payload = new Bundle(
+    ['/one', 1],
+    ['/two', 2],
+    ['/three', 3]
+  );
   
-  const buf = osc.toBuffer(payload);
+  payload.append(new Bundle(10,
+    ['/four', 4]
+  ));
 
-  socket.send(buf, 0, buf.length, t.context.port, '127.0.0.1');
+  server.on('bundle', (bundle) => {
+    t.same(bundle.elements[0], ['/one', 1]);
+    t.same(bundle.elements[1], ['/two', 2]);
+    t.same(bundle.elements[2], ['/three', 3]);
+    t.same(bundle.elements[3].elements[0], ['/four', 4]);
+  });
+
+  client.send(payload);
 });
 

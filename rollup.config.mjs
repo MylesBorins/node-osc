@@ -36,6 +36,7 @@ function walkLib(config) {
         'osc-min',
         '#internal/decode',
         '#internal/types',
+        '#internal/warnings',
         'jspack'
       ]
     });
@@ -54,8 +55,10 @@ function walkTest(config) {
       },
       preserveModules: true,
       external: [
+        'dgram',
         'get-port',
         'node-osc',
+        'osc-min',
         '#internal/decode',
         '#internal/types',
         'tap'
