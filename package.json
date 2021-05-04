@@ -1,7 +1,7 @@
 {
   "name": "node-osc",
   "description": "pyOSC inspired library",
-  "version": "6.0.0-rc.2",
+  "version": "6.0.0",
   "exports": {
     "require": "./dist/lib/index.js",
     "default": "./lib/index.mjs"
