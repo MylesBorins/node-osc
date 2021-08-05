@@ -1,6 +1,7 @@
 # node-osc
 
-A no frills [Open Sound Control](http://opensoundcontrol.org) client. Heavily inspired by [pyOSC](https://trac.v2.nl/wiki/pyOSC).
+A no frills [Open Sound Control](http://opensoundcontrol.org) client and server.
+Heavily inspired by [pyOSC](https://trac.v2.nl/wiki/pyOSC).
 
 Install using npm
 
