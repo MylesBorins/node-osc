@@ -32,11 +32,12 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
+            const version = "${{ github.ref }}".slice(10);
             const { data: {title, body} } = await github.request(`GET /repos/${{ github.repository }}/release-notes`, {
-              tag_name: "${{ github.ref }}"
+              tag_name: version
             });
             await github.request(`POST /repos/${{ github.repository }}/releases`, {
-              tag_name: "${{ github.ref }}",
+              tag_name: version,
               name: title,
               body: body
             });
