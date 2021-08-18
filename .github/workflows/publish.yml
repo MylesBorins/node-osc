@@ -27,16 +27,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+    - name: Set env
+      run: |
+          RELEASE_VERSION=$(echo ${GITHUB_REF:10})
       - name: Create Release Notes
         uses: actions/github-script@v4.0.2
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const { data: {title, body} } = await github.request(`GET /repos/${{ github.repository }}/release-notes`, {
-              tag_name: "${{ github.ref }}"
+              tag_name: process.env.RELEASE_VERSION
             });
             await github.request(`POST /repos/${{ github.repository }}/releases`, {
-              tag_name: "${{ github.ref }}",
+              tag_name: process.env.RELEASE_VERSION,
               name: title,
               body: body
             });
