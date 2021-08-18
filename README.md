@@ -103,6 +103,15 @@ client.send('/hello', 'world', (err) => {
 });
 ```
 
+## Typescript 
+
+To install type definitions for node-osc:  
+   
+`npm install --save @types/node-osc`  or  `yarn add @types/node-osc`  
+
+The types should then be automatically included by the compiler.  
+
+
 ## License
 
 LGPL.  Please see the file lesser.txt for details.
