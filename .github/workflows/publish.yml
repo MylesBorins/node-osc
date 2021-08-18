@@ -27,8 +27,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Get Release Notes
-        id: get-release-notes
+      - name: Create Release Notes
         uses: actions/github-script@v4.0.2
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
@@ -36,15 +35,8 @@ jobs:
             const { data: {title, body} } = await github.request(`GET /repos/${{ github.repository }}/release-notes`, {
               tag_name: "${{ github.ref }}"
             });
-            return body;
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          body: ${{ steps.get-release-notes.outputs.result }}
-          draft: false
-          prerelease: false
+            await github.request(`POST /repos/${{ github.repository }}/releases`, {
+              tag_name: "${{ github.ref }}",
+              name: title,
+              body: body
+            });
