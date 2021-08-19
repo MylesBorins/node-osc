@@ -89,7 +89,7 @@ const client = new Client('127.0.0.1', 3333);
 var server = new Server(3333, '0.0.0.0');
 
 server.on('listening', () => {
-  console.log('OSC Server is listening.);
+  console.log('OSC Server is listening.');
 })
 
 server.on('message', (msg) => {
@@ -102,6 +102,15 @@ client.send('/hello', 'world', (err) => {
   client.close();
 });
 ```
+
+## Typescript 
+
+To install type definitions for node-osc:  
+   
+`npm install --save @types/node-osc`  or  `yarn add @types/node-osc`  
+
+The types should then be automatically included by the compiler.  
+
 
 ## License
 
