@@ -34,7 +34,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const version = "${{ github.ref }}".slice('refs/tags/'.length);
+            const version = "${{ github.ref }}";
             const { data: {name, body} } = await github.request(`GET /repos/${{ github.repository }}/release-notes`, {
               tag_name: version
             });
