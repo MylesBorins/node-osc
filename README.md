@@ -43,8 +43,6 @@ oscServer.on('message', function (msg) {
 
 ### Sending OSC bundles:
 
-**WARNING**: Bundle support is Experimental and subject to change at any point. 
-
 ```js
 import { Bundle, Client } from 'node-osc';
 
