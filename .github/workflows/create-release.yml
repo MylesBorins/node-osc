@@ -35,7 +35,7 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const version = "${{ github.ref }}";
-            const { data: {name, body} } = await github.request(`GET /repos/${{ github.repository }}/release-notes`, {
+            const { data: {name, body} } = await github.request(`POST /repos/${{ github.repository }}/releases/generate-notes`, {
               tag_name: version
             });
             await github.request(`POST /repos/${{ github.repository }}/releases`, {
