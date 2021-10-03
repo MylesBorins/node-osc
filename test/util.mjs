@@ -1,8 +1,7 @@
-import getPort from 'get-port';
-
 async function bootstrap(t) {
-  t.context.port = await getPort({
-    port: getPort.makeRange(3000, 3500)
+  const {default: getPorts, portNumbers} = await import('get-port');
+  t.context.port = await getPorts({
+    port: portNumbers(3000, 3500)
   });
 }
 
