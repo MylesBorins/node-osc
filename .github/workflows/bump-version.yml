@@ -38,7 +38,7 @@ jobs:
         node-version: 14.x
 
     - name: Install npm packages
-      run: npm install
+      run: npm ci
 
     - name: Setup Git
       run: |
