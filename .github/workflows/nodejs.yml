@@ -25,19 +25,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
-    - name: Get npm cache directory
-      if: matrix.os != 'windows-latest'
-      id: npm-cache
-      run: |
-        echo "::set-output name=dir::$(npm config get cache)"
-    - uses: actions/cache@v1
-      if: matrix.os != 'windows-latest'
-      with:
-        path: ${{ steps.npm-cache.outputs.dir }}
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-
     - name: Install Dependencies
       run: npm ci
 
