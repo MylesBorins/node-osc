@@ -13,6 +13,11 @@ on:
         description: 'Semver type of new version (major / minor / patch)'
         # Input has to be provided for the workflow to run
         required: true
+        type: choice
+        options: 
+        - patch
+        - minor
+        - major
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
