@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "c8": "^7.3.0",
-    "eslint": "^7.6.0",
+    "eslint": "^8.2.0",
     "get-port": "^6.0.0",
     "rollup": "^2.23.0",
     "tap": "^15.0.4"
