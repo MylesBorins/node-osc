@@ -11,7 +11,7 @@
     "email": "myles.borins@gmail.com"
   },
   "engines": {
-    "node": "^14.13 || ^16.13 || >=18"
+    "node": "^14.18 || ^16.13 || >=18"
   },
   "license": "LGPL-2.1",
   "scripts": {
