@@ -2,6 +2,9 @@ on:
   push:
     tags:
       - 'v*'
+  
+  # This allows workflow to be called by "bump-version"
+  workflow_call:
 
 name: Create Release
 
