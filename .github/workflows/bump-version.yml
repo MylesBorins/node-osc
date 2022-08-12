@@ -19,16 +19,26 @@ on:
         - minor
         - major
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  # This workflow contains a single job called "bump-version"
   bump-version:
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    # Check out the content (source branch).  Use a deploy key so that
+    # when we push changes, it will trigger the release workflow
+    # run that runs on: tag. (Using the GitHub token would
+    # not run the workflow to prevent infinite recursion.)
     - name: Check out source
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
+      with:
+        ssh-key: ${{ secrets.DEPLOY_KEY }}
 
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v2
       with:
         node-version: '16'
         cache: 'npm'
@@ -46,9 +56,3 @@ jobs:
 
     - name: Push latest version
       run: git push origin main --follow-tags
-
-  create-release:
-    needs: bump-version
-    uses: ./.github/workflows/create-release.yml
-    secrets:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
