@@ -26,8 +26,6 @@ jobs:
     steps:
     - name: Check out source
       uses: actions/checkout@v3
-      with:
-        ssh-key: ${{ secrets.DEPLOY_KEY }}
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
@@ -48,3 +46,9 @@ jobs:
 
     - name: Push latest version
       run: git push origin main --follow-tags
+
+  create-release:
+    needs: bump-version
+    uses: ./.github/workflows/create-release.yml
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
