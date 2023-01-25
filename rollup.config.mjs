@@ -47,12 +47,12 @@ function walkLib(config) {
         entryFileNames: '[name].js',
         dir,
         format: 'cjs',
+        preserveModules: true,
         exports: 'auto'
       },
-      preserveModules: true,
       external: [
-        'dgram',
-        'events',
+        'node:dgram',
+        'node:events',
         'osc-min',
         'jspack'
       ]
@@ -70,11 +70,11 @@ function walkTest(config) {
         entryFileNames: '[name].js',
         dir,
         format: 'cjs',
-        exports: 'auto'
+        exports: 'auto',
+        preserveModules: true
       },
-      preserveModules: true,
       external: [
-        'dgram',
+        'node:dgram',
         'get-port',
         'node-osc',
         'osc-min',
