@@ -1,7 +1,7 @@
 {
   "name": "node-osc",
   "description": "pyOSC inspired library for sending and receiving OSC messages",
-  "version": "8.0.8",
+  "version": "8.0.9",
   "exports": {
     "require": "./dist/lib/index.js",
     "default": "./lib/index.mjs"
