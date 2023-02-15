@@ -20,10 +20,12 @@ jobs:
         node-version: 18
         registry-url: 'https://registry.npmjs.org'
         cache: npm
+    - name: Install latest npm version
+      run: npm install -g npm@latest
     - name: Install dependencies and build
       run: npm ci
     - name: Publish package
-      run: npm exec npm@npm/cli#provenance -- publish --provenance
+      run: npm publish --provenance
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
