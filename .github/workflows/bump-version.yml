@@ -50,6 +50,8 @@ jobs:
       run: |
         git config user.name 'Myles Borins'
         git config user.email 'myles.borins@gmail.com'
+        git config gpg.format ssh
+        git config user.signingKey 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFtQmrz647zOGumjiqGirj1G9brj/QbwJQ5S3gHRmcfl myles.borins@gmail.com'
 
     - name: bump version
       run: npm version ${{ github.event.inputs.version }}
