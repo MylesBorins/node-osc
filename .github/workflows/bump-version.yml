@@ -33,7 +33,7 @@ jobs:
     # run that runs on: tag. (Using the GitHub token would
     # not run the workflow to prevent infinite recursion.)
     - name: Check out source
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ssh-key: ${{ secrets.DEPLOY_KEY }}
 
@@ -54,7 +54,7 @@ jobs:
         git config user.signingKey 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFtQmrz647zOGumjiqGirj1G9brj/QbwJQ5S3gHRmcfl myles.borins@gmail.com'
 
     - name: bump version
-      run: npm version ${{ github.event.inputs.version }}
+      run: npm version ${{ github.event.inputs.version }} --sign-git-tag
 
     - name: Push latest version
       run: git push origin main --follow-tags
