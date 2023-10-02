@@ -11,7 +11,7 @@
     "email": "myles.borins@gmail.com"
   },
   "engines": {
-    "node": "^14.18 || ^16.13 || >=18"
+    "node": "^18.17.0 || >=20.5.0"
   },
   "license": "LGPL-3.0-or-later",
   "scripts": {
@@ -20,8 +20,8 @@
     "prepublishOnly": "npm run build",
     "lint": "eslint \"lib/**/*.mjs\" test/* examples/*",
     "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
-    "test:esm": "c8 tap --no-coverage -j1 test/test-*.mjs",
-    "test:cjs": "tap --no-coverage -j1 dist/test/test-*.js"
+    "test:esm": "tap  -j1 test/test-*.mjs",
+    "test:cjs": "tap -j1 dist/test/test-*.js"
   },
   "contributors": [
     "Hans Hübner <hans.huebner@gmail.com>",
@@ -40,10 +40,9 @@
     "osc-min": "^1.1.1"
   },
   "devDependencies": {
-    "c8": "^8.0.1",
     "eslint": "^8.36.0",
     "get-port": "^6.1.2",
     "rollup": "^3.20.1",
-    "tap": "^16.3.0"
+    "tap": "^18.4.2"
   }
 }
