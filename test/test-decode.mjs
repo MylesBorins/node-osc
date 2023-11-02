@@ -14,6 +14,14 @@ test('decode: valid', (t) => {
   t.end();
 });
 
+test('decode: malformed packet', (t) => {
+  t.throws(() => {
+    const buf = Buffer.from('/test\0\0');
+    decode(buf);
+  }, /Malformed Packet/);
+  t.end();
+});
+
 test('decode: invalid typetags', (t) => {
   t.throws(() => {
     const buf = Buffer.from('/test\0\0\0,R\0');
