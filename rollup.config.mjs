@@ -1,4 +1,5 @@
 import { readdirSync as readdir, statSync as stat } from 'fs';
+import { join } from 'path';
 
 // Borrowed from the rollup docs
 // https://github.com/rollup/rollup/blob/d0db53459be43c5cc806cb91f14e82217950ba42/docs/05-plugin-development.md#renderdynamicimport
@@ -30,8 +31,8 @@ function walk(root, result=[]) {
     }
     else {
       result.push({
-        input: `${root}${path}`,
-        dir: `dist/${root}`
+        input: join(root, path),
+        dir: join('dist/', root)
       });
     }
   }
@@ -63,6 +64,7 @@ function walkLib(config) {
 
 function walkTest(config) {
   const tests = walk('./test/');
+  console.log(tests)
   tests.forEach(({input, dir}) => {
     config.push({
       input,
