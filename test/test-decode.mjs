@@ -1,6 +1,6 @@
 import { test } from 'tap';
 
-import decode from '../lib/internal/decode.mjs';
+import decode from '#decode';
 
 test('decode: valid', (t) => {
   const buf = Buffer.from('/test\0\0\0,s\0,testing\0');
