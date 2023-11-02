@@ -54,7 +54,8 @@ function walkLib(config) {
         'node:dgram',
         'node:events',
         'osc-min',
-        'jspack'
+        'jspack',
+        '#decode'
       ]
     });
   });
@@ -78,7 +79,8 @@ function walkTest(config) {
         'get-port',
         'node-osc',
         'osc-min',
-        'tap'
+        'tap',
+        '#decode'
       ]
     })
   });

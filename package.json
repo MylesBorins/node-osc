@@ -6,6 +6,12 @@
     "require": "./dist/lib/index.js",
     "default": "./lib/index.mjs"
   },
+  "imports": {
+    "#decode": {
+      "require": "./dist/lib/internal/decode.js",
+      "default": "./lib/internal/decode.mjs"
+    }
+  },
   "author": {
     "name": "Myles Borins",
     "email": "myles.borins@gmail.com"
