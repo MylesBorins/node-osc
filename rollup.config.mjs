@@ -64,7 +64,6 @@ function walkLib(config) {
 
 function walkTest(config) {
   const tests = walk('./test/');
-  console.log(tests)
   tests.forEach(({input, dir}) => {
     config.push({
       input,
@@ -84,7 +83,7 @@ function walkTest(config) {
         'tap',
         '#decode'
       ]
-    })
+    });
   });
 }
 
