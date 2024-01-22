@@ -3,6 +3,10 @@ import { bootstrap } from './util.mjs';
 
 import { Server, Client, Message } from 'node-osc';
 
+function round(num) {
+  return Math.round(num * 100) / 100;
+}
+
 beforeEach(bootstrap);
 
 test('message: basic usage', (t) => {
@@ -79,7 +83,40 @@ test('message: float', (t) => {
       3.14
     ];
     t.equal(msg[0], expected[0], `We reveived the payload: ${msg}`);
-    t.equal(msg[1][0], expected[1][0], 'pie please');
+    t.equal(round(msg[1]), expected[1], 'pie please');
+    oscServer.close();
+    t.end();
+  });
+
+  client.send(m, () => {
+    client.close();
+  });
+});
+
+test('message: alias messages', (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+  const m = new Message('/address');
+  m.append({
+    type: 'i',
+    value: 123
+  });
+  m.append({
+    type: 'f',
+    value: 3.14
+  });
+
+  oscServer.on('message', (msg) => {
+    const expected = [
+      '/address',
+      123,
+      3.14
+    ];
+    t.equal(msg[0], expected[0], `We reveived the payload: ${msg}`);
+    t.equal(msg[1], expected[1], 'easy as abc');
+    t.ok(Number.isInteger(msg[1]), 'the first value is an int');
+    t.equal(round(msg[2]), expected[2], 'pie please');
+    t.ok(msg[2] % 1 !== 0, 'the second value is a float');
     oscServer.close();
     t.end();
   });
@@ -138,7 +175,7 @@ test('message: blob', (t) => {
 // test('message: timetag', (t) => {
 //   const oscServer = new osc.Server(3333, '127.0.0.1');
 //   const client = new osc.Client('127.0.0.1', 3333);
-//   const m = new osc.Message('/address');z
+//   const m = new osc.Message('/address');
 //
 //   oscServer.on('message', (msg) => {
 //     const expected = [
