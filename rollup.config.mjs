@@ -77,7 +77,7 @@ function walkTest(config) {
       },
       external: [
         'node:dgram',
-        'get-port',
+        'node:events',
         'node-osc',
         'osc-min',
         'tap',

@@ -47,7 +47,6 @@
   },
   "devDependencies": {
     "eslint": "^8.36.0",
-    "get-port": "^6.1.2",
     "rollup": "^4.9.5",
     "tap": "^18.4.2"
   }
