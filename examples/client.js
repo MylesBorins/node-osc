@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 'use strict';
 const { Client, Message } = require('node-osc');
 
