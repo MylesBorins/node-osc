@@ -1,13 +1,27 @@
+import { createServer } from 'node:net';
+
 async function bootstrap(t) {
-  const {default: getPorts, portNumbers} = await import('get-port');
-  const port = await getPorts({
-    port: portNumbers(3000, 3500)
-  });
+  const port = await getPort();
   t.context = {
     port
   };
 }
 
+function getPort() {
+  return new Promise((resolve, reject) => {
+    const server = createServer();
+    server.unref();
+    server.on('error', reject);
+    server.listen(() => {
+      const { port } = server.address();
+      server.close(() => {
+        resolve(port);
+      });
+    });
+  });
+}
+
 export {
-  bootstrap
+  bootstrap,
+  getPort
 };

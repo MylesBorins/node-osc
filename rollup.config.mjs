@@ -1,26 +1,6 @@
 import { readdirSync as readdir, statSync as stat } from 'fs';
 import { join } from 'path';
 
-// Borrowed from the rollup docs
-// https://github.com/rollup/rollup/blob/d0db53459be43c5cc806cb91f14e82217950ba42/docs/05-plugin-development.md#renderdynamicimport
-function retainImportExpressionPlugin() {
-  return {
-    name: 'retain-import-expression',
-    resolveDynamicImport(specifier) {
-      if (specifier === 'get-port') return false;
-      return null;
-    },
-    renderDynamicImport({ targetModuleId }) {
-      if (targetModuleId === 'get-port') {
-        return {
-          left: 'import(',
-          right: ')'
-        };
-      }
-    }
-  };
-}
-
 function walk(root, result=[]) {
   const rootURL = new URL(root, import.meta.url);
   const paths = readdir(rootURL);
@@ -67,7 +47,7 @@ function walkTest(config) {
   tests.forEach(({input, dir}) => {
     config.push({
       input,
-      plugins: [retainImportExpressionPlugin()],
+      plugins: [],
       output: {
         entryFileNames: '[name].js',
         dir,
@@ -77,7 +57,7 @@ function walkTest(config) {
       },
       external: [
         'node:dgram',
-        'get-port',
+        'node:net',
         'node-osc',
         'osc-min',
         'tap',
