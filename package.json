@@ -10,6 +10,10 @@
     "#decode": {
       "require": "./dist/lib/internal/decode.js",
       "default": "./lib/internal/decode.mjs"
+    },
+    "#transport": {
+      "require": "./dist/lib/internal/transport.js",
+      "default": "./lib/internal/transport.mjs"
     }
   },
   "author": {
@@ -41,9 +45,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MylesBorins/node-osc.git"
-  },
-  "dependencies": {
-    "osc-min": "^1.1.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.4.0",
