@@ -33,10 +33,7 @@ function walkLib(config) {
       },
       external: [
         'node:dgram',
-        'node:events',
-        'osc-min',
-        'jspack',
-        '#decode'
+        'node:events'
       ]
     });
   });
@@ -59,9 +56,7 @@ function walkTest(config) {
         'node:dgram',
         'node:net',
         'node-osc',
-        'osc-min',
-        'tap',
-        '#decode'
+        'tap'
       ]
     });
   });
