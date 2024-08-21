@@ -1,1 +1,55 @@
-
+{
+  "name": "node-osc",
+  "description": "pyOSC inspired library for sending and receiving OSC messages",
+  "version": "9.1.3",
+  "exports": {
+    "require": "./dist/lib/index.js",
+    "default": "./lib/index.mjs"
+  },
+  "imports": {
+    "#decode": {
+      "require": "./dist/lib/internal/decode.js",
+      "default": "./lib/internal/decode.mjs"
+    }
+  },
+  "author": {
+    "name": "Myles Borins",
+    "email": "myles.borins@gmail.com"
+  },
+  "engines": {
+    "node": "^18.17.0 || ^20.5.0 || >=22.0.0"
+  },
+  "license": "LGPL-3.0-or-later",
+  "scripts": {
+    "clean": "rm -rf dist/",
+    "build": "npm run clean && rollup --config rollup.config.mjs",
+    "prepublishOnly": "npm run build",
+    "lint": "eslint \"lib/**/*.mjs\" test/* examples/* rollup.config.mjs",
+    "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
+    "test:esm": "tap test/test-*.mjs",
+    "test:cjs": "tap dist/test/test-*.js"
+  },
+  "contributors": [
+    "Hans Hübner <hans.huebner@gmail.com>",
+    "Andy Smith <jabber@term.ie>",
+    "Myles Borins <myles.borins@gmail.com>"
+  ],
+  "keywords": [
+    "osc",
+    "udp"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MylesBorins/node-osc.git"
+  },
+  "dependencies": {
+    "osc-min": "^1.1.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.4.0",
+    "eslint": "^9.4.0",
+    "globals": "^15.3.0",
+    "rollup": "^4.18.0",
+    "tap": "^20.0.1"
+  }
+}
