@@ -105,6 +105,7 @@ test('client: setBroadcast', (t) => {
   });
 
   client.send(['/test', 0, 1, 'testing', true], (err) => {
+    client.setBroadcast(false);
     t.error(err, 'there should be no error');
     client.close();
   });
