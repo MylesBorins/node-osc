@@ -111,6 +111,18 @@ test('client: setBroadcast', (t) => {
   });
 });
 
+test('client: setBroadcast typeError', (t) => {
+  const client = new Client('127.0.0.1', t.context.port);
+
+  t.plan(1);
+
+  t.throws(() => {
+    client.setBroadcast('Oops');;
+  });
+
+  client.close();
+});
+
 test('client: failure', (t) => {
   const client = new Client('127.0.0.1', t.context.port);
 
