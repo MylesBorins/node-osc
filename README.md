@@ -76,6 +76,20 @@ oscServer.on('bundle', function (bundle) {
 });
 ```
 
+### Enabling Broadcast on Client
+
+**WARNING**: Broadcast support is Experimental and subject to change at any point. 
+
+```js
+import { Client } from 'node-osc';
+
+const client = new Client('127.0.0.1', 3333);
+client.setBroadcast(true);
+client.send('/oscAddress', 200, () => {
+  client.close();
+});
+```
+
 ### CJS API
 
 This just works due to conditional exports, isn't that cool!

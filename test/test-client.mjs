@@ -91,6 +91,25 @@ test('client: with Bundle object', (t) => {
   });
 });
 
+test('client: setBroadcast', (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+
+  t.plan(2);
+
+  client.setBroadcast(true);
+
+  oscServer.on('message', (msg) => {
+    oscServer.close();
+    t.same(msg, ['/test', 0, 1, 'testing', true], 'We should receive expected payload');
+  });
+
+  client.send(['/test', 0, 1, 'testing', true], (err) => {
+    t.error(err, 'there should be no error');
+    client.close();
+  });
+});
+
 test('client: failure', (t) => {
   const client = new Client('127.0.0.1', t.context.port);
 
