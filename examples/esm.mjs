@@ -7,8 +7,8 @@ server.on('listening', () => {
   console.log('OSC Server is Listening');
 });
 
-server.on('message', (msg) => {
-  console.log(`Message: ${msg}`);
+server.on('message', (msg, rinfo) => {
+  console.log(`Message: ${msg}\nReceived from: ${rinfo.address}:${rinfo.port}`);
   server.close();
 });
 
