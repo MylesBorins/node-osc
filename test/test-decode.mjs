@@ -29,3 +29,44 @@ test('decode: invalid typetags', (t) => {
   }, /I don't understand the argument code R/);
   t.end();
 });
+
+test('decode: malformed OSC structure', (t) => {
+  // Try to create a scenario that might trigger the "else" case in decode
+  // This tests an edge case where the buffer might be parsed but not create a valid OSC structure
+  t.throws(() => {
+    // Create a buffer that's too short to be valid
+    const buf = Buffer.from('\0\0\0\0');
+    decode(buf);
+  }, /Malformed Packet/);
+  t.end();
+});
+
+test('decode: corrupted buffer', (t) => {
+  // Test with a buffer that could potentially cause fromBuffer to return unexpected results
+  t.throws(() => {
+    // Create a malformed buffer that might not parse correctly
+    const buf = Buffer.from('invalid');
+    decode(buf);
+  }, /(Malformed Packet|Cannot read|out of range)/);
+  t.end();
+});
+
+// This test attempts to exercise edge cases in the decode function
+test('decode: edge case with manually crafted invalid structure', (t) => {
+  // Since the decode function has a defensive else clause, let's try to trigger it
+  // by creating a buffer that might result in an unexpected object structure
+  
+  // Try with an empty buffer
+  t.throws(() => {
+    const buf = Buffer.alloc(0);
+    decode(buf);
+  }, /(Malformed Packet|Cannot read|out of range)/);
+  
+  // Try with a buffer containing only null bytes
+  t.throws(() => {
+    const buf = Buffer.alloc(16, 0);
+    decode(buf);
+  }, /(Malformed Packet|Cannot read|out of range)/);
+  
+  t.end();
+});
