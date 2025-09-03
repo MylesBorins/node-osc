@@ -192,3 +192,105 @@ test('osc: float number encoding', (t) => {
   t.ok(Math.abs(decoded.args[0].value - 3.14159) < 0.001, 'should preserve float value');
   t.end();
 });
+
+test('osc: explicit integer type encoding', (t) => {
+  // Test explicit integer type to cover line 102
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [
+      {
+        type: 'i',
+        value: 42
+      }
+    ]
+  };
+  
+  const buffer = toBuffer(message);
+  const decoded = fromBuffer(buffer);
+  
+  t.equal(decoded.args[0].value, 42, 'should encode and decode integer');
+  t.end();
+});
+
+test('osc: explicit float type encoding', (t) => {
+  // Test explicit float type to cover line 105
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [
+      {
+        type: 'f',
+        value: 3.14
+      }
+    ]
+  };
+  
+  const buffer = toBuffer(message);
+  const decoded = fromBuffer(buffer);
+  
+  t.ok(Math.abs(decoded.args[0].value - 3.14) < 0.001, 'should encode and decode float');
+  t.end();
+});
+
+test('osc: explicit string type encoding', (t) => {
+  // Test explicit string type to cover line 108
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [
+      {
+        type: 's',
+        value: 'hello'
+      }
+    ]
+  };
+  
+  const buffer = toBuffer(message);
+  const decoded = fromBuffer(buffer);
+  
+  t.equal(decoded.args[0].value, 'hello', 'should encode and decode string');
+  t.end();
+});
+
+test('osc: explicit blob type encoding', (t) => {
+  // Test explicit blob type to cover line 111
+  const testData = Buffer.from('blob data');
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [
+      {
+        type: 'b',
+        value: testData
+      }
+    ]
+  };
+  
+  const buffer = toBuffer(message);
+  const decoded = fromBuffer(buffer);
+  
+  t.ok(Buffer.isBuffer(decoded.args[0].value), 'should decode as Buffer');
+  t.equal(decoded.args[0].value.toString(), 'blob data', 'should preserve blob data');
+  t.end();
+});
+
+test('osc: explicit boolean true type encoding', (t) => {
+  // Test explicit boolean true type to cover line 118
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [
+      {
+        type: 'T',
+        value: true
+      }
+    ]
+  };
+  
+  const buffer = toBuffer(message);
+  const decoded = fromBuffer(buffer);
+  
+  t.equal(decoded.args[0].value, true, 'should encode and decode boolean true');
+  t.end();
+});

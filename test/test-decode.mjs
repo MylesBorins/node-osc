@@ -70,3 +70,39 @@ test('decode: edge case with manually crafted invalid structure', (t) => {
   
   t.end();
 });
+
+test('decode: malformed structure with unexpected oscType', async (t) => {
+  // Test the defensive else clause by providing a custom fromBuffer function
+  // that returns an object with an invalid oscType
+  
+  const mockFromBuffer = () => ({
+    oscType: 'invalid',
+    data: 'test'
+  });
+  
+  t.throws(() => {
+    decode(Buffer.from('test'), mockFromBuffer);
+  }, /Malformed Packet/, 'should throw for invalid oscType');
+  
+  // Test with undefined oscType
+  const mockFromBufferUndefined = () => ({
+    data: 'test'
+    // missing oscType property
+  });
+  
+  t.throws(() => {
+    decode(Buffer.from('test'), mockFromBufferUndefined);
+  }, /Malformed Packet/, 'should throw for undefined oscType');
+  
+  // Test with null oscType
+  const mockFromBufferNull = () => ({
+    oscType: null,
+    data: 'test'
+  });
+  
+  t.throws(() => {
+    decode(Buffer.from('test'), mockFromBufferNull);
+  }, /Malformed Packet/, 'should throw for null oscType');
+  
+  t.end();
+});
