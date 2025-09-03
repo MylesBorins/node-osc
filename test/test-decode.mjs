@@ -1,5 +1,4 @@
 import { test } from 'tap';
-
 import decode from '#decode';
 
 test('decode: valid', (t) => {

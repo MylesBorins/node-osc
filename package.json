@@ -10,6 +10,10 @@
     "#decode": {
       "require": "./dist/lib/internal/decode.js",
       "default": "./lib/internal/decode.mjs"
+    },
+    "#osc-min-wrapper": {
+      "require": "./dist/lib/osc-min-wrapper.js",
+      "default": "./lib/osc-min-wrapper.mjs"
     }
   },
   "author": {

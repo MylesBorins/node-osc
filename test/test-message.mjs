@@ -203,3 +203,24 @@ test('message: error', (t) => {
     m.append(undefined);
   }, /don't know how to encode/);
 });
+
+test('message: false boolean', (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+  const m = new Message('/address');
+  m.append(false);
+
+  oscServer.on('message', (msg) => {
+    const expected = [
+      '/address',
+      false
+    ];
+    t.same(msg, expected, `We received the payload: ${msg}`);
+    oscServer.close();
+    t.end();
+  });
+
+  client.send(m, () => {
+    client.close();
+  });
+});
