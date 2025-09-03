@@ -294,3 +294,123 @@ test('osc: explicit boolean true type encoding', (t) => {
   t.equal(decoded.args[0].value, true, 'should encode and decode boolean true');
   t.end();
 });
+
+test('osc: MIDI type encoding with Buffer', (t) => {
+  // Test MIDI type with 4-byte Buffer
+  const midiData = Buffer.from([0x01, 0x90, 0x3C, 0x7F]); // port 1, note on, middle C, velocity 127
+  const message = {
+    oscType: 'message',
+    address: '/midi',
+    args: [
+      {
+        type: 'm',
+        value: midiData
+      }
+    ]
+  };
+  
+  const buffer = toBuffer(message);
+  const decoded = fromBuffer(buffer);
+  
+  t.ok(Buffer.isBuffer(decoded.args[0].value), 'should decode as Buffer');
+  t.equal(decoded.args[0].value.length, 4, 'should be 4 bytes');
+  t.equal(decoded.args[0].value[0], 0x01, 'port id should match');
+  t.equal(decoded.args[0].value[1], 0x90, 'status byte should match');
+  t.equal(decoded.args[0].value[2], 0x3C, 'data1 should match');
+  t.equal(decoded.args[0].value[3], 0x7F, 'data2 should match');
+  t.end();
+});
+
+test('osc: MIDI type encoding with object', (t) => {
+  // Test MIDI type with object format
+  const message = {
+    oscType: 'message',
+    address: '/midi',
+    args: [
+      {
+        type: 'midi',
+        value: {
+          port: 2,
+          status: 0x80,
+          data1: 0x40,
+          data2: 0x00
+        }
+      }
+    ]
+  };
+  
+  const buffer = toBuffer(message);
+  const decoded = fromBuffer(buffer);
+  
+  t.ok(Buffer.isBuffer(decoded.args[0].value), 'should decode as Buffer');
+  t.equal(decoded.args[0].value[0], 2, 'port should match');
+  t.equal(decoded.args[0].value[1], 0x80, 'status should match');
+  t.equal(decoded.args[0].value[2], 0x40, 'data1 should match');
+  t.equal(decoded.args[0].value[3], 0x00, 'data2 should match');
+  t.end();
+});
+
+test('osc: MIDI type with invalid buffer length', (t) => {
+  // Test MIDI type with wrong buffer length
+  const message = {
+    oscType: 'message',
+    address: '/midi',
+    args: [
+      {
+        type: 'm',
+        value: Buffer.from([0x90, 0x3C]) // Only 2 bytes
+      }
+    ]
+  };
+  
+  t.throws(() => {
+    toBuffer(message);
+  }, /MIDI message must be exactly 4 bytes/, 'should throw error for wrong buffer length');
+  t.end();
+});
+
+test('osc: MIDI type with invalid value type', (t) => {
+  // Test MIDI type with invalid value
+  const message = {
+    oscType: 'message',
+    address: '/midi',
+    args: [
+      {
+        type: 'm',
+        value: 'invalid'
+      }
+    ]
+  };
+  
+  t.throws(() => {
+    toBuffer(message);
+  }, /MIDI value must be a 4-byte Buffer or object/, 'should throw error for invalid value type');
+  t.end();
+});
+
+test('osc: MIDI type with partial object', (t) => {
+  // Test MIDI type with object having only some properties (should default others to 0)
+  const message = {
+    oscType: 'message',
+    address: '/midi',
+    args: [
+      {
+        type: 'm',
+        value: {
+          status: 0x90,
+          data1: 0x3C
+          // port and data2 should default to 0
+        }
+      }
+    ]
+  };
+  
+  const buffer = toBuffer(message);
+  const decoded = fromBuffer(buffer);
+  
+  t.equal(decoded.args[0].value[0], 0, 'port should default to 0');
+  t.equal(decoded.args[0].value[1], 0x90, 'status should match');
+  t.equal(decoded.args[0].value[2], 0x3C, 'data1 should match');
+  t.equal(decoded.args[0].value[3], 0, 'data2 should default to 0');
+  t.end();
+});
