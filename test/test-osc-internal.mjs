@@ -1,5 +1,5 @@
 import { test } from 'tap';
-import { toBuffer, fromBuffer } from '../lib/internal/osc.mjs';
+import { toBuffer, fromBuffer } from '#osc';
 
 test('osc: timetag encoding with non-number value', (t) => {
   // Test the else branch in writeTimeTag that writes zeros for non-number values
