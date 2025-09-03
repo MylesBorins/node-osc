@@ -1,7 +1,6 @@
 import { readdirSync as readdir, statSync as stat } from 'fs';
 import { join } from 'path';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
 
 function walk(root, result=[]) {
   const rootURL = new URL(root, import.meta.url);
@@ -23,9 +22,7 @@ function walk(root, result=[]) {
 
 function walkLib(config) {
   const files = walk('./lib/');
-  files.forEach(({input, dir}) => {
-    // Remove the 'lib/' prefix from the output directory  
-    const outputDir = dir.replace('dist/lib/', 'dist/lib/');
+  files.forEach(({input}) => {
     config.push({
       input,
       plugins: [nodeResolve()],
