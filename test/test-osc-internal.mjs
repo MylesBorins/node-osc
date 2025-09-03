@@ -438,3 +438,58 @@ test('osc: MIDI type decoding with insufficient buffer data', (t) => {
   }, /Not enough bytes for MIDI message/, 'should throw error when MIDI data is truncated');
   t.end();
 });
+
+test('osc: MIDI type with falsy status and data1 values', (t) => {
+  // Test MIDI type with object having undefined/falsy status and data1 (should default to 0)
+  const message = {
+    oscType: 'message',
+    address: '/midi',
+    args: [
+      {
+        type: 'm',
+        value: {
+          port: 5,
+          data2: 0x40
+          // status and data1 are undefined, should default to 0
+        }
+      }
+    ]
+  };
+  
+  const buffer = toBuffer(message);
+  const decoded = fromBuffer(buffer);
+  
+  t.equal(decoded.args[0].value[0], 5, 'port should match');
+  t.equal(decoded.args[0].value[1], 0, 'status should default to 0');
+  t.equal(decoded.args[0].value[2], 0, 'data1 should default to 0');
+  t.equal(decoded.args[0].value[3], 0x40, 'data2 should match');
+  t.end();
+});
+
+test('osc: MIDI type with explicit zero status and data1 values', (t) => {
+  // Test MIDI type with object having explicit 0 values for status and data1
+  const message = {
+    oscType: 'message',
+    address: '/midi',
+    args: [
+      {
+        type: 'm',
+        value: {
+          port: 3,
+          status: 0,
+          data1: 0,
+          data2: 0x60
+        }
+      }
+    ]
+  };
+  
+  const buffer = toBuffer(message);
+  const decoded = fromBuffer(buffer);
+  
+  t.equal(decoded.args[0].value[0], 3, 'port should match');
+  t.equal(decoded.args[0].value[1], 0, 'status should be 0');
+  t.equal(decoded.args[0].value[2], 0, 'data1 should be 0');
+  t.equal(decoded.args[0].value[3], 0x60, 'data2 should match');
+  t.end();
+});
