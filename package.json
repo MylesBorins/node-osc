@@ -43,10 +43,12 @@
     "url": "git+https://github.com/MylesBorins/node-osc.git"
   },
   "dependencies": {
-    "osc-min": "^1.1.1"
+    "osc-min": "^2.1.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
     "eslint": "^9.32.0",
     "globals": "^16.3.0",
     "rollup": "^4.46.2",

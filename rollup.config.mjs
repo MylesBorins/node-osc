@@ -1,5 +1,7 @@
 import { readdirSync as readdir, statSync as stat } from 'fs';
 import { join } from 'path';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
 
 function walk(root, result=[]) {
   const rootURL = new URL(root, import.meta.url);
@@ -12,7 +14,7 @@ function walk(root, result=[]) {
     else {
       result.push({
         input: join(root, path),
-        dir: join('dist/', root)
+        dir: join('dist/', root.replace('./', ''))
       });
     }
   }
@@ -22,19 +24,22 @@ function walk(root, result=[]) {
 function walkLib(config) {
   const files = walk('./lib/');
   files.forEach(({input, dir}) => {
+    // Remove the 'lib/' prefix from the output directory  
+    const outputDir = dir.replace('dist/lib/', 'dist/lib/');
     config.push({
       input,
+      plugins: [nodeResolve()],
       output: {
         entryFileNames: '[name].js',
-        dir,
+        dir: 'dist/lib',
         format: 'cjs',
         preserveModules: true,
+        preserveModulesRoot: 'lib',
         exports: 'auto'
       },
       external: [
         'node:dgram',
         'node:events',
-        'osc-min',
         'jspack',
         '#decode'
       ]
@@ -59,7 +64,6 @@ function walkTest(config) {
         'node:dgram',
         'node:net',
         'node-osc',
-        'osc-min',
         'tap',
         '#decode'
       ]
