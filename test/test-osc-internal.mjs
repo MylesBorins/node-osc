@@ -414,3 +414,27 @@ test('osc: MIDI type with partial object', (t) => {
   t.equal(decoded.args[0].value[3], 0, 'data2 should default to 0');
   t.end();
 });
+
+test('osc: MIDI type decoding with insufficient buffer data', (t) => {
+  // Test the error case in readMidi when buffer doesn't have enough bytes
+  // This manually crafts a malformed OSC buffer with MIDI type tag but insufficient data
+  
+  // Create a minimal OSC message buffer with MIDI type but truncated data
+  // OSC Format: address + typetags + arguments
+  // Address: "/m" (padded to 4 bytes)
+  const address = Buffer.from('/m\0\0', 'ascii'); // 4 bytes
+  
+  // Type tags: ",m" (padded to 4 bytes) 
+  const typeTags = Buffer.from(',m\0\0', 'ascii'); // 4 bytes
+  
+  // MIDI data: only 2 bytes instead of required 4
+  const insufficientMidiData = Buffer.from([0x90, 0x3C]); // Only 2 bytes, need 4
+  
+  // Combine into malformed OSC buffer
+  const malformedBuffer = Buffer.concat([address, typeTags, insufficientMidiData]);
+  
+  t.throws(() => {
+    fromBuffer(malformedBuffer);
+  }, /Not enough bytes for MIDI message/, 'should throw error when MIDI data is truncated');
+  t.end();
+});
