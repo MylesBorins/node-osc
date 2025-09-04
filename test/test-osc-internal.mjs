@@ -492,4 +492,5 @@ test('osc: MIDI type with explicit zero status and data1 values', (t) => {
   t.equal(decoded.args[0].value[2], 0, 'data1 should be 0');
   t.equal(decoded.args[0].value[3], 0x60, 'data2 should match');
   t.end();
+
 });
