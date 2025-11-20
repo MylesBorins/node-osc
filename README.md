@@ -11,7 +11,7 @@ npm install node-osc
 
 ## Written using ESM supports CJS
 
-Supports the latest versions of Node.js 12, 14, and 16 in both ESM + CJS
+Supports the latest versions of Node.js 20, 22, and 24 in both ESM + CJS
 
 ## Example
 
@@ -57,8 +57,6 @@ client.send(bundle));
 ```
 
 ### Listening for OSC bundles:
-
-**WARNING**: Bundle support is Experimental and subject to change at any point. 
 
 ```js
 import { Server } from 'node-osc';
