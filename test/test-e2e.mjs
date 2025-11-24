@@ -17,8 +17,8 @@ function skip(t) {
 test('osc: argument message no callback', (t) => {
   if (flaky()) return skip(t);
 
-  const oscServer = new Server(t.context.port, '0.0.0.0');
-  const client = new Client('0.0.0.0', t.context.port);
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
 
   t.plan(1);
 
@@ -34,8 +34,8 @@ test('osc: argument message no callback', (t) => {
 test('osc: client with callback and message as arguments', (t) => {
   if (flaky()) return skip(t);
 
-  const oscServer = new Server(t.context.port, '0.0.0.0');
-  const client = new Client('0.0.0.0', t.context.port);
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
 
   t.plan(2);
 
