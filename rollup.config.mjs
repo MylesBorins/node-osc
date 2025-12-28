@@ -20,53 +20,49 @@ function walk(root, result=[]) {
 }
 
 function walkLib(config) {
+  // Build all lib files in a single pass
   const files = walk('./lib/');
-  files.forEach(({input, dir}) => {
-    config.push({
-      input,
-      output: {
-        entryFileNames: '[name].js',
-        dir,
-        format: 'cjs',
-        preserveModules: true,
-        exports: 'auto'
-      },
-      external: [
-        'node:dgram',
-        'node:events',
-        'node:buffer',
-        'jspack',
-        '#decode',
-        '#osc'
-      ]
-    });
+  config.push({
+    input: files.map(f => f.input),
+    output: {
+      entryFileNames: '[name].js',
+      dir: 'dist/lib',
+      format: 'cjs',
+      preserveModules: true,
+      exports: 'auto'
+    },
+    external: [
+      'node:dgram',
+      'node:events',
+      'node:buffer',
+      'jspack',
+      '#decode'
+    ]
   });
 }
 
 function walkTest(config) {
+  // Build all test files in a single pass
   const tests = walk('./test/');
-  tests.forEach(({input, dir}) => {
-    config.push({
-      input,
-      plugins: [],
-      output: {
-        entryFileNames: '[name].js',
-        dir,
-        format: 'cjs',
-        exports: 'auto',
-        preserveModules: true
-      },
-      external: [
-        'node:dgram',
-        'node:net',
-        'node:buffer',
-        'node:events',
-        'node-osc',
-        'tap',
-        '#decode',
-        '#osc'
-      ]
-    });
+  config.push({
+    input: tests.map(t => t.input),
+    plugins: [],
+    output: {
+      entryFileNames: '[name].js',
+      dir: 'dist/test',
+      format: 'cjs',
+      exports: 'auto',
+      preserveModules: true
+    },
+    external: [
+      'node:dgram',
+      'node:net',
+      'node:buffer',
+      'node:events',
+      'node-osc',
+      'tap',
+      '#decode'
+    ]
   });
 }
 
