@@ -12,16 +12,21 @@ test('types: TypeScript compilation with ESM types', (t) => {
 // Test ESM TypeScript imports
 import { Client, Server, Message, Bundle, encode, decode } from '../../lib/index.mjs';
 
-// Test Client type
-const client: Client = new Client('127.0.0.1', 3333);
-const sendPromise: Promise<void> | undefined = client.send('/test', 1, 2, 3);
-const closePromise: Promise<void> | undefined = client.close();
-
-// Test Server type
+// Create server first (typical usage pattern)
 const server: Server = new Server(3333, '0.0.0.0');
 server.on('message', (msg) => {
   console.log('Received message:', msg);
 });
+
+// Create client after server
+const client: Client = new Client('127.0.0.1', 3333);
+
+// Test async usage (typical pattern with await)
+async function testAsyncUsage() {
+  await client.send('/test', 1, 2, 3);
+  await client.close();
+  await server.close();
+}
 
 // Test Message type
 const message: Message = new Message('/oscillator/frequency', 440);
@@ -33,9 +38,9 @@ message.append(true);
 const bundle: Bundle = new Bundle(['/one', 1], ['/two', 2]);
 bundle.append(['/three', 3]);
 
-// Test encode/decode
+// Test encode/decode with consistent type annotations
 const encoded: Buffer = encode(message);
-const decoded = decode(encoded);
+const decoded: any = decode(encoded);
 `;
 
   writeFileSync(testFile, testCode);
@@ -73,11 +78,18 @@ test('types: TypeScript compilation with CJS types', (t) => {
 // Test CJS TypeScript imports
 import { Client, Server, Message, Bundle, encode, decode } from '../../dist/lib/index.js';
 
-// Test Client type
+// Create server first (typical usage pattern)
+const server: Server = new Server(3333, '0.0.0.0');
+
+// Create client after server
 const client: Client = new Client('127.0.0.1', 3333);
 
-// Test Server type
-const server: Server = new Server(3333, '0.0.0.0');
+// Test async usage (typical pattern with await)
+async function testAsyncUsage() {
+  await client.send('/test', 1, 2, 3);
+  await client.close();
+  await server.close();
+}
 
 // Test Message type
 const message: Message = new Message('/test', 1, 2, 3);
@@ -85,9 +97,9 @@ const message: Message = new Message('/test', 1, 2, 3);
 // Test Bundle type
 const bundle: Bundle = new Bundle(['/one', 1]);
 
-// Test encode/decode functions
+// Test encode/decode with consistent type annotations
 const encoded: Buffer = encode(message);
-const decoded = decode(encoded);
+const decoded: any = decode(encoded);
 `;
 
   writeFileSync(testFile, testCode);
