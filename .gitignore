@@ -3,5 +3,4 @@ node_modules
 coverage/
 dist/
 types/
-types-cjs/
 .tap/

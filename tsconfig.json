@@ -12,7 +12,7 @@
     // Output directory for declarations
     "outDir": "./types",
     
-    // Module settings to match the project (ESM)
+    // Module settings for ESM (will generate .d.mts files)
     "module": "ES2022",
     "moduleResolution": "node",
     "target": "ES2022",

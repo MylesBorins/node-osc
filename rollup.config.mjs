@@ -43,8 +43,8 @@ function walkLib(config) {
 }
 
 function walkTest(config) {
-  // Build all test files in a single pass
-  const tests = walk('./test/');
+  // Build all test files in a single pass, excluding fixtures
+  const tests = walk('./test/').filter(t => !t.input.includes('/fixtures/'));
   config.push({
     input: tests.map(t => t.input),
     plugins: [],
@@ -64,6 +64,7 @@ function walkTest(config) {
       'node:child_process',
       'node:fs',
       'node:path',
+      'node:url',
       'node-osc',
       'tap',
       '#decode'

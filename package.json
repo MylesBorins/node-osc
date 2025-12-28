@@ -2,10 +2,10 @@
   "name": "node-osc",
   "description": "pyOSC inspired library for sending and receiving OSC messages",
   "version": "11.1.1",
-  "types": "./types/index.d.ts",
+  "types": "./types/index.d.mts",
   "exports": {
     "require": {
-      "types": "./types-cjs/dist/lib/index.d.ts",
+      "types": "./types/index.d.mts",
       "default": "./dist/lib/index.js"
     },
     "import": {
@@ -29,11 +29,11 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "clean": "rm -rf dist/ types/ types-cjs/",
+    "clean": "rm -rf dist/ types/",
     "build": "npm run clean && rollup --config rollup.config.mjs && npm run build:types",
-    "build:types": "tsc && tsc --project tsconfig.cjs.json",
+    "build:types": "tsc",
     "prepublishOnly": "npm run build",
-    "lint": "eslint \"lib/**/*.mjs\" test/* examples/*.js examples/*.mjs rollup.config.mjs",
+    "lint": "eslint \"lib/**/*.mjs\" \"test/test-*.mjs\" test/util.mjs examples/*.js examples/*.mjs rollup.config.mjs",
     "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
     "test:esm": "tap test/test-*.mjs",
     "test:cjs": "tap dist/test/test-*.js"
