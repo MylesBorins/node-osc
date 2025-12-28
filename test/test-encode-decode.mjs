@@ -658,3 +658,52 @@ test('encode and decode: blob with length 8', (t) => {
   t.same(decoded.args[0].value, blobData, 'should handle blob with length 8');
   t.end();
 });
+
+test('encode and decode: MUST hit float case label directly', (t) => {
+  // This test MUST hit the 'float' case label (line 139) in dist/lib/osc.js
+  // We import from 'node-osc' which uses dist/lib/osc.js in CJS
+  // We use type: 'float' explicitly (not 'f')
+  const rawMessage = {
+    oscType: 'message',
+    address: '/float-label-test',
+    args: [{ type: 'float', value: 123.456 }]
+  };
+  
+  const buffer = encode(rawMessage);
+  const decoded = decode(buffer);
+  
+  t.ok(Math.abs(decoded.args[0].value - 123.456) < 0.001, 'should encode/decode float');
+  t.end();
+});
+
+test('encode and decode: MUST hit double case label directly', (t) => {
+  // This test MUST hit the 'double' case label (line 148) in dist/lib/osc.js
+  const rawMessage = {
+    oscType: 'message',
+    address: '/double-label-test',
+    args: [{ type: 'double', value: 987.654 }]
+  };
+  
+  const buffer = encode(rawMessage);
+  const decoded = decode(buffer);
+  
+  t.ok(Math.abs(decoded.args[0].value - 987.654) < 0.001, 'should encode/decode double');
+  t.end();
+});
+
+test('encode and decode: MUST hit midi case label directly', (t) => {
+  // This test MUST hit the 'midi' case label (line 155) in dist/lib/osc.js
+  const midiBuffer = Buffer.from([0x02, 0xA0, 0x50, 0x60]);
+  const rawMessage = {
+    oscType: 'message',
+    address: '/midi-label-test',
+    args: [{ type: 'midi', value: midiBuffer }]
+  };
+  
+  const buffer = encode(rawMessage);
+  const decoded = decode(buffer);
+  
+  t.ok(Buffer.isBuffer(decoded.args[0].value), 'should encode/decode midi');
+  t.equal(decoded.args[0].value.length, 4, 'should have 4 bytes');
+  t.end();
+});

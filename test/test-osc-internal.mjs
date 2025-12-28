@@ -693,3 +693,148 @@ test('osc: bundle with nested bundle element', (t) => {
   t.equal(decoded.elements[1].elements[0].address, '/inner', 'nested bundle should have correct message');
   t.end();
 });
+
+test('osc: explicit integer type name', (t) => {
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [{ type: 'integer', value: 999 }]
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, 999);
+  t.end();
+});
+
+test('osc: explicit float type name', (t) => {
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [{ type: 'float', value: 1.414 }]
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.ok(Math.abs(decoded.args[0].value - 1.414) < 0.001);
+  t.end();
+});
+
+test('osc: explicit string type name', (t) => {
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [{ type: 'string', value: 'test string' }]
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, 'test string');
+  t.end();
+});
+
+test('osc: explicit blob type name', (t) => {
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [{ type: 'blob', value: Buffer.from([0xAA, 0xBB]) }]
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.ok(Buffer.isBuffer(decoded.args[0].value));
+  t.same(decoded.args[0].value, Buffer.from([0xAA, 0xBB]));
+  t.end();
+});
+
+test('osc: explicit double type name', (t) => {
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [{ type: 'double', value: 2.718281828 }]
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.ok(Math.abs(decoded.args[0].value - 2.718281828) < 0.001);
+  t.end();
+});
+
+test('osc: explicit F type for false', (t) => {
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [{ type: 'F', value: false }]
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, false);
+  t.end();
+});
+
+test('osc: blob padding when length is multiple of 4', (t) => {
+  // Test writeBlob line 52: padding === 4 branch (should use 0)
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [{ type: 'b', value: Buffer.from([1, 2, 3, 4]) }] // length 4
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.same(decoded.args[0].value, Buffer.from([1, 2, 3, 4]));
+  t.end();
+});
+
+test('osc: blob padding when length is not multiple of 4', (t) => {
+  // Test writeBlob line 52: padding !== 4 branch (should use padding value)
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [{ type: 'b', value: Buffer.from([1, 2, 3]) }] // length 3
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.same(decoded.args[0].value, Buffer.from([1, 2, 3]));
+  t.end();
+});
+
+test('osc: boolean type true value', (t) => {
+  // Test boolean case ternary: true branch
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [{ type: 'boolean', value: true }]
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, true);
+  t.end();
+});
+
+test('osc: boolean type false value', (t) => {
+  // Test boolean case ternary: false branch
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [{ type: 'boolean', value: false }]
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, false);
+  t.end();
+});
