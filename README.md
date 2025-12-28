@@ -3,17 +3,58 @@
 A no frills [Open Sound Control](http://opensoundcontrol.org) client and server.
 Heavily inspired by [pyOSC](https://trac.v2.nl/wiki/pyOSC).
 
+## Installation
+
 Install using npm
 
 ```
 npm install node-osc
 ```
 
-## Written using ESM supports CJS
+## Features
+
+- 🚀 Simple and intuitive API
+- 🔄 Both callback and async/await support
+- 📦 Send and receive OSC messages and bundles
+- 🌐 Works with both ESM and CommonJS
+- 📝 Comprehensive documentation and examples
+- ✅ Well tested and actively maintained
+
+## Quick Start
+
+### Sending Messages
+
+```js
+import { Client } from 'node-osc';
+
+const client = new Client('127.0.0.1', 3333);
+await client.send('/oscAddress', 200);
+await client.close();
+```
+
+### Receiving Messages
+
+```js
+import { Server } from 'node-osc';
+
+const server = new Server(3333, '0.0.0.0');
+
+server.on('message', (msg) => {
+  console.log(`Message: ${msg}`);
+});
+```
+
+## Documentation
+
+📚 **[Full API Documentation](./API.md)** - Comprehensive guide to all features
+
+## Compatibility
+
+Written using ESM supports CJS
 
 Supports the latest versions of Node.js 20, 22, and 24 in both ESM + CJS
 
-## Example
+## Examples
 
 ### Sending OSC messages with callbacks:
 
@@ -158,6 +199,118 @@ async function main() {
 main();
 ```
 
+## Advanced Usage
+
+### Working with Bundles
+
+OSC bundles allow you to send multiple messages atomically:
+
+```js
+import { Bundle, Client } from 'node-osc';
+
+const bundle = new Bundle(
+  ['/synth/frequency', 440],
+  ['/synth/amplitude', 0.5],
+  ['/synth/gate', 1]
+);
+
+const client = new Client('127.0.0.1', 3333);
+await client.send(bundle);
+await client.close();
+```
+
+### Address-Specific Listeners
+
+Listen for specific OSC addresses:
+
+```js
+import { Server } from 'node-osc';
+
+const server = new Server(3333, '0.0.0.0');
+
+// Listen for messages to specific address
+server.on('/note', (msg) => {
+  const [address, pitch, velocity] = msg;
+  console.log(`Note: ${pitch}, Velocity: ${velocity}`);
+});
+```
+
+### Error Handling
+
+Always handle errors appropriately:
+
+```js
+const client = new Client('127.0.0.1', 3333);
+
+try {
+  await client.send('/test', 123);
+} catch (err) {
+  console.error('Failed to send:', err.message);
+} finally {
+  await client.close();
+}
+```
+
+## API Overview
+
+- **`Client`** - Send OSC messages and bundles
+  - `new Client(host, port)` - Create a client
+  - `send(...args)` - Send a message or bundle
+  - `close()` - Close the client
+
+- **`Server`** - Receive OSC messages and bundles
+  - `new Server(port, host, callback)` - Create a server
+  - `on('message', callback)` - Listen for messages
+  - `on('bundle', callback)` - Listen for bundles
+  - `close()` - Close the server
+
+- **`Message`** - Construct OSC messages
+  - `new Message(address, ...args)` - Create a message
+  - `append(arg)` - Add arguments
+
+- **`Bundle`** - Group multiple messages
+  - `new Bundle(timetag, ...elements)` - Create a bundle
+  - `append(element)` - Add messages or nested bundles
+
+For complete API documentation, see **[API.md](./API.md)**.
+
+## Troubleshooting
+
+### Messages Not Being Received
+
+1. **Check firewall settings** - Ensure UDP port is open
+2. **Verify host binding** - Use `'0.0.0.0'` to listen on all interfaces
+3. **Check port numbers** - Ensure client and server use the same port
+4. **Network connectivity** - Test with localhost first (`127.0.0.1`)
+
+### "Cannot send message on closed socket"
+
+This error occurs when trying to send after closing the client:
+
+```js
+// ❌ Wrong
+await client.close();
+await client.send('/test', 123); // Error!
+
+// ✅ Correct
+await client.send('/test', 123);
+await client.close();
+```
+
+### Server Not Listening
+
+Ensure you wait for the server to start:
+
+```js
+const server = new Server(3333, '0.0.0.0');
+
+// Wait for server to be ready
+await new Promise(resolve => server.on('listening', resolve));
+
+// Now safe to send messages
+console.log('Server ready!');
+```
+
 ## Typescript 
 
 To install type definitions for node-osc:  
@@ -166,7 +319,18 @@ To install type definitions for node-osc:
 
 The types should then be automatically included by the compiler.  
 
+## Examples
+
+See the [examples](./examples/) directory for more usage examples:
+- [client.js](./examples/client.js) - CommonJS client example
+- [server.js](./examples/server.js) - CommonJS server example
+- [esm.mjs](./examples/esm.mjs) - ESM example with callbacks
+- [async-await.mjs](./examples/async-await.mjs) - ESM example with async/await
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-LGPL.  Please see the file lesser.txt for details.
+LGPL-3.0-or-later. Please see the file lesser.txt for details.
