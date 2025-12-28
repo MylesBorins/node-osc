@@ -61,6 +61,9 @@ function walkTest(config) {
       'node:net',
       'node:buffer',
       'node:events',
+      'node:child_process',
+      'node:fs',
+      'node:path',
       'node-osc',
       'tap',
       '#decode'
