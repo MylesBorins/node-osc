@@ -707,3 +707,141 @@ test('encode and decode: MUST hit midi case label directly', (t) => {
   t.equal(decoded.args[0].value.length, 4, 'should have 4 bytes');
   t.end();
 });
+
+// Tests for explicit type name coverage (both short and long forms)
+test('encode and decode: type "f" (short form for float)', (t) => {
+  const msg = new Message('/test', { type: 'f', value: 1.23 });
+  const buffer = encode(msg);
+  const decoded = decode(buffer);
+  
+  t.ok(Math.abs(decoded.args[0].value - 1.23) < 0.001);
+  t.end();
+});
+
+test('encode and decode: type "float" (long form)', (t) => {
+  const msg = new Message('/test', { type: 'float', value: 3.14 });
+  const buffer = encode(msg);
+  const decoded = decode(buffer);
+  
+  t.ok(Math.abs(decoded.args[0].value - 3.14) < 0.001);
+  t.end();
+});
+
+test('encode and decode: type "d" (short form for double)', (t) => {
+  const msg = new Message('/test', { type: 'd', value: 4.56 });
+  const buffer = encode(msg);
+  const decoded = decode(buffer);
+  
+  t.ok(Math.abs(decoded.args[0].value - 4.56) < 0.001);
+  t.end();
+});
+
+test('encode and decode: type "m" (short form for MIDI)', (t) => {
+  const msg = new Message('/test', { type: 'm', value: Buffer.from([5, 6, 7, 8]) });
+  const buffer = encode(msg);
+  const decoded = decode(buffer);
+  
+  t.ok(Buffer.isBuffer(decoded.args[0].value));
+  t.end();
+});
+
+test('encode and decode: type "midi" (long form)', (t) => {
+  const msg = new Message('/test', { type: 'midi', value: Buffer.from([1, 2, 3, 4]) });
+  const buffer = encode(msg);
+  const decoded = decode(buffer);
+  
+  t.ok(Buffer.isBuffer(decoded.args[0].value));
+  t.end();
+});
+
+test('encode and decode: type "i" (short form for integer)', (t) => {
+  const msg = new Message('/test', { type: 'i', value: 42 });
+  const buffer = encode(msg);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, 42);
+  t.end();
+});
+
+test('encode and decode: type "integer" (long form)', (t) => {
+  const msg = new Message('/test', { type: 'integer', value: 999 });
+  const buffer = encode(msg);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, 999);
+  t.end();
+});
+
+test('encode and decode: type "s" (short form for string)', (t) => {
+  const msg = new Message('/test', { type: 's', value: 'hello' });
+  const buffer = encode(msg);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, 'hello');
+  t.end();
+});
+
+test('encode and decode: type "string" (long form)', (t) => {
+  const msg = new Message('/test', { type: 'string', value: 'world' });
+  const buffer = encode(msg);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, 'world');
+  t.end();
+});
+
+test('encode and decode: type "b" (short form for blob)', (t) => {
+  const msg = new Message('/test', { type: 'b', value: Buffer.from([0xAA, 0xBB]) });
+  const buffer = encode(msg);
+  const decoded = decode(buffer);
+  
+  t.ok(Buffer.isBuffer(decoded.args[0].value));
+  t.same(decoded.args[0].value, Buffer.from([0xAA, 0xBB]));
+  t.end();
+});
+
+test('encode and decode: type "blob" (long form)', (t) => {
+  const msg = new Message('/test', { type: 'blob', value: Buffer.from([0xCC, 0xDD]) });
+  const buffer = encode(msg);
+  const decoded = decode(buffer);
+  
+  t.ok(Buffer.isBuffer(decoded.args[0].value));
+  t.same(decoded.args[0].value, Buffer.from([0xCC, 0xDD]));
+  t.end();
+});
+
+test('encode and decode: type "T" (explicit true)', (t) => {
+  const msg = new Message('/test', { type: 'T', value: true });
+  const buffer = encode(msg);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, true);
+  t.end();
+});
+
+test('encode and decode: type "F" (explicit false)', (t) => {
+  const msg = new Message('/test', { type: 'F', value: false });
+  const buffer = encode(msg);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, false);
+  t.end();
+});
+
+test('encode and decode: type "boolean" with true value', (t) => {
+  const msg = new Message('/test', { type: 'boolean', value: true });
+  const buffer = encode(msg);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, true);
+  t.end();
+});
+
+test('encode and decode: type "boolean" with false value', (t) => {
+  const msg = new Message('/test', { type: 'boolean', value: false });
+  const buffer = encode(msg);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, false);
+  t.end();
+});

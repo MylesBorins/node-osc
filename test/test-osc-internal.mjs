@@ -765,20 +765,6 @@ test('osc: explicit double type name', (t) => {
   t.end();
 });
 
-test('osc: explicit F type for false', (t) => {
-  const message = {
-    oscType: 'message',
-    address: '/test',
-    args: [{ type: 'F', value: false }]
-  };
-  
-  const buffer = encode(message);
-  const decoded = decode(buffer);
-  
-  t.equal(decoded.args[0].value, false);
-  t.end();
-});
-
 test('osc: blob padding when length is multiple of 4', (t) => {
   // Test writeBlob line 52: padding === 4 branch (should use 0)
   const message = {
@@ -830,6 +816,34 @@ test('osc: boolean type false value', (t) => {
     oscType: 'message',
     address: '/test',
     args: [{ type: 'boolean', value: false }]
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, false);
+  t.end();
+});
+
+test('osc: explicit T type', (t) => {
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [{ type: 'T', value: true }]
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, true);
+  t.end();
+});
+
+test('osc: explicit F type', (t) => {
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [{ type: 'F', value: false }]
   };
   
   const buffer = encode(message);
