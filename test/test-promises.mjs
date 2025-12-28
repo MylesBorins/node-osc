@@ -171,3 +171,65 @@ test('client: multiple sends with promises', async (t) => {
   await client.close();
   await oscServer.close();
 });
+
+test('client: close promise rejection on error', async (t) => {
+  const client = new Client('127.0.0.1', t.context.port);
+
+  t.plan(1);
+
+  // Mock the socket's close method to simulate an error
+  const originalClose = client._sock.close.bind(client._sock);
+  client._sock.close = function(cb) {
+    // Simulate an error being passed to callback
+    if (cb) {
+      const err = new Error('Mock close error');
+      err.code = 'MOCK_ERROR';
+      setImmediate(() => cb(err));
+    }
+  };
+
+  try {
+    await client.close();
+    t.fail('Should have thrown an error');
+  } catch (err) {
+    t.equal(err.code, 'MOCK_ERROR', 'Should reject with mock error');
+  } finally {
+    // Clean up - actually close the socket
+    client._sock.close = originalClose;
+    try { originalClose(() => {}); } catch {
+      // Ignore cleanup errors
+    }
+  }
+});
+
+test('server: close promise rejection on error', async (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+
+  t.plan(1);
+
+  await once(oscServer, 'listening');
+
+  // Mock the socket's close method to simulate an error
+  const originalClose = oscServer._sock.close.bind(oscServer._sock);
+  oscServer._sock.close = function(cb) {
+    // Simulate an error being passed to callback
+    if (cb) {
+      const err = new Error('Mock close error');
+      err.code = 'MOCK_ERROR';
+      setImmediate(() => cb(err));
+    }
+  };
+
+  try {
+    await oscServer.close();
+    t.fail('Should have thrown an error');
+  } catch (err) {
+    t.equal(err.code, 'MOCK_ERROR', 'Should reject with mock error');
+  } finally {
+    // Clean up - actually close the socket
+    oscServer._sock.close = originalClose;
+    try { originalClose(() => {}); } catch {
+      // Ignore cleanup errors
+    }
+  }
+});
