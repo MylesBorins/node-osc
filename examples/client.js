@@ -18,7 +18,7 @@ const client = new Client('127.0.0.1', 3333);
 // Create a message using the Message class
 const message = new Message('/address');
 message.append('testing');  // Append a string
-message.append('testing');  // Append another string
+message.append('testing');  // Append the same string again (for demonstration)
 message.append(123);        // Append an integer
 
 // Send the message with a callback
