@@ -179,10 +179,20 @@ test('client: close promise rejection on error', async (t) => {
 
   // Mock the socket's close method to simulate an error
   const originalClose = client._sock.close.bind(client._sock);
-  let mockCalled = false;
+  
+  // Set up teardown to ensure socket is properly closed
+  t.teardown(() => {
+    // Restore original close method first
+    client._sock.close = originalClose;
+    // Then close the socket
+    try {
+      client._sock.close(() => {});
+    } catch {
+      // Socket might already be closed, that's ok
+    }
+  });
   
   client._sock.close = function(cb) {
-    mockCalled = true;
     // Simulate an error being passed to callback
     if (cb) {
       const err = new Error('Mock close error');
@@ -196,25 +206,6 @@ test('client: close promise rejection on error', async (t) => {
     t.fail('Should have thrown an error');
   } catch (err) {
     t.equal(err.code, 'MOCK_ERROR', 'Should reject with mock error');
-  } finally {
-    // Restore original method
-    client._sock.close = originalClose;
-    // Only attempt cleanup if the mock was actually called
-    if (mockCalled) {
-      // Use setImmediate to ensure cleanup happens after any pending callbacks
-      await new Promise((resolve) => {
-        setImmediate(() => {
-          try {
-            originalClose(() => {
-              resolve();
-            });
-          } catch {
-            // Socket might already be closed or in invalid state, that's ok
-            resolve();
-          }
-        });
-      });
-    }
   }
 });
 
@@ -227,10 +218,20 @@ test('server: close promise rejection on error', async (t) => {
 
   // Mock the socket's close method to simulate an error
   const originalClose = oscServer._sock.close.bind(oscServer._sock);
-  let mockCalled = false;
+  
+  // Set up teardown to ensure socket is properly closed
+  t.teardown(() => {
+    // Restore original close method first
+    oscServer._sock.close = originalClose;
+    // Then close the socket
+    try {
+      oscServer._sock.close(() => {});
+    } catch {
+      // Socket might already be closed, that's ok
+    }
+  });
   
   oscServer._sock.close = function(cb) {
-    mockCalled = true;
     // Simulate an error being passed to callback
     if (cb) {
       const err = new Error('Mock close error');
@@ -244,24 +245,5 @@ test('server: close promise rejection on error', async (t) => {
     t.fail('Should have thrown an error');
   } catch (err) {
     t.equal(err.code, 'MOCK_ERROR', 'Should reject with mock error');
-  } finally {
-    // Restore original method
-    oscServer._sock.close = originalClose;
-    // Only attempt cleanup if the mock was actually called
-    if (mockCalled) {
-      // Use setImmediate to ensure cleanup happens after any pending callbacks
-      await new Promise((resolve) => {
-        setImmediate(() => {
-          try {
-            originalClose(() => {
-              resolve();
-            });
-          } catch {
-            // Socket might already be closed or in invalid state, that's ok
-            resolve();
-          }
-        });
-      });
-    }
   }
 });
