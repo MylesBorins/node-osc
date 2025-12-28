@@ -60,6 +60,7 @@ function walkTest(config) {
         'node:dgram',
         'node:net',
         'node:buffer',
+        'node:events',
         'node-osc',
         'tap',
         '#decode',
