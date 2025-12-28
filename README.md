@@ -350,6 +350,11 @@ TypeScript type definitions are included! No need to install `@types/node-osc`.
 
 The types are automatically generated from JSDoc comments during the build process and included with the package. Both ESM and CommonJS type definitions are provided. TypeScript will automatically use them when you import from `node-osc`.
 
+**Note:** If you previously installed `@types/node-osc`, you should uninstall it to avoid conflicts:
+```bash
+npm uninstall @types/node-osc
+```
+
 ```typescript
 import { Client, Server, Message, Bundle } from 'node-osc';
 
