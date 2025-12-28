@@ -333,4 +333,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-LGPL-3.0-or-later. Please see the file lesser.txt for details.
+Apache-2.0
+
+**Note:** This project was relicensed from LGPL-3.0-or-later to Apache-2.0 in December 2025.
