@@ -5,7 +5,7 @@
   "types": "./types/index.d.mts",
   "exports": {
     "require": {
-      "types": "./types/index.d.mts",
+      "types": "./types-cjs/dist/lib/index.d.ts",
       "default": "./dist/lib/index.js"
     },
     "import": {
@@ -29,9 +29,9 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "clean": "rm -rf dist/ types/",
+    "clean": "rm -rf dist/ types/ types-cjs/",
     "build": "npm run clean && rollup --config rollup.config.mjs && npm run build:types",
-    "build:types": "tsc",
+    "build:types": "tsc && tsc --project tsconfig.cjs.json",
     "prepublishOnly": "npm run build",
     "lint": "eslint \"lib/**/*.mjs\" test/* examples/* rollup.config.mjs",
     "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
