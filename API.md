@@ -11,6 +11,7 @@ This document provides comprehensive API documentation for the node-osc library.
   - [Server](#server)
   - [Message](#message)
   - [Bundle](#bundle)
+  - [Encoding and Decoding](#encoding-and-decoding)
 - [Events](#events)
 - [Error Handling](#error-handling)
 - [Type System](#type-system)
@@ -402,6 +403,185 @@ bundle1.append(bundle2);
 - `timetag` (number): The OSC timetag
 - `elements` (Array): Array of Message or Bundle objects
 - `oscType` (string): Always `'bundle'`
+
+---
+
+## Encoding and Decoding
+
+The library exposes low-level encoding and decoding functions for advanced use cases where you need direct control over OSC binary format conversion.
+
+### `encode(message)`
+
+Encodes an OSC Message or Bundle into a binary Buffer for transmission or storage.
+
+**Parameters:**
+- `message` (Message|Bundle|Object): The message or bundle to encode. Can be:
+  - A `Message` object
+  - A `Bundle` object
+  - A plain object with `oscType`, `address`, and `args` properties (for messages)
+  - A plain object with `oscType`, `timetag`, and `elements` properties (for bundles)
+
+**Returns:**
+- `Buffer`: The encoded OSC message as a Buffer ready for network transmission
+
+**Throws:**
+- `Error` if the message format is invalid or contains unsupported types
+
+**Examples:**
+
+Encode a simple message:
+```javascript
+import { Message, encode } from 'node-osc';
+
+const message = new Message('/oscillator/frequency', 440);
+const buffer = encode(message);
+
+// Send buffer over UDP, WebSocket, or store it
+socket.send(buffer);
+```
+
+Encode a bundle:
+```javascript
+import { Bundle, encode } from 'node-osc';
+
+const bundle = new Bundle(
+  ['/synth/note', 60, 0.8],
+  ['/synth/gate', 1]
+);
+const buffer = encode(bundle);
+```
+
+Encode a plain object:
+```javascript
+import { encode } from 'node-osc';
+
+const messageObject = {
+  oscType: 'message',
+  address: '/test',
+  args: [
+    { value: 42 },
+    { value: 'hello' }
+  ]
+};
+const buffer = encode(messageObject);
+```
+
+### `decode(buffer)`
+
+Decodes a binary Buffer into an OSC Message or Bundle object.
+
+**Parameters:**
+- `buffer` (Buffer): The binary OSC data to decode
+
+**Returns:**
+- `Object`: A decoded OSC message or bundle with the following structure:
+
+For messages:
+```javascript
+{
+  oscType: 'message',
+  address: '/path/to/address',
+  args: [
+    { value: 42 },
+    { value: 'hello' },
+    { value: 3.14 }
+  ]
+}
+```
+
+For bundles:
+```javascript
+{
+  oscType: 'bundle',
+  timetag: 0,
+  elements: [
+    { oscType: 'message', address: '/test1', args: [...] },
+    { oscType: 'message', address: '/test2', args: [...] }
+  ]
+}
+```
+
+**Throws:**
+- `Error` if the buffer contains malformed OSC data
+
+**Examples:**
+
+Decode a received buffer:
+```javascript
+import { decode } from 'node-osc';
+
+// Receive buffer from network or file
+const decoded = decode(buffer);
+
+if (decoded.oscType === 'message') {
+  console.log('Address:', decoded.address);
+  decoded.args.forEach(arg => {
+    console.log('Argument:', arg.value);
+  });
+} else if (decoded.oscType === 'bundle') {
+  console.log('Bundle timetag:', decoded.timetag);
+  console.log('Elements:', decoded.elements.length);
+}
+```
+
+Round-trip encoding and decoding:
+```javascript
+import { Message, encode, decode } from 'node-osc';
+
+const original = new Message('/test', 42, 'hello', 3.14);
+const buffer = encode(original);
+const decoded = decode(buffer);
+
+// decoded will have the same structure as original
+console.log(decoded.address);  // '/test'
+console.log(decoded.args[0].value);  // 42
+console.log(decoded.args[1].value);  // 'hello'
+console.log(decoded.args[2].value);  // 3.14
+```
+
+### Use Cases for `encode` and `decode`
+
+These low-level functions are useful for:
+
+1. **Custom Transport**: Sending OSC over non-UDP protocols (WebSocket, TCP, HTTP, etc.)
+   ```javascript
+   const buffer = encode(message);
+   websocket.send(buffer);
+   ```
+
+2. **Storage**: Saving OSC messages to files or databases
+   ```javascript
+   const buffer = encode(message);
+   fs.writeFileSync('message.osc', buffer);
+   ```
+
+3. **Testing**: Generating test data or validating OSC implementations
+   ```javascript
+   const buffer = encode(new Message('/test', 123));
+   const decoded = decode(buffer);
+   assert.equal(decoded.args[0].value, 123);
+   ```
+
+4. **Protocol Analysis**: Inspecting or manipulating OSC binary data
+   ```javascript
+   const buffer = encode(message);
+   console.log('Message size:', buffer.length);
+   console.log('Raw bytes:', buffer.toString('hex'));
+   ```
+
+5. **Bridging**: Converting between different OSC implementations or formats
+   ```javascript
+   // Receive from one source
+   const buffer = receiveFromExternalSource();
+   const decoded = decode(buffer);
+   
+   // Potentially modify
+   decoded.args.push({ value: 'additional' });
+   
+   // Re-encode and send elsewhere
+   const newBuffer = encode(decoded);
+   sendToAnotherDestination(newBuffer);
+   ```
 
 ---
 

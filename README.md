@@ -251,6 +251,32 @@ try {
 }
 ```
 
+### Low-Level Encoding and Decoding
+
+For advanced use cases, you can directly encode and decode OSC messages:
+
+```js
+import { Message, encode, decode } from 'node-osc';
+
+// Encode a message to binary
+const message = new Message('/oscillator/frequency', 440);
+const buffer = encode(message);
+
+// Send over custom transport (WebSocket, file, etc.)
+console.log('Encoded bytes:', buffer.length);
+
+// Decode binary data back to a message
+const decoded = decode(buffer);
+console.log('Address:', decoded.address);
+console.log('Value:', decoded.args[0].value);
+```
+
+This is useful for:
+- Sending OSC over non-UDP transports (WebSocket, TCP, HTTP)
+- Storing OSC messages to files or databases
+- Testing and debugging OSC implementations
+- Building custom OSC routers or processors
+
 ## API Overview
 
 - **`Client`** - Send OSC messages and bundles
@@ -271,6 +297,12 @@ try {
 - **`Bundle`** - Group multiple messages
   - `new Bundle(timetag, ...elements)` - Create a bundle
   - `append(element)` - Add messages or nested bundles
+
+- **`encode(message)`** - Encode OSC messages/bundles to binary
+  - Convert Message or Bundle to Buffer for transmission
+
+- **`decode(buffer)`** - Decode OSC binary data
+  - Parse Buffer into Message or Bundle object
 
 For complete API documentation, see **[API.md](./API.md)**.
 

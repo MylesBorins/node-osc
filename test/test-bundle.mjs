@@ -86,4 +86,3 @@ test('bundle: nested bundle', (t) => {
 
   client.send(payload);
 });
-

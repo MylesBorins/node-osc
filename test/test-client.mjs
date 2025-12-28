@@ -116,3 +116,145 @@ test('client: close with callback', (t) => {
     t.error(err, 'close should not error');
   });
 });
+
+test('client: send bundle with non-numeric timetag', (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+
+  t.plan(2);
+
+  oscServer.on('bundle', (bundle) => {
+    oscServer.close();
+    t.equal(bundle.timetag, 0, 'should receive immediate execution timetag as 0');
+    t.ok(bundle.elements.length > 0, 'should have elements');
+    client.close();
+  });
+
+  // Send bundle with non-numeric timetag (will be encoded as immediate execution)
+  const bundle = {
+    oscType: 'bundle',
+    timetag: 'immediate', // Non-numeric, will trigger the else branch in writeTimeTag
+    elements: [
+      {
+        oscType: 'message',
+        address: '/test1',
+        args: [{ type: 'i', value: 42 }]
+      }
+    ]
+  };
+  
+  client.send(bundle);
+});
+
+test('client: send bundle with null timetag', (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+
+  t.plan(2);
+
+  oscServer.on('bundle', (bundle) => {
+    oscServer.close();
+    t.equal(bundle.timetag, 0, 'should receive immediate execution timetag as 0');
+    t.ok(bundle.elements.length > 0, 'should have elements');
+    client.close();
+  });
+
+  // Send bundle with null timetag (will be encoded as immediate execution)
+  const bundle = {
+    oscType: 'bundle',
+    timetag: null, // Null, will trigger the else branch in writeTimeTag
+    elements: [
+      {
+        oscType: 'message',
+        address: '/test2',
+        args: [{ type: 's', value: 'hello' }]
+      }
+    ]
+  };
+  
+  client.send(bundle);
+});
+
+test('client: send message with float type arg', (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+
+  t.plan(2);
+
+  oscServer.on('message', (msg) => {
+    oscServer.close();
+    t.equal(msg[0], '/float-test', 'should receive address');
+    t.ok(Math.abs(msg[1] - 9.876) < 0.001, 'should receive float value');
+    client.close();
+  });
+
+  // Send raw message with 'float' type to hit that case label
+  client.send({
+    oscType: 'message',
+    address: '/float-test',
+    args: [{ type: 'float', value: 9.876 }]
+  });
+});
+
+test('client: send message with blob type arg', (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+
+  t.plan(2);
+
+  oscServer.on('message', (msg) => {
+    oscServer.close();
+    t.equal(msg[0], '/blob-test', 'should receive address');
+    t.ok(Buffer.isBuffer(msg[1]), 'should receive blob as buffer');
+    client.close();
+  });
+
+  // Send raw message with 'blob' type to hit that case label
+  client.send({
+    oscType: 'message',
+    address: '/blob-test',
+    args: [{ type: 'blob', value: Buffer.from([0xAA, 0xBB]) }]
+  });
+});
+
+test('client: send message with double type arg', (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+
+  t.plan(2);
+
+  oscServer.on('message', (msg) => {
+    oscServer.close();
+    t.equal(msg[0], '/double-test', 'should receive address');
+    t.ok(Math.abs(msg[1] - 1.23456789) < 0.001, 'should receive double value as float');
+    client.close();
+  });
+
+  // Send raw message with 'double' type to hit that case label
+  client.send({
+    oscType: 'message',
+    address: '/double-test',
+    args: [{ type: 'double', value: 1.23456789 }]
+  });
+});
+
+test('client: send message with midi type arg', (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+
+  t.plan(2);
+
+  oscServer.on('message', (msg) => {
+    oscServer.close();
+    t.equal(msg[0], '/midi-test', 'should receive address');
+    t.ok(Buffer.isBuffer(msg[1]), 'should receive MIDI as buffer');
+    client.close();
+  });
+
+  // Send raw message with 'midi' type to hit that case label
+  client.send({
+    oscType: 'message',
+    address: '/midi-test',
+    args: [{ type: 'midi', value: Buffer.from([0x00, 0x90, 0x40, 0x60]) }]
+  });
+});
