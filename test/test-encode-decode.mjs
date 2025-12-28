@@ -1,7 +1,24 @@
 import { test } from 'tap';
-import { toBuffer, fromBuffer, Message, Bundle } from 'node-osc';
+import { toBuffer, fromBuffer, encode, decode, Message, Bundle } from 'node-osc';
 
-test('toBuffer and fromBuffer: encode and decode simple message', (t) => {
+test('encode and decode: simple message (new API)', (t) => {
+  const message = new Message('/test', 42, 'hello', 3.14);
+  
+  const buffer = encode(message);
+  t.ok(Buffer.isBuffer(buffer), 'encode should return a Buffer');
+  
+  const decoded = decode(buffer);
+  t.equal(decoded.oscType, 'message', 'should decode as message');
+  t.equal(decoded.address, '/test', 'should preserve address');
+  t.equal(decoded.args.length, 3, 'should have 3 arguments');
+  t.equal(decoded.args[0].value, 42, 'should preserve integer argument');
+  t.equal(decoded.args[1].value, 'hello', 'should preserve string argument');
+  t.ok(Math.abs(decoded.args[2].value - 3.14) < 0.001, 'should preserve float argument');
+  
+  t.end();
+});
+
+test('toBuffer and fromBuffer: encode and decode simple message (legacy API)', (t) => {
   const message = new Message('/test', 42, 'hello', 3.14);
   
   const buffer = toBuffer(message);

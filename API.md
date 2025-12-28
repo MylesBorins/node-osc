@@ -410,9 +410,11 @@ bundle1.append(bundle2);
 
 The library exposes low-level encoding and decoding functions for advanced use cases where you need direct control over OSC binary format conversion.
 
-### `toBuffer(message)`
+### `encode(message)` / `toBuffer(message)`
 
 Encodes an OSC Message or Bundle into a binary Buffer for transmission or storage.
+
+> **Note:** `encode` is the recommended name for this function, providing a generic, platform-agnostic API. `toBuffer` is maintained as an alias for backward compatibility and Node.js-specific use cases.
 
 **Parameters:**
 - `message` (Message|Bundle|Object): The message or bundle to encode. Can be:
@@ -431,29 +433,37 @@ Encodes an OSC Message or Bundle into a binary Buffer for transmission or storag
 
 Encode a simple message:
 ```javascript
-import { Message, toBuffer } from 'node-osc';
+import { Message, encode } from 'node-osc';
 
 const message = new Message('/oscillator/frequency', 440);
-const buffer = toBuffer(message);
+const buffer = encode(message);
 
 // Send buffer over UDP, WebSocket, or store it
 socket.send(buffer);
 ```
 
+Using the legacy `toBuffer` alias:
+```javascript
+import { Message, toBuffer } from 'node-osc';
+
+const message = new Message('/oscillator/frequency', 440);
+const buffer = toBuffer(message);
+```
+
 Encode a bundle:
 ```javascript
-import { Bundle, toBuffer } from 'node-osc';
+import { Bundle, encode } from 'node-osc';
 
 const bundle = new Bundle(
   ['/synth/note', 60, 0.8],
   ['/synth/gate', 1]
 );
-const buffer = toBuffer(bundle);
+const buffer = encode(bundle);
 ```
 
 Encode a plain object:
 ```javascript
-import { toBuffer } from 'node-osc';
+import { encode } from 'node-osc';
 
 const messageObject = {
   oscType: 'message',
@@ -463,12 +473,14 @@ const messageObject = {
     { value: 'hello' }
   ]
 };
-const buffer = toBuffer(messageObject);
+const buffer = encode(messageObject);
 ```
 
-### `fromBuffer(buffer)`
+### `decode(buffer)` / `fromBuffer(buffer)`
 
 Decodes a binary Buffer into an OSC Message or Bundle object.
+
+> **Note:** `decode` is the recommended name for this function, providing a generic, platform-agnostic API. `fromBuffer` is maintained as an alias for backward compatibility and Node.js-specific use cases.
 
 **Parameters:**
 - `buffer` (Buffer): The binary OSC data to decode
@@ -508,10 +520,10 @@ For bundles:
 
 Decode a received buffer:
 ```javascript
-import { fromBuffer } from 'node-osc';
+import { decode } from 'node-osc';
 
 // Receive buffer from network or file
-const decoded = fromBuffer(buffer);
+const decoded = decode(buffer);
 
 if (decoded.oscType === 'message') {
   console.log('Address:', decoded.address);
@@ -526,11 +538,11 @@ if (decoded.oscType === 'message') {
 
 Round-trip encoding and decoding:
 ```javascript
-import { Message, toBuffer, fromBuffer } from 'node-osc';
+import { Message, encode, decode } from 'node-osc';
 
 const original = new Message('/test', 42, 'hello', 3.14);
-const buffer = toBuffer(original);
-const decoded = fromBuffer(buffer);
+const buffer = encode(original);
+const decoded = decode(buffer);
 
 // decoded will have the same structure as original
 console.log(decoded.address);  // '/test'
@@ -539,32 +551,32 @@ console.log(decoded.args[1].value);  // 'hello'
 console.log(decoded.args[2].value);  // 3.14
 ```
 
-### Use Cases for `toBuffer` and `fromBuffer`
+### Use Cases for `encode` and `decode`
 
 These low-level functions are useful for:
 
 1. **Custom Transport**: Sending OSC over non-UDP protocols (WebSocket, TCP, HTTP, etc.)
    ```javascript
-   const buffer = toBuffer(message);
+   const buffer = encode(message);
    websocket.send(buffer);
    ```
 
 2. **Storage**: Saving OSC messages to files or databases
    ```javascript
-   const buffer = toBuffer(message);
+   const buffer = encode(message);
    fs.writeFileSync('message.osc', buffer);
    ```
 
 3. **Testing**: Generating test data or validating OSC implementations
    ```javascript
-   const buffer = toBuffer(new Message('/test', 123));
-   const decoded = fromBuffer(buffer);
+   const buffer = encode(new Message('/test', 123));
+   const decoded = decode(buffer);
    assert.equal(decoded.args[0].value, 123);
    ```
 
 4. **Protocol Analysis**: Inspecting or manipulating OSC binary data
    ```javascript
-   const buffer = toBuffer(message);
+   const buffer = encode(message);
    console.log('Message size:', buffer.length);
    console.log('Raw bytes:', buffer.toString('hex'));
    ```
@@ -573,13 +585,13 @@ These low-level functions are useful for:
    ```javascript
    // Receive from one source
    const buffer = receiveFromExternalSource();
-   const decoded = fromBuffer(buffer);
+   const decoded = decode(buffer);
    
    // Potentially modify
    decoded.args.push({ value: 'additional' });
    
    // Re-encode and send elsewhere
-   const newBuffer = toBuffer(decoded);
+   const newBuffer = encode(decoded);
    sendToAnotherDestination(newBuffer);
    ```
 

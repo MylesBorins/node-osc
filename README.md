@@ -256,20 +256,22 @@ try {
 For advanced use cases, you can directly encode and decode OSC messages:
 
 ```js
-import { Message, toBuffer, fromBuffer } from 'node-osc';
+import { Message, encode, decode } from 'node-osc';
 
 // Encode a message to binary
 const message = new Message('/oscillator/frequency', 440);
-const buffer = toBuffer(message);
+const buffer = encode(message);
 
 // Send over custom transport (WebSocket, file, etc.)
 console.log('Encoded bytes:', buffer.length);
 
 // Decode binary data back to a message
-const decoded = fromBuffer(buffer);
+const decoded = decode(buffer);
 console.log('Address:', decoded.address);
 console.log('Value:', decoded.args[0].value);
 ```
+
+> **Note:** `toBuffer`/`fromBuffer` are also available as aliases for backward compatibility.
 
 This is useful for:
 - Sending OSC over non-UDP transports (WebSocket, TCP, HTTP)
@@ -298,10 +300,10 @@ This is useful for:
   - `new Bundle(timetag, ...elements)` - Create a bundle
   - `append(element)` - Add messages or nested bundles
 
-- **`toBuffer(message)`** - Encode OSC messages/bundles to binary
+- **`encode(message)`** / **`toBuffer(message)`** - Encode OSC messages/bundles to binary
   - Convert Message or Bundle to Buffer for transmission
 
-- **`fromBuffer(buffer)`** - Decode OSC binary data
+- **`decode(buffer)`** / **`fromBuffer(buffer)`** - Decode OSC binary data
   - Parse Buffer into Message or Bundle object
 
 For complete API documentation, see **[API.md](./API.md)**.

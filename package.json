@@ -12,8 +12,8 @@
       "default": "./lib/internal/decode.mjs"
     },
     "#osc": {
-      "require": "./dist/lib/internal/osc.js",
-      "default": "./lib/internal/osc.mjs"
+      "require": "./dist/lib/osc.js",
+      "default": "./lib/osc.mjs"
     }
   },
   "author": {
