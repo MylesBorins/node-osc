@@ -17,6 +17,7 @@ npm install node-osc
 - 🔄 Both callback and async/await support
 - 📦 Send and receive OSC messages and bundles
 - 🌐 Works with both ESM and CommonJS
+- 📘 TypeScript type definitions included (generated from JSDoc)
 - 📝 Comprehensive documentation and examples
 - ✅ Well tested and actively maintained
 
@@ -343,13 +344,19 @@ await new Promise(resolve => server.on('listening', resolve));
 console.log('Server ready!');
 ```
 
-## Typescript 
+## TypeScript
 
-To install type definitions for node-osc:  
-   
-`npm install --save @types/node-osc`  or  `yarn add @types/node-osc`  
+TypeScript type definitions are included! No need to install `@types/node-osc`.
 
-The types should then be automatically included by the compiler.  
+The types are automatically generated from JSDoc comments and included with the package. TypeScript will automatically use them when you import from `node-osc`.
+
+```typescript
+import { Client, Server, Message, Bundle } from 'node-osc';
+
+const client = new Client('127.0.0.1', 3333);
+await client.send('/test', 1, 2, 3);
+await client.close();
+```  
 
 ## Examples
 
