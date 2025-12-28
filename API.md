@@ -410,11 +410,9 @@ bundle1.append(bundle2);
 
 The library exposes low-level encoding and decoding functions for advanced use cases where you need direct control over OSC binary format conversion.
 
-### `encode(message)` / `toBuffer(message)`
+### `encode(message)`
 
 Encodes an OSC Message or Bundle into a binary Buffer for transmission or storage.
-
-> **Note:** `encode` is the recommended name for this function, providing a generic, platform-agnostic API. `toBuffer` is maintained as an alias for backward compatibility and Node.js-specific use cases.
 
 **Parameters:**
 - `message` (Message|Bundle|Object): The message or bundle to encode. Can be:
@@ -440,14 +438,6 @@ const buffer = encode(message);
 
 // Send buffer over UDP, WebSocket, or store it
 socket.send(buffer);
-```
-
-Using the legacy `toBuffer` alias:
-```javascript
-import { Message, toBuffer } from 'node-osc';
-
-const message = new Message('/oscillator/frequency', 440);
-const buffer = toBuffer(message);
 ```
 
 Encode a bundle:
@@ -476,11 +466,9 @@ const messageObject = {
 const buffer = encode(messageObject);
 ```
 
-### `decode(buffer)` / `fromBuffer(buffer)`
+### `decode(buffer)`
 
 Decodes a binary Buffer into an OSC Message or Bundle object.
-
-> **Note:** `decode` is the recommended name for this function, providing a generic, platform-agnostic API. `fromBuffer` is maintained as an alias for backward compatibility and Node.js-specific use cases.
 
 **Parameters:**
 - `buffer` (Buffer): The binary OSC data to decode

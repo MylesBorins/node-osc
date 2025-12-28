@@ -1,7 +1,7 @@
 import { test } from 'tap';
-import { toBuffer, fromBuffer, encode, decode, Message, Bundle } from 'node-osc';
+import { encode, decode, Message, Bundle } from 'node-osc';
 
-test('encode and decode: simple message (new API)', (t) => {
+test('encode and decode: simple message', (t) => {
   const message = new Message('/test', 42, 'hello', 3.14);
   
   const buffer = encode(message);
@@ -18,33 +18,16 @@ test('encode and decode: simple message (new API)', (t) => {
   t.end();
 });
 
-test('toBuffer and fromBuffer: encode and decode simple message (legacy API)', (t) => {
-  const message = new Message('/test', 42, 'hello', 3.14);
-  
-  const buffer = toBuffer(message);
-  t.ok(Buffer.isBuffer(buffer), 'toBuffer should return a Buffer');
-  
-  const decoded = fromBuffer(buffer);
-  t.equal(decoded.oscType, 'message', 'should decode as message');
-  t.equal(decoded.address, '/test', 'should preserve address');
-  t.equal(decoded.args.length, 3, 'should have 3 arguments');
-  t.equal(decoded.args[0].value, 42, 'should preserve integer argument');
-  t.equal(decoded.args[1].value, 'hello', 'should preserve string argument');
-  t.ok(Math.abs(decoded.args[2].value - 3.14) < 0.001, 'should preserve float argument');
-  
-  t.end();
-});
-
-test('toBuffer and fromBuffer: encode and decode bundle', (t) => {
+test('encode and decode: bundle', (t) => {
   const bundle = new Bundle(
     ['/test1', 100],
     ['/test2', 'world']
   );
   
-  const buffer = toBuffer(bundle);
-  t.ok(Buffer.isBuffer(buffer), 'toBuffer should return a Buffer');
+  const buffer = encode(bundle);
+  t.ok(Buffer.isBuffer(buffer), 'encode should return a Buffer');
   
-  const decoded = fromBuffer(buffer);
+  const decoded = decode(buffer);
   t.equal(decoded.oscType, 'bundle', 'should decode as bundle');
   t.equal(decoded.timetag, 0, 'should have timetag of 0');
   t.equal(decoded.elements.length, 2, 'should have 2 elements');
@@ -57,13 +40,13 @@ test('toBuffer and fromBuffer: encode and decode bundle', (t) => {
   t.end();
 });
 
-test('toBuffer and fromBuffer: encode and decode nested bundle', (t) => {
+test('encode and decode: nested bundle', (t) => {
   const innerBundle = new Bundle(['/inner', 42]);
   const outerBundle = new Bundle(10, ['/outer', 'test']);
   outerBundle.append(innerBundle);
   
-  const buffer = toBuffer(outerBundle);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(outerBundle);
+  const decoded = decode(buffer);
   
   t.equal(decoded.oscType, 'bundle', 'should decode as bundle');
   t.ok(decoded.timetag > 0, 'should have non-zero timetag');
@@ -75,13 +58,13 @@ test('toBuffer and fromBuffer: encode and decode nested bundle', (t) => {
   t.end();
 });
 
-test('toBuffer and fromBuffer: round-trip with boolean values', (t) => {
+test('encode and decode: round-trip with boolean values', (t) => {
   const message = new Message('/booleans');
   message.append(true);
   message.append(false);
   
-  const buffer = toBuffer(message);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(message);
+  const decoded = decode(buffer);
   
   t.equal(decoded.args[0].value, true, 'should preserve true value');
   t.equal(decoded.args[1].value, false, 'should preserve false value');
@@ -89,12 +72,12 @@ test('toBuffer and fromBuffer: round-trip with boolean values', (t) => {
   t.end();
 });
 
-test('toBuffer and fromBuffer: round-trip with blob', (t) => {
+test('encode and decode: round-trip with blob', (t) => {
   const blobData = Buffer.from([0x01, 0x02, 0x03, 0x04]);
   const message = new Message('/blob', { type: 'blob', value: blobData });
   
-  const buffer = toBuffer(message);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(message);
+  const decoded = decode(buffer);
   
   t.ok(Buffer.isBuffer(decoded.args[0].value), 'should decode as Buffer');
   t.same(decoded.args[0].value, blobData, 'should preserve blob data');
@@ -102,7 +85,7 @@ test('toBuffer and fromBuffer: round-trip with blob', (t) => {
   t.end();
 });
 
-test('toBuffer and fromBuffer: encode and decode message with mixed types', (t) => {
+test('encode and decode: message with mixed types', (t) => {
   const message = new Message('/mixed');
   message.append(42);              // integer
   message.append(3.14);            // float
@@ -110,8 +93,8 @@ test('toBuffer and fromBuffer: encode and decode message with mixed types', (t) 
   message.append(true);            // boolean
   message.append({ type: 'blob', value: Buffer.from([0x01, 0x02]) }); // blob
   
-  const buffer = toBuffer(message);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(message);
+  const decoded = decode(buffer);
   
   t.equal(decoded.args.length, 5, 'should have 5 arguments');
   t.equal(decoded.args[0].value, 42, 'should preserve integer');
@@ -123,7 +106,7 @@ test('toBuffer and fromBuffer: encode and decode message with mixed types', (t) 
   t.end();
 });
 
-test('fromBuffer: decode raw buffer from external source', (t) => {
+test('decode: raw buffer from external source', (t) => {
   // Simulate receiving a raw OSC message buffer from an external source
   // This is a hand-crafted OSC message for "/test" with integer 123
   const rawBuffer = Buffer.from([
@@ -132,7 +115,7 @@ test('fromBuffer: decode raw buffer from external source', (t) => {
     0x00, 0x00, 0x00, 0x7b                          // 123
   ]);
   
-  const decoded = fromBuffer(rawBuffer);
+  const decoded = decode(rawBuffer);
   
   t.equal(decoded.oscType, 'message', 'should decode as message');
   t.equal(decoded.address, '/test', 'should decode correct address');
@@ -142,16 +125,16 @@ test('fromBuffer: decode raw buffer from external source', (t) => {
   t.end();
 });
 
-test('toBuffer: encode message for external consumption', (t) => {
+test('encode: message for external consumption', (t) => {
   const message = new Message('/oscillator/frequency', 440);
-  const buffer = toBuffer(message);
+  const buffer = encode(message);
   
   // Verify buffer is suitable for sending over network
   t.ok(Buffer.isBuffer(buffer), 'should be a Buffer');
   t.ok(buffer.length > 0, 'should have non-zero length');
   
   // Verify it can be decoded back
-  const decoded = fromBuffer(buffer);
+  const decoded = decode(buffer);
   t.equal(decoded.address, '/oscillator/frequency', 'should preserve address');
   t.equal(decoded.args[0].value, 440, 'should preserve value');
   

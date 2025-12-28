@@ -1,5 +1,5 @@
 import { test } from 'tap';
-import { toBuffer, fromBuffer } from '#osc';
+import { encode, decode } from '#osc';
 
 test('osc: timetag encoding with non-number value', (t) => {
   // Test the else branch in writeTimeTag that writes zeros for non-number values
@@ -15,8 +15,8 @@ test('osc: timetag encoding with non-number value', (t) => {
     ]
   };
   
-  const buffer = toBuffer(bundle);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(bundle);
+  const decoded = decode(buffer);
   
   t.equal(decoded.oscType, 'bundle', 'should decode as bundle');
   t.equal(decoded.timetag, 0, 'should decode timetag as 0 for immediate execution');
@@ -37,8 +37,8 @@ test('osc: timetag with immediate execution values', (t) => {
     ]
   };
   
-  const buffer = toBuffer(bundle);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(bundle);
+  const decoded = decode(buffer);
   
   t.equal(decoded.timetag, 0, 'should handle immediate execution timetag');
   t.end();
@@ -58,7 +58,7 @@ test('osc: argument encoding with unknown type', (t) => {
   };
   
   t.throws(() => {
-    toBuffer(message);
+    encode(message);
   }, /Unknown argument type: unknown/, 'should throw error for unknown argument type');
   t.end();
 });
@@ -76,8 +76,8 @@ test('osc: argument encoding with boolean false', (t) => {
     ]
   };
   
-  const buffer = toBuffer(message);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(message);
+  const decoded = decode(buffer);
   
   t.equal(decoded.args[0].value, false, 'should encode and decode false boolean');
   t.end();
@@ -94,7 +94,7 @@ test('osc: argument encoding with unsupported object', (t) => {
   };
   
   t.throws(() => {
-    toBuffer(message);
+    encode(message);
   }, /Don't know how to encode argument/, 'should throw error for unsupported object');
   t.end();
 });
@@ -108,7 +108,7 @@ test('osc: argument encoding with undefined value', (t) => {
   };
   
   t.throws(() => {
-    toBuffer(message);
+    encode(message);
   }, /Don't know how to encode argument/, 'should throw error for undefined argument');
   t.end();
 });
@@ -121,7 +121,7 @@ test('osc: argument decoding with unknown type tag', (t) => {
   const buffer = Buffer.from(addressPart + typeTagPart);
   
   t.throws(() => {
-    fromBuffer(buffer);
+    decode(buffer);
   }, /I don't understand the argument code X/, 'should throw error for unknown type tag');
   t.end();
 });
@@ -134,7 +134,7 @@ test('osc: null argument encoding and decoding', (t) => {
   const typeTagPart = ',N\0\0'; // N is null type tag
   const buffer = Buffer.from(addressPart + typeTagPart);
   
-  const decoded = fromBuffer(buffer);
+  const decoded = decode(buffer);
   t.equal(decoded.args[0].value, null, 'should decode null argument');
   t.end();
 });
@@ -152,8 +152,8 @@ test('osc: double type argument encoding', (t) => {
     ]
   };
   
-  const buffer = toBuffer(message);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(message);
+  const decoded = decode(buffer);
   
   t.ok(Math.abs(decoded.args[0].value - 3.14159) < 0.001, 'should encode double as float');
   t.end();
@@ -168,8 +168,8 @@ test('osc: blob argument with Buffer', (t) => {
     args: [testBuffer] // Direct Buffer without type wrapper
   };
   
-  const buffer = toBuffer(message);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(message);
+  const decoded = decode(buffer);
   
   t.ok(Buffer.isBuffer(decoded.args[0].value), 'should decode as Buffer');
   t.equal(decoded.args[0].value.toString(), 'test data', 'should preserve blob content');
@@ -184,8 +184,8 @@ test('osc: float number encoding', (t) => {
     args: [3.14159] // Non-integer number should be encoded as float
   };
   
-  const buffer = toBuffer(message);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(message);
+  const decoded = decode(buffer);
   
   t.ok(typeof decoded.args[0].value === 'number', 'should decode as number');
   t.ok(!Number.isInteger(decoded.args[0].value), 'should be float, not integer');
@@ -206,8 +206,8 @@ test('osc: explicit integer type encoding', (t) => {
     ]
   };
   
-  const buffer = toBuffer(message);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(message);
+  const decoded = decode(buffer);
   
   t.equal(decoded.args[0].value, 42, 'should encode and decode integer');
   t.end();
@@ -226,8 +226,8 @@ test('osc: explicit float type encoding', (t) => {
     ]
   };
   
-  const buffer = toBuffer(message);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(message);
+  const decoded = decode(buffer);
   
   t.ok(Math.abs(decoded.args[0].value - 3.14) < 0.001, 'should encode and decode float');
   t.end();
@@ -246,8 +246,8 @@ test('osc: explicit string type encoding', (t) => {
     ]
   };
   
-  const buffer = toBuffer(message);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(message);
+  const decoded = decode(buffer);
   
   t.equal(decoded.args[0].value, 'hello', 'should encode and decode string');
   t.end();
@@ -267,8 +267,8 @@ test('osc: explicit blob type encoding', (t) => {
     ]
   };
   
-  const buffer = toBuffer(message);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(message);
+  const decoded = decode(buffer);
   
   t.ok(Buffer.isBuffer(decoded.args[0].value), 'should decode as Buffer');
   t.equal(decoded.args[0].value.toString(), 'blob data', 'should preserve blob data');
@@ -288,8 +288,8 @@ test('osc: explicit boolean true type encoding', (t) => {
     ]
   };
   
-  const buffer = toBuffer(message);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(message);
+  const decoded = decode(buffer);
   
   t.equal(decoded.args[0].value, true, 'should encode and decode boolean true');
   t.end();
@@ -309,8 +309,8 @@ test('osc: MIDI type encoding with Buffer', (t) => {
     ]
   };
   
-  const buffer = toBuffer(message);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(message);
+  const decoded = decode(buffer);
   
   t.ok(Buffer.isBuffer(decoded.args[0].value), 'should decode as Buffer');
   t.equal(decoded.args[0].value.length, 4, 'should be 4 bytes');
@@ -339,8 +339,8 @@ test('osc: MIDI type encoding with object', (t) => {
     ]
   };
   
-  const buffer = toBuffer(message);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(message);
+  const decoded = decode(buffer);
   
   t.ok(Buffer.isBuffer(decoded.args[0].value), 'should decode as Buffer');
   t.equal(decoded.args[0].value[0], 2, 'port should match');
@@ -364,7 +364,7 @@ test('osc: MIDI type with invalid buffer length', (t) => {
   };
   
   t.throws(() => {
-    toBuffer(message);
+    encode(message);
   }, /MIDI message must be exactly 4 bytes/, 'should throw error for wrong buffer length');
   t.end();
 });
@@ -383,7 +383,7 @@ test('osc: MIDI type with invalid value type', (t) => {
   };
   
   t.throws(() => {
-    toBuffer(message);
+    encode(message);
   }, /MIDI value must be a 4-byte Buffer or object/, 'should throw error for invalid value type');
   t.end();
 });
@@ -405,8 +405,8 @@ test('osc: MIDI type with partial object', (t) => {
     ]
   };
   
-  const buffer = toBuffer(message);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(message);
+  const decoded = decode(buffer);
   
   t.equal(decoded.args[0].value[0], 0, 'port should default to 0');
   t.equal(decoded.args[0].value[1], 0x90, 'status should match');
@@ -434,7 +434,7 @@ test('osc: MIDI type decoding with insufficient buffer data', (t) => {
   const malformedBuffer = Buffer.concat([address, typeTags, insufficientMidiData]);
   
   t.throws(() => {
-    fromBuffer(malformedBuffer);
+    decode(malformedBuffer);
   }, /Not enough bytes for MIDI message/, 'should throw error when MIDI data is truncated');
   t.end();
 });
@@ -456,8 +456,8 @@ test('osc: MIDI type with falsy status and data1 values', (t) => {
     ]
   };
   
-  const buffer = toBuffer(message);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(message);
+  const decoded = decode(buffer);
   
   t.equal(decoded.args[0].value[0], 5, 'port should match');
   t.equal(decoded.args[0].value[1], 0, 'status should default to 0');
@@ -484,8 +484,8 @@ test('osc: MIDI type with explicit zero status and data1 values', (t) => {
     ]
   };
   
-  const buffer = toBuffer(message);
-  const decoded = fromBuffer(buffer);
+  const buffer = encode(message);
+  const decoded = decode(buffer);
   
   t.equal(decoded.args[0].value[0], 3, 'port should match');
   t.equal(decoded.args[0].value[1], 0, 'status should be 0');

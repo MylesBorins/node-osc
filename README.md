@@ -271,8 +271,6 @@ console.log('Address:', decoded.address);
 console.log('Value:', decoded.args[0].value);
 ```
 
-> **Note:** `toBuffer`/`fromBuffer` are also available as aliases for backward compatibility.
-
 This is useful for:
 - Sending OSC over non-UDP transports (WebSocket, TCP, HTTP)
 - Storing OSC messages to files or databases
@@ -300,10 +298,10 @@ This is useful for:
   - `new Bundle(timetag, ...elements)` - Create a bundle
   - `append(element)` - Add messages or nested bundles
 
-- **`encode(message)`** / **`toBuffer(message)`** - Encode OSC messages/bundles to binary
+- **`encode(message)`** - Encode OSC messages/bundles to binary
   - Convert Message or Bundle to Buffer for transmission
 
-- **`decode(buffer)`** / **`fromBuffer(buffer)`** - Decode OSC binary data
+- **`decode(buffer)`** - Decode OSC binary data
   - Parse Buffer into Message or Bundle object
 
 For complete API documentation, see **[API.md](./API.md)**.
