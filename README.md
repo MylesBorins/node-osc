@@ -15,7 +15,7 @@ Supports the latest versions of Node.js 20, 22, and 24 in both ESM + CJS
 
 ## Example
 
-### Sending OSC messages:
+### Sending OSC messages with callbacks:
 
 ```js
 import { Client } from 'node-osc';
@@ -25,8 +25,18 @@ client.send('/oscAddress', 200, () => {
   client.close();
 });
 ```
+
+### Sending OSC messages with async/await:
+
+```js
+import { Client } from 'node-osc';
+
+const client = new Client('127.0.0.1', 3333);
+await client.send('/oscAddress', 200);
+await client.close();
+```
   
-### Listening for OSC messages:
+### Listening for OSC messages with callbacks:
 
 ```js
 import { Server } from 'node-osc';
@@ -39,6 +49,28 @@ oscServer.on('message', function (msg) {
   console.log(`Message: ${msg}`);
   oscServer.close();
 });
+```
+
+### Listening for OSC messages with async/await:
+
+```js
+import { Server } from 'node-osc';
+
+const oscServer = new Server(3333, '0.0.0.0');
+
+await new Promise((resolve) => {
+  oscServer.on('listening', () => {
+    console.log('OSC Server is listening');
+    resolve();
+  });
+});
+
+oscServer.on('message', function (msg) {
+  console.log(`Message: ${msg}`);
+});
+
+// Later...
+await oscServer.close();
 ```
 
 ### Sending OSC bundles:
@@ -76,7 +108,9 @@ oscServer.on('bundle', function (bundle) {
 
 ### CJS API
 
-This just works due to conditional exports, isn't that cool!
+Both callback and promise-based APIs work with CommonJS!
+
+#### With callbacks:
 
 ```js
 const { Client, Server } = require('node-osc');
@@ -97,6 +131,31 @@ client.send('/hello', 'world', (err) => {
   if (err) console.error(err);
   client.close();
 });
+```
+
+#### With async/await:
+
+```js
+const { Client, Server } = require('node-osc');
+
+async function main() {
+  const server = new Server(3333, '0.0.0.0');
+  const client = new Client('127.0.0.1', 3333);
+
+  await new Promise((resolve) => {
+    server.on('listening', resolve);
+  });
+
+  server.on('message', (msg) => {
+    console.log(`Message: ${msg}`);
+  });
+
+  await client.send('/hello', 'world');
+  await client.close();
+  await server.close();
+}
+
+main();
 ```
 
 ## Typescript 
