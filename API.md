@@ -973,9 +973,3 @@ The types will be automatically detected by TypeScript.
 - [OSC Specification](http://opensoundcontrol.org/spec-1_0)
 - [GitHub Repository](https://github.com/MylesBorins/node-osc)
 - [npm Package](https://www.npmjs.com/package/node-osc)
-
----
-
-## License
-
-LGPL-3.0-or-later
