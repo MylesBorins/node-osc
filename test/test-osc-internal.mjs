@@ -494,3 +494,202 @@ test('osc: MIDI type with explicit zero status and data1 values', (t) => {
   t.end();
 
 });
+test('osc: timetag encoding with numeric value and fractions', (t) => {
+  // Test writeTimeTag with actual numeric timetag (lines 70-74)
+  const bundle = {
+    oscType: 'bundle',
+    timetag: 1234567890.5, // Numeric value with fractional part
+    elements: [
+      {
+        oscType: 'message',
+        address: '/test',
+        args: []
+      }
+    ]
+  };
+  
+  const buffer = encode(bundle);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.oscType, 'bundle', 'should decode as bundle');
+  t.ok(Math.abs(decoded.timetag - 1234567890.5) < 0.01, 'should preserve numeric timetag with fractions');
+  t.end();
+});
+
+test('osc: timetag decoding with actual timestamp', (t) => {
+  // Test readTimeTag with non-zero, non-immediate values (lines 92-96)
+  // We encode a bundle with a real timestamp, then decode it
+  const bundle = {
+    oscType: 'bundle',
+    timetag: 1609459200.25, // A real timestamp: 2021-01-01 00:00:00.25
+    elements: [
+      {
+        oscType: 'message',
+        address: '/timestamp',
+        args: [{ type: 'i', value: 123 }]
+      }
+    ]
+  };
+  
+  const buffer = encode(bundle);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.oscType, 'bundle', 'should decode as bundle');
+  t.ok(decoded.timetag > 0, 'timetag should be positive');
+  t.ok(Math.abs(decoded.timetag - 1609459200.25) < 0.01, 'should preserve timestamp value');
+  t.end();
+});
+
+test('osc: inferred integer encoding from raw number', (t) => {
+  // Test line 167: encoding raw integer without type wrapper
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [42] // Raw integer, not wrapped
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, 42, 'should encode and decode raw integer');
+  t.end();
+});
+
+test('osc: inferred float encoding from raw number', (t) => {
+  // Test line 169: encoding raw float without type wrapper
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [3.14159] // Raw float, not wrapped
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.ok(Math.abs(decoded.args[0].value - 3.14159) < 0.001, 'should encode and decode raw float');
+  t.end();
+});
+
+test('osc: inferred string encoding from raw string', (t) => {
+  // Test line 172: encoding raw string without type wrapper
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: ['hello world'] // Raw string, not wrapped
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, 'hello world', 'should encode and decode raw string');
+  t.end();
+});
+
+test('osc: inferred boolean true encoding from raw boolean', (t) => {
+  // Test line 174 (true branch): encoding raw boolean true
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [true] // Raw boolean true, not wrapped
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, true, 'should encode and decode raw boolean true');
+  t.end();
+});
+
+test('osc: inferred boolean false encoding from raw boolean', (t) => {
+  // Test line 174 (false branch): encoding raw boolean false
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [false] // Raw boolean false, not wrapped
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, false, 'should encode and decode raw boolean false');
+  t.end();
+});
+
+test('osc: bundle with only message elements (no nested bundles)', (t) => {
+  // Test line 252: encoding message elements in bundle (else branch)
+  const bundle = {
+    oscType: 'bundle',
+    timetag: 0,
+    elements: [
+      {
+        oscType: 'message',
+        address: '/msg1',
+        args: [{ type: 'i', value: 1 }]
+      },
+      {
+        oscType: 'message',
+        address: '/msg2',
+        args: [{ type: 'i', value: 2 }]
+      }
+    ]
+  };
+  
+  const buffer = encode(bundle);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.oscType, 'bundle', 'should decode as bundle');
+  t.equal(decoded.elements.length, 2, 'should have 2 elements');
+  t.equal(decoded.elements[0].oscType, 'message', 'first element should be message');
+  t.equal(decoded.elements[1].oscType, 'message', 'second element should be message');
+  t.end();
+});
+
+test('osc: malformed packet with missing comma in type tags', (t) => {
+  // Test lines 292-293: decoding malformed packet without comma in type tags
+  const addressBuf = Buffer.from('/test\0\0\0', 'utf8');
+  const malformedTypeTagsBuf = Buffer.from('iXX\0', 'utf8'); // Missing leading comma
+  const buffer = Buffer.concat([addressBuf, malformedTypeTagsBuf]);
+  
+  t.throws(() => {
+    decode(buffer);
+  }, /Malformed Packet/, 'should throw on malformed type tags');
+  t.end();
+});
+
+test('osc: bundle with nested bundle element', (t) => {
+  // Test line 252: encoding bundle elements in bundle (if branch)
+  const innerBundle = {
+    oscType: 'bundle',
+    timetag: 0,
+    elements: [
+      {
+        oscType: 'message',
+        address: '/inner',
+        args: [{ type: 'i', value: 99 }]
+      }
+    ]
+  };
+  
+  const outerBundle = {
+    oscType: 'bundle',
+    timetag: 0,
+    elements: [
+      {
+        oscType: 'message',
+        address: '/outer',
+        args: [{ type: 's', value: 'test' }]
+      },
+      innerBundle
+    ]
+  };
+  
+  const buffer = encode(outerBundle);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.oscType, 'bundle', 'should decode as bundle');
+  t.equal(decoded.elements.length, 2, 'should have 2 elements');
+  t.equal(decoded.elements[0].oscType, 'message', 'first element should be message');
+  t.equal(decoded.elements[1].oscType, 'bundle', 'second element should be bundle');
+  t.equal(decoded.elements[1].elements[0].address, '/inner', 'nested bundle should have correct message');
+  t.end();
+});

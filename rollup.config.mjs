@@ -29,6 +29,7 @@ function walkLib(config) {
       dir: 'dist/lib',
       format: 'cjs',
       preserveModules: true,
+      preserveModulesRoot: 'lib',
       exports: 'auto'
     },
     external: [
@@ -52,7 +53,8 @@ function walkTest(config) {
       dir: 'dist/test',
       format: 'cjs',
       exports: 'auto',
-      preserveModules: true
+      preserveModules: true,
+      preserveModulesRoot: 'test'
     },
     external: [
       'node:dgram',
