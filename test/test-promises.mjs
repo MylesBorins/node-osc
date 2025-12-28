@@ -1,3 +1,4 @@
+import { once } from 'node:events';
 import { beforeEach, test } from 'tap';
 import { bootstrap } from './util.mjs';
 
@@ -89,14 +90,10 @@ test('client: async/await usage', async (t) => {
 
   t.plan(1);
 
-  const messagePromise = new Promise((resolve) => {
-    oscServer.on('message', (msg) => {
-      resolve(msg);
-    });
-  });
+  const messagePromise = once(oscServer, 'message');
 
   await client.send('/async-test', 42, 'hello');
-  const receivedMessage = await messagePromise;
+  const [receivedMessage] = await messagePromise;
   
   t.same(receivedMessage, ['/async-test', 42, 'hello'], 'Message received via async/await');
 
@@ -109,9 +106,7 @@ test('server: close with promise', async (t) => {
   
   t.plan(1);
 
-  await new Promise((resolve) => {
-    oscServer.on('listening', resolve);
-  });
+  await once(oscServer, 'listening');
 
   await oscServer.close();
   t.pass('Server closed successfully with promise');
@@ -122,12 +117,8 @@ test('server: no callback still emits listening event', async (t) => {
   
   t.plan(1);
 
-  await new Promise((resolve) => {
-    oscServer.on('listening', () => {
-      t.pass('listening event emitted');
-      resolve();
-    });
-  });
+  await once(oscServer, 'listening');
+  t.pass('listening event emitted');
 
   await oscServer.close();
 });
@@ -139,22 +130,16 @@ test('client and server: full async/await workflow', async (t) => {
   t.plan(2);
 
   // Wait for server to be ready
-  await new Promise((resolve) => {
-    oscServer.on('listening', resolve);
-  });
+  await once(oscServer, 'listening');
   t.pass('Server started');
 
   // Set up message handler
-  const messageReceived = new Promise((resolve) => {
-    oscServer.on('message', (msg) => {
-      t.same(msg, ['/workflow', 'test', 123], 'Message received correctly');
-      resolve();
-    });
-  });
+  const messageReceived = once(oscServer, 'message');
 
   // Send message and wait for it to be received
   await client.send('/workflow', 'test', 123);
-  await messageReceived;
+  const [msg] = await messageReceived;
+  t.same(msg, ['/workflow', 'test', 123], 'Message received correctly');
 
   // Clean up
   await client.close();

@@ -1,16 +1,13 @@
 // Example: Using promises with node-osc Client and Server
+import { once } from 'node:events';
 import { Client, Server } from 'node-osc';
 
 async function main() {
   // Create server and wait for it to be ready
   const server = new Server(3333, '0.0.0.0');
   
-  await new Promise((resolve) => {
-    server.on('listening', () => {
-      console.log('OSC Server is listening on port 3333');
-      resolve();
-    });
-  });
+  await once(server, 'listening');
+  console.log('OSC Server is listening on port 3333');
   
   // Set up message handler
   server.on('message', (msg) => {

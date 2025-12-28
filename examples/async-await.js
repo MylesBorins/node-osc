@@ -1,17 +1,14 @@
 // Example: Using async/await with node-osc Client and Server (CommonJS)
 'use strict';
+const { once } = require('node:events');
 const { Client, Server } = require('node-osc');
 
 async function main() {
   // Create server and wait for it to be ready
   const server = new Server(3333, '0.0.0.0');
   
-  await new Promise((resolve) => {
-    server.on('listening', () => {
-      console.log('OSC Server is listening on port 3333');
-      resolve();
-    });
-  });
+  await once(server, 'listening');
+  console.log('OSC Server is listening on port 3333');
   
   // Set up message handler
   server.on('message', (msg) => {

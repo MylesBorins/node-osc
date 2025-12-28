@@ -106,3 +106,13 @@ test('client: failure', (t) => {
     t.equal(err.code, 'ERR_SOCKET_DGRAM_NOT_RUNNING');
   });
 });
+
+test('client: close with callback', (t) => {
+  const client = new Client('127.0.0.1', t.context.port);
+
+  t.plan(1);
+
+  client.close((err) => {
+    t.error(err, 'close should not error');
+  });
+});
