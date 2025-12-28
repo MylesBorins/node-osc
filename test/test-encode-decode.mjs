@@ -308,3 +308,353 @@ test('encode and decode: nested bundle with message and bundle elements', (t) =>
   
   t.end();
 });
+
+test('encode and decode: MIDI with all zero values', (t) => {
+  // Test MIDI encoding with object where all values are 0 or falsy (covers || branches)
+  const message = new Message('/midi', {
+    type: 'midi',
+    value: {
+      port: 0,
+      status: 0,
+      data1: 0,
+      data2: 0
+    }
+  });
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.ok(Buffer.isBuffer(decoded.args[0].value), 'should decode as Buffer');
+  t.equal(decoded.args[0].value[0], 0, 'port should be 0');
+  t.equal(decoded.args[0].value[1], 0, 'status should be 0');
+  t.equal(decoded.args[0].value[2], 0, 'data1 should be 0');
+  t.equal(decoded.args[0].value[3], 0, 'data2 should be 0');
+  
+  t.end();
+});
+
+test('encode and decode: MIDI with undefined values defaulting', (t) => {
+  // Test MIDI encoding where values are undefined (triggers || default to 0)
+  const message = new Message('/midi', {
+    type: 'midi',
+    value: {
+      // All undefined, should default to 0
+    }
+  });
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.ok(Buffer.isBuffer(decoded.args[0].value), 'should decode as Buffer');
+  t.equal(decoded.args[0].value[0], 0, 'port should default to 0');
+  t.equal(decoded.args[0].value[1], 0, 'status should default to 0');
+  t.equal(decoded.args[0].value[2], 0, 'data1 should default to 0');
+  t.equal(decoded.args[0].value[3], 0, 'data2 should default to 0');
+  
+  t.end();
+});
+
+test('encode and decode: MIDI with only port set', (t) => {
+  // Test MIDI where only port is set, others should default
+  const message = new Message('/midi', {
+    type: 'midi',
+    value: {
+      port: 3
+      // status, data1, data2 undefined
+    }
+  });
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value[0], 3, 'port should be 3');
+  t.equal(decoded.args[0].value[1], 0, 'status should default to 0');
+  t.equal(decoded.args[0].value[2], 0, 'data1 should default to 0');
+  t.equal(decoded.args[0].value[3], 0, 'data2 should default to 0');
+  
+  t.end();
+});
+
+test('encode and decode: MIDI with only status set', (t) => {
+  // Test MIDI where only status is set
+  const message = new Message('/midi', {
+    type: 'midi',
+    value: {
+      status: 0x90
+      // port, data1, data2 undefined
+    }
+  });
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value[0], 0, 'port should default to 0');
+  t.equal(decoded.args[0].value[1], 0x90, 'status should be 0x90');
+  t.equal(decoded.args[0].value[2], 0, 'data1 should default to 0');
+  t.equal(decoded.args[0].value[3], 0, 'data2 should default to 0');
+  
+  t.end();
+});
+
+test('encode and decode: MIDI with only data1 set', (t) => {
+  // Test MIDI where only data1 is set
+  const message = new Message('/midi', {
+    type: 'midi',
+    value: {
+      data1: 0x3C
+      // port, status, data2 undefined
+    }
+  });
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value[0], 0, 'port should default to 0');
+  t.equal(decoded.args[0].value[1], 0, 'status should default to 0');
+  t.equal(decoded.args[0].value[2], 0x3C, 'data1 should be 0x3C');
+  t.equal(decoded.args[0].value[3], 0, 'data2 should default to 0');
+  
+  t.end();
+});
+
+test('encode and decode: MIDI with only data2 set', (t) => {
+  // Test MIDI where only data2 is set
+  const message = new Message('/midi', {
+    type: 'midi',
+    value: {
+      data2: 0x7F
+      // port, status, data1 undefined
+    }
+  });
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value[0], 0, 'port should default to 0');
+  t.equal(decoded.args[0].value[1], 0, 'status should default to 0');
+  t.equal(decoded.args[0].value[2], 0, 'data1 should default to 0');
+  t.equal(decoded.args[0].value[3], 0x7F, 'data2 should be 0x7F');
+  
+  t.end();
+});
+
+test('encode and decode: explicit integer type name', (t) => {
+  // Test with 'integer' type name (alternate for 'i')
+  const message = new Message('/test', { type: 'integer', value: 999 });
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, 999, 'should encode and decode integer');
+  t.end();
+});
+
+test('encode and decode: explicit float type name', (t) => {
+  // Test with 'float' type name (alternate for 'f')
+  const message = new Message('/test', { type: 'float', value: 2.718 });
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.ok(Math.abs(decoded.args[0].value - 2.718) < 0.001, 'should encode and decode float');
+  t.end();
+});
+
+test('encode and decode: explicit string type name', (t) => {
+  // Test with 'string' type name (alternate for 's')
+  const message = new Message('/test', { type: 'string', value: 'alternate' });
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, 'alternate', 'should encode and decode string');
+  t.end();
+});
+
+test('encode and decode: explicit blob type name', (t) => {
+  // Test with 'blob' type name (alternate for 'b')
+  const blobData = Buffer.from([0xDE, 0xAD, 0xBE, 0xEF]);
+  const message = new Message('/test', { type: 'blob', value: blobData });
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.ok(Buffer.isBuffer(decoded.args[0].value), 'should decode as Buffer');
+  t.same(decoded.args[0].value, blobData, 'should preserve blob data');
+  t.end();
+});
+
+test('encode and decode: explicit boolean type name', (t) => {
+  // Test with 'boolean' type name (alternate for 'T'/'F')
+  const message1 = new Message('/test', { type: 'boolean', value: true });
+  const message2 = new Message('/test', { type: 'boolean', value: false });
+  
+  const buffer1 = encode(message1);
+  const buffer2 = encode(message2);
+  const decoded1 = decode(buffer1);
+  const decoded2 = decode(buffer2);
+  
+  t.equal(decoded1.args[0].value, true, 'should encode and decode boolean true');
+  t.equal(decoded2.args[0].value, false, 'should encode and decode boolean false');
+  t.end();
+});
+
+test('encode and decode: explicit T type tag', (t) => {
+  // Test with 'T' type tag directly (not 'boolean')
+  const message = new Message('/test', { type: 'T', value: true });
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, true, 'should encode and decode true with T tag');
+  t.end();
+});
+
+test('encode and decode: explicit double type name', (t) => {
+  // Test with 'double' type name
+  const message = new Message('/test', { type: 'double', value: 3.141592653589793 });
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.ok(Math.abs(decoded.args[0].value - 3.141592653589793) < 0.001, 'should encode double as float');
+  t.end();
+});
+
+test('encode and decode: raw message with float type', (t) => {
+  // Send raw message object directly to hit the 'float' case label
+  const rawMessage = {
+    oscType: 'message',
+    address: '/float',
+    args: [{ type: 'float', value: 1.414 }]
+  };
+  
+  const buffer = encode(rawMessage);
+  const decoded = decode(buffer);
+  
+  t.ok(Math.abs(decoded.args[0].value - 1.414) < 0.001, 'should handle float type');
+  t.end();
+});
+
+test('encode and decode: raw message with blob type', (t) => {
+  // Send raw message object directly to hit the 'blob' case label
+  const blobData = Buffer.from([1, 2, 3, 4]);
+  const rawMessage = {
+    oscType: 'message',
+    address: '/blob',
+    args: [{ type: 'blob', value: blobData }]
+  };
+  
+  const buffer = encode(rawMessage);
+  const decoded = decode(buffer);
+  
+  t.same(decoded.args[0].value, blobData, 'should handle blob type');
+  t.end();
+});
+
+test('encode and decode: raw message with double type', (t) => {
+  // Send raw message object directly to hit the 'double' case label
+  const rawMessage = {
+    oscType: 'message',
+    address: '/double',
+    args: [{ type: 'double', value: 2.71828 }]
+  };
+  
+  const buffer = encode(rawMessage);
+  const decoded = decode(buffer);
+  
+  t.ok(Math.abs(decoded.args[0].value - 2.71828) < 0.001, 'should handle double type');
+  t.end();
+});
+
+test('encode and decode: raw message with T type', (t) => {
+  // Send raw message object directly to hit the 'T' case label
+  const rawMessage = {
+    oscType: 'message',
+    address: '/bool',
+    args: [{ type: 'T', value: true }]
+  };
+  
+  const buffer = encode(rawMessage);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, true, 'should handle T type');
+  t.end();
+});
+
+test('encode and decode: raw message with midi type', (t) => {
+  // Send raw message object directly to hit the 'midi' case label
+  const midiData = Buffer.from([0x01, 0x90, 0x3C, 0x7F]);
+  const rawMessage = {
+    oscType: 'message',
+    address: '/midi',
+    args: [{ type: 'midi', value: midiData }]
+  };
+  
+  const buffer = encode(rawMessage);
+  const decoded = decode(buffer);
+  
+  t.ok(Buffer.isBuffer(decoded.args[0].value), 'should handle midi type');
+  t.equal(decoded.args[0].value.length, 4, 'should have 4 bytes');
+  t.end();
+});
+
+test('encode and decode: blob with length multiple of 4', (t) => {
+  // Test blob where length % 4 === 0 (padding === 4, should use 0 padding)
+  const blobData = Buffer.from([0x00, 0x01, 0x02, 0x03]); // length 4, multiple of 4
+  const message = new Message('/blob4', { type: 'b', value: blobData });
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.same(decoded.args[0].value, blobData, 'should handle blob with length multiple of 4');
+  t.end();
+});
+
+test('encode and decode: blob with length not multiple of 4', (t) => {
+  // Test blob where length % 4 !== 0 (padding < 4)
+  const blobData = Buffer.from([0xAA, 0xBB, 0xCC]); // length 3, not multiple of 4
+  const message = new Message('/blob3', { type: 'b', value: blobData });
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.same(decoded.args[0].value, blobData, 'should handle blob with length not multiple of 4');
+  t.end();
+});
+
+test('encode and decode: blob with length 1', (t) => {
+  // Test blob with length 1 (padding will be 3)
+  const blobData = Buffer.from([0xFF]); // length 1
+  const message = new Message('/blob1', { type: 'b', value: blobData });
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.same(decoded.args[0].value, blobData, 'should handle blob with length 1');
+  t.end();
+});
+
+test('encode and decode: blob with length 2', (t) => {
+  // Test blob with length 2 (padding will be 2)
+  const blobData = Buffer.from([0xDE, 0xAD]); // length 2
+  const message = new Message('/blob2', { type: 'b', value: blobData });
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.same(decoded.args[0].value, blobData, 'should handle blob with length 2');
+  t.end();
+});
+
+test('encode and decode: blob with length 8', (t) => {
+  // Test blob with length 8 (multiple of 4, padding === 4)
+  const blobData = Buffer.from([0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08]); // length 8
+  const message = new Message('/blob8', { type: 'b', value: blobData });
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.same(decoded.args[0].value, blobData, 'should handle blob with length 8');
+  t.end();
+});
