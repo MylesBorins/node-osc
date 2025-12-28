@@ -798,4 +798,4 @@ The types will be automatically detected by TypeScript.
 
 ## License
 
-LGPL-3.0-or-later
+Apache-2.0

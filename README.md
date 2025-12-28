@@ -333,4 +333,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-LGPL-3.0-or-later. Please see the file lesser.txt for details.
+Apache-2.0
