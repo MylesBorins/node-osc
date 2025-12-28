@@ -53,7 +53,7 @@ const bundle = new Bundle(['/one', 1], ['/two', 2], ['/three', 3]);
 bundle.append(new Bundle(10, ['/four', 4]));
 
 const client = new Client('127.0.0.1', 3333);
-client.send(bundle));
+client.send(bundle);
 ```
 
 ### Listening for OSC bundles:
@@ -72,6 +72,76 @@ oscServer.on('bundle', function (bundle) {
   });
   oscServer.close();
 });
+```
+
+### Error handling:
+
+```js
+import { Server, Client } from 'node-osc';
+
+const oscServer = new Server(3333, '0.0.0.0', () => {
+  console.log('OSC Server is listening');
+});
+
+// Handle decode errors
+oscServer.on('error', (error, rinfo) => {
+  console.error('Error occurred:', error.message);
+  console.error('From:', rinfo);
+});
+
+oscServer.on('message', (msg) => {
+  console.log(`Message: ${msg}`);
+});
+
+const client = new Client('127.0.0.1', 3333);
+client.send('/test', 'hello', (err) => {
+  if (err) {
+    console.error('Error sending message:', err);
+  }
+  client.close();
+});
+```
+
+### Advanced features:
+
+#### MIDI messages:
+
+```js
+import { Client, Message } from 'node-osc';
+
+const client = new Client('127.0.0.1', 3333);
+const message = new Message('/midi');
+
+// MIDI message: { port, status, data1, data2 }
+message.append({
+  type: 'midi',
+  value: { port: 0, status: 144, data1: 60, data2: 127 }
+});
+
+client.send(message, () => {
+  client.close();
+});
+```
+
+#### Type-specific arguments:
+
+```js
+import { Message } from 'node-osc';
+
+const message = new Message('/typed-args');
+
+// Explicitly specify types
+message.append({ type: 'integer', value: 123 });
+message.append({ type: 'float', value: 3.14 });
+message.append({ type: 'string', value: 'hello' });
+message.append({ type: 'blob', value: Buffer.from('binary data') });
+message.append({ type: 'boolean', value: true });
+
+// Short type aliases also work
+message.append({ type: 'i', value: 456 });
+message.append({ type: 'f', value: 2.71 });
+message.append({ type: 's', value: 'world' });
+message.append({ type: 'b', value: Buffer.from('data') });
 ```
 
 ### CJS API

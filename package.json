@@ -40,7 +40,17 @@
   ],
   "keywords": [
     "osc",
-    "udp"
+    "opensoundcontrol",
+    "open-sound-control",
+    "udp",
+    "midi",
+    "audio",
+    "music",
+    "dmx",
+    "network",
+    "protocol",
+    "client",
+    "server"
   ],
   "repository": {
     "type": "git",
