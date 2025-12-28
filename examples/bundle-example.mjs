@@ -78,7 +78,8 @@ await setImmediate();
 
 // Example 5: Building a bundle incrementally
 console.log("Sending incrementally built bundle...");
-const bundle5 = new Bundle(["/initial", 0]);  // Start with at least one element
+// Create bundle with initial element, then append more
+const bundle5 = new Bundle(["/initial", 0]);
 bundle5.append(["/control/1", 10]);
 bundle5.append(["/control/2", 20]);
 bundle5.append(["/control/3", 30]);
