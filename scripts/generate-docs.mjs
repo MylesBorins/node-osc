@@ -9,12 +9,26 @@ import { writeFileSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 
 // Generate JSDoc JSON
-const jsdocJson = execSync('npx jsdoc -X -c jsdoc.json', {
-  encoding: 'utf8',
-  maxBuffer: 10 * 1024 * 1024
-});
+let jsdocJson;
+try {
+  jsdocJson = execSync('npx jsdoc -X -c jsdoc.json', {
+    encoding: 'utf8',
+    maxBuffer: 10 * 1024 * 1024
+  });
+} catch (error) {
+  console.error('❌ Failed to run JSDoc:');
+  console.error(error.message);
+  process.exit(1);
+}
 
-const docs = JSON.parse(jsdocJson);
+let docs;
+try {
+  docs = JSON.parse(jsdocJson);
+} catch (error) {
+  console.error('❌ Failed to parse JSDoc JSON output:');
+  console.error(error.message);
+  process.exit(1);
+}
 
 // Filter and organize documentation
 const classes = {};
@@ -205,5 +219,11 @@ functionOrder.forEach(funcName => {
 });
 
 // Write output
-writeFileSync('docs/API.md', markdown, 'utf8');
-console.log('✅ API documentation generated: docs/API.md');
+try {
+  writeFileSync('docs/API.md', markdown, 'utf8');
+  console.log('✅ API documentation generated: docs/API.md');
+} catch (error) {
+  console.error('❌ Failed to write API.md:');
+  console.error(error.message);
+  process.exit(1);
+}
