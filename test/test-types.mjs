@@ -21,14 +21,14 @@ test('types: TypeScript compilation', (t) => {
   }
   
   try {
-    // Run TypeScript compiler with Top-Level Await support
+    // Run TypeScript compiler
     const cmd = 'npx tsc --project "' + tsconfigPath + '"';
     execSync(cmd, { 
       encoding: 'utf-8',
       stdio: 'pipe',
       cwd: join(testRoot, 'fixtures', 'types')
     });
-    t.pass('TypeScript types compile successfully with Top-Level Await');
+    t.pass('TypeScript types compile successfully');
   } catch (error) {
     t.fail('TypeScript compilation failed: ' + error.message);
     if (error.stdout) console.log('STDOUT:', error.stdout);
