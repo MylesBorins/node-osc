@@ -39,6 +39,7 @@ jobs:
           ${{ runner.os }}-node-${{ matrix.node-version }}-
 
     - name: Install Dependencies
+      # Skip on Windows when node_modules cache is restored to save ~16s
       if: runner.os != 'Windows' || steps.cache-node-modules.outputs.cache-hit != 'true'
       run: npm ci
 
