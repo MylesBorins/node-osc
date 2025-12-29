@@ -1,4 +1,5 @@
 import { createServer } from 'node:net';
+import { setImmediate } from 'node:timers/promises';
 
 async function bootstrap(t) {
   const port = await getPort();
@@ -7,18 +8,24 @@ async function bootstrap(t) {
   };
 }
 
-function getPort() {
-  return new Promise((resolve, reject) => {
-    const server = createServer();
-    server.unref();
+async function getPort() {
+  const server = createServer();
+  server.unref();
+  
+  const port = await new Promise((resolve, reject) => {
     server.on('error', reject);
     server.listen(() => {
-      const { port } = server.address();
-      server.close(() => {
-        resolve(port);
-      });
+      resolve(server.address().port);
     });
   });
+  
+  await server.close();
+  
+  // Allow the event loop to process and ensure port is fully released
+  // This prevents EACCES errors when immediately rebinding to the same port
+  await setImmediate();
+  
+  return port;
 }
 
 export {
