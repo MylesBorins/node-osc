@@ -1,10 +1,12 @@
 # node-osc Examples
 
-This directory contains examples demonstrating various ways to use the node-osc library.
+This directory contains working examples demonstrating various ways to use the node-osc library.
 
 ## Running the Examples
 
-### CommonJS Examples
+All examples can be run directly with Node.js. Some examples require a server and client running simultaneously.
+
+### Server/Client Examples
 
 Run the server in one terminal:
 ```bash
@@ -16,19 +18,25 @@ Run the client in another terminal:
 node examples/client.js
 ```
 
-### ESM Examples
+### Standalone Examples
 
-Run the callback-based example:
+These examples run both client and server in the same process:
+
 ```bash
+# Callback-based example
 node examples/esm.mjs
-```
 
-Run the async/await example:
-```bash
+# Async/await example (recommended)
 node examples/async-await.mjs
+
+# Bundle example
+node examples/bundle-example.mjs
+
+# Error handling example
+node examples/error-handling.mjs
 ```
 
-## Examples Overview
+## Example Files
 
 ### [server.js](./server.js)
 **CommonJS Server Example**
@@ -39,10 +47,6 @@ Demonstrates:
 - Displaying remote client information
 - Closing the server after receiving a message
 
-```bash
-node examples/server.js
-```
-
 ### [client.js](./client.js)
 **CommonJS Client Example**
 
@@ -50,11 +54,6 @@ Demonstrates:
 - Creating an OSC client with CommonJS
 - Building messages with the Message class
 - Sending messages with callbacks
-- Multiple ways to send messages (commented examples)
-
-```bash
-node examples/client.js
-```
 
 ### [esm.mjs](./esm.mjs)
 **ESM with Callbacks Example**
@@ -65,12 +64,8 @@ Demonstrates:
 - Server event listeners
 - Client sending with callbacks
 
-```bash
-node examples/esm.mjs
-```
-
 ### [async-await.mjs](./async-await.mjs)
-**ESM with Async/Await Example**
+**ESM with Async/Await Example** (Recommended Pattern)
 
 Demonstrates:
 - Modern async/await patterns
@@ -78,12 +73,6 @@ Demonstrates:
 - Sending multiple messages in parallel with `Promise.all()`
 - Clean shutdown of both client and server
 - Complete end-to-end workflow
-
-This is the recommended pattern for new projects.
-
-```bash
-node examples/async-await.mjs
-```
 
 Expected output:
 ```
@@ -97,98 +86,23 @@ Received: /counter [ 3 ]
 Client and server closed
 ```
 
-## Creating Your Own Examples
+### [bundle-example.mjs](./bundle-example.mjs)
+**OSC Bundles Example**
 
-### Basic Client-Server Pattern
+Demonstrates:
+- Creating OSC bundles with multiple messages
+- Sending bundles atomically
+- Receiving and processing bundles
+- Using timetags
 
-**Server (server.mjs):**
-```javascript
-import { Server } from 'node-osc';
+### [error-handling.mjs](./error-handling.mjs)
+**Error Handling Example**
 
-const server = new Server(3333, '0.0.0.0');
-
-server.on('listening', () => {
-  console.log('Server ready on port 3333');
-});
-
-server.on('message', (msg, rinfo) => {
-  const [address, ...args] = msg;
-  console.log(`${address}: ${args.join(', ')}`);
-});
-```
-
-**Client (client.mjs):**
-```javascript
-import { Client } from 'node-osc';
-
-const client = new Client('127.0.0.1', 3333);
-
-await client.send('/test', 1, 2, 3);
-await client.close();
-```
-
-### Working with Bundles
-
-**bundle-example.mjs:**
-```javascript
-import { Bundle, Client, Server } from 'node-osc';
-import { once } from 'node:events';
-
-// Start server
-const server = new Server(3333, '0.0.0.0');
-await once(server, 'listening');
-
-// Handle bundles
-server.on('bundle', (bundle) => {
-  console.log(`Bundle with timetag: ${bundle.timetag}`);
-  bundle.elements.forEach((msg, i) => {
-    console.log(`  Message ${i + 1}:`, msg);
-  });
-});
-
-// Create and send bundle
-const client = new Client('127.0.0.1', 3333);
-
-const bundle = new Bundle(
-  ['/synth/freq', 440],
-  ['/synth/amp', 0.5],
-  ['/synth/gate', 1]
-);
-
-await client.send(bundle);
-
-// Cleanup
-await client.close();
-await server.close();
-```
-
-### Error Handling Example
-
-**error-handling.mjs:**
-```javascript
-import { Client, Server } from 'node-osc';
-
-const server = new Server(3333, '0.0.0.0');
-
-// Handle server errors
-server.on('error', (err, rinfo) => {
-  console.error(`Server error from ${rinfo.address}:${rinfo.port}`);
-  console.error(err.message);
-});
-
-const client = new Client('127.0.0.1', 3333);
-
-try {
-  await client.send('/test', 123);
-  console.log('Message sent successfully');
-} catch (err) {
-  console.error('Failed to send message:', err.message);
-} finally {
-  await client.close();
-}
-
-await server.close();
-```
+Demonstrates:
+- Proper error handling with try/catch
+- Server error events
+- Resource cleanup with finally blocks
+- Handling closed socket errors
 
 ## Tips
 
@@ -200,6 +114,6 @@ await server.close();
 
 ## Further Reading
 
-- [API Documentation](../API.md) - Complete API reference
+- [Main README](../README.md) - Quick start guide
+- [API Documentation](../docs/API.md) - Complete API reference
 - [OSC Specification](http://opensoundcontrol.org/spec-1_0) - Learn about the OSC protocol
-- [README](../README.md) - Main project documentation
