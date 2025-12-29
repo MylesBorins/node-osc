@@ -9,20 +9,28 @@ async function bootstrap(t) {
 }
 
 async function getPort() {
-  return new Promise((resolve, reject) => {
-    const server = createServer();
-    server.unref();
+  const server = createServer();
+  server.unref();
+  
+  const port = await new Promise((resolve, reject) => {
     server.on('error', reject);
     server.listen(() => {
       const { port } = server.address();
-      server.close(async () => {
-        // Allow the event loop to process and ensure port is fully released
-        // This prevents EACCES errors when immediately rebinding to the same port
-        await setImmediate();
-        resolve(port);
+      server.close((err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(port);
+        }
       });
     });
   });
+  
+  // Allow the event loop to process and ensure port is fully released
+  // This prevents EACCES errors when immediately rebinding to the same port
+  await setImmediate();
+  
+  return port;
 }
 
 export {
