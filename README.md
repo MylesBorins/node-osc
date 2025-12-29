@@ -48,6 +48,7 @@ server.on('message', (msg) => {
 ## Documentation
 
 - 📚 **[API Documentation](./docs/API.md)** - Complete API reference generated from source code
+- 📘 **[Guide](./docs/GUIDE.md)** - Best practices, error handling, and troubleshooting
 - 📖 **[Examples](./examples/)** - Working examples for various use cases
 
 ## Compatibility
