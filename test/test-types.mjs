@@ -12,7 +12,7 @@ const isESM = !normalizedPath.includes('/dist/');
 
 test('types: TypeScript compilation', (t) => {
   let tsconfigPath;
-  const testRoot = resolve(__dirname, isESM ?  '.': '../../test');
+  const testRoot = resolve(__dirname, isESM ? '.': '../../test');
   if (isESM) {
     tsconfigPath = join(testRoot, 'fixtures', 'types', 'tsconfig-esm.test.json');
   }
