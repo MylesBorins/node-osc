@@ -10,10 +10,10 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const normalizedPath = __dirname.replace(/\\/g, '/');
 const isESM = !normalizedPath.includes('/dist/');
 
-test('types: TypeScript compilation with ESM types', (t) => {
+test('types: TypeScript compilation', (t) => {
   let tsconfigPath;
   const testRoot = resolve(__dirname, isESM ?  '.': '../../test');
-  if (!isESM) {
+  if (isESM) {
     tsconfigPath = join(testRoot, 'fixtures', 'types', 'tsconfig-esm.test.json');
   }
   else {
