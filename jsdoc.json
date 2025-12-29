@@ -1,0 +1,16 @@
+{
+  "source": {
+    "include": [
+      "lib/Server.mjs",
+      "lib/Client.mjs",
+      "lib/Bundle.mjs",
+      "lib/Message.mjs",
+      "lib/osc.mjs"
+    ],
+    "includePattern": ".+\\.mjs$"
+  },
+  "opts": {
+    "encoding": "utf8",
+    "recurse": false
+  }
+}

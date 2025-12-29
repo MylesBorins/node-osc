@@ -26,7 +26,7 @@
     "clean": "rm -rf dist/ types/",
     "build": "npm run clean && rollup --config rollup.config.mjs && npm run build:types",
     "build:types": "tsc",
-    "docs": "documentation build lib/Client.mjs lib/Server.mjs lib/Message.mjs lib/Bundle.mjs lib/osc.mjs -f md --markdown-toc true -o docs/API.md",
+    "docs": "node scripts/generate-docs.mjs",
     "prepublishOnly": "npm run build",
     "lint": "eslint \"lib/**/*.mjs\" \"test/test-*.mjs\" test/util.mjs examples/*.js examples/*.mjs rollup.config.mjs",
     "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
@@ -48,9 +48,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
-    "documentation": "^14.0.3",
     "eslint": "^9.32.0",
     "globals": "^16.3.0",
+    "jsdoc": "^4.0.5",
     "rollup": "^4.46.2",
     "tap": "^21.1.0",
     "typescript": "^5.9.3"
