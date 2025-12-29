@@ -348,7 +348,7 @@ console.log('Server ready!');
 
 TypeScript type definitions are included! No need to install `@types/node-osc`.
 
-The types are automatically generated from JSDoc comments during the build process and included with the package. Both ESM and CommonJS type definitions are provided. TypeScript will automatically use them when you import from `node-osc`.
+The types are automatically generated from JSDoc comments during the build process and included with the package. A single `.d.mts` type definition format is provided that works for both ESM and CommonJS consumers. TypeScript will automatically use them when you import from `node-osc`.
 
 **Note:** If you previously installed `@types/node-osc`, you should uninstall it to avoid conflicts:
 ```bash
