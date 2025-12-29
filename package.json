@@ -28,7 +28,7 @@
     "build:types": "tsc",
     "docs": "node scripts/generate-docs.mjs",
     "prepublishOnly": "npm run build",
-    "lint": "eslint \"lib/**/*.mjs\" \"test/test-*.mjs\" examples/*.js examples/*.mjs rollup.config.mjs",
+    "lint": "eslint \"lib/**/*.mjs\" \"test/test-*.mjs\" test/util.mjs examples/*.js examples/*.mjs rollup.config.mjs",
     "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
     "test:esm": "tap test/test-*.mjs",
     "test:cjs": "tap dist/test/test-*.js"

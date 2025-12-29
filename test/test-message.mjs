@@ -1,5 +1,4 @@
-import { beforeEach, test } from 'tap';
-import { bootstrap } from './util.mjs';
+import { test } from 'tap';
 
 import { Server, Client, Message } from 'node-osc';
 
@@ -7,11 +6,9 @@ function round(num) {
   return Math.round(num * 100) / 100;
 }
 
-beforeEach(bootstrap);
-
 test('message: basic usage', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
   const m = new Message('/address');
   m.append('testing');
   m.append(123);
@@ -30,8 +27,8 @@ test('message: basic usage', (t) => {
 });
 
 test('message: multiple args', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
   const m = new Message('/address', 'testing', 123, true);
 
   oscServer.on('message', (msg) => {
@@ -47,8 +44,8 @@ test('message: multiple args', (t) => {
 });
 
 test('message: object', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
   const m = new Message('/address');
   m.append({
     type: 'string',
@@ -72,8 +69,8 @@ test('message: object', (t) => {
 });
 
 test('message: float', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
   const m = new Message('/address');
   m.append(3.14);
 
@@ -94,8 +91,8 @@ test('message: float', (t) => {
 });
 
 test('message: alias messages', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
   const m = new Message('/address');
   m.append({
     type: 'i',
@@ -127,8 +124,8 @@ test('message: alias messages', (t) => {
 });
 
 test('message: boolean', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
   const m = new Message('/address');
   m.append(true);
 
@@ -148,8 +145,8 @@ test('message: boolean', (t) => {
 });
 
 test('message: blob', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
   const m = new Message('/address');
   const buf = Buffer.from('test');
   m.append({
@@ -173,8 +170,8 @@ test('message: blob', (t) => {
 });
 
 test('message: Buffer as blob', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
   const m = new Message('/address');
   const buf = Buffer.from('test buffer data');
   // Directly append Buffer without wrapping in object
@@ -215,8 +212,8 @@ test('message: Buffer as blob', (t) => {
 // });
 
 test('message: Buffer with multiple arguments', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
   const m = new Message('/address');
   const buf1 = Buffer.from('first');
   const buf2 = Buffer.from('second');
@@ -244,8 +241,8 @@ test('message: Buffer with multiple arguments', (t) => {
 });
 
 test('message: Buffer in constructor', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
   const buf = Buffer.from('constructor buffer');
   const m = new Message('/address', 'test', buf, 123);
 
@@ -267,8 +264,8 @@ test('message: Buffer in constructor', (t) => {
 });
 
 test('message: Buffer in array', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
   const m = new Message('/address');
   const buf1 = Buffer.from('array1');
   const buf2 = Buffer.from('array2');
@@ -294,8 +291,8 @@ test('message: Buffer in array', (t) => {
 });
 
 test('message: empty Buffer', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
   const m = new Message('/address');
   const buf = Buffer.from('');
   
@@ -317,8 +314,8 @@ test('message: empty Buffer', (t) => {
 });
 
 test('message: large Buffer', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
   const m = new Message('/address');
   const buf = Buffer.alloc(1024, 'x');
   

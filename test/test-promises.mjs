@@ -1,14 +1,11 @@
 import { once } from 'node:events';
-import { beforeEach, test } from 'tap';
-import { bootstrap } from './util.mjs';
+import { test } from 'tap';
 
 import { Server, Client } from 'node-osc';
 
-beforeEach(bootstrap);
-
 test('client: send with promise - array', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
 
   t.plan(1);
 
@@ -22,8 +19,8 @@ test('client: send with promise - array', async (t) => {
 });
 
 test('client: array is not mutated when sent with promise', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
 
   t.plan(2);
 
@@ -44,8 +41,8 @@ test('client: array is not mutated when sent with promise', async (t) => {
 });
 
 test('client: send with promise - string', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
 
   t.plan(1);
 
@@ -59,8 +56,8 @@ test('client: send with promise - string', async (t) => {
 });
 
 test('client: send with promise - message object', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
 
   t.plan(1);
 
@@ -77,8 +74,8 @@ test('client: send with promise - message object', async (t) => {
 });
 
 test('client: send with promise - multiple args', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
 
   t.plan(1);
 
@@ -92,7 +89,7 @@ test('client: send with promise - multiple args', async (t) => {
 });
 
 test('client: send promise rejection on closed socket', async (t) => {
-  const client = new Client('127.0.0.1', t.context.port);
+  const client = new Client('127.0.0.1', 0);
 
   t.plan(1);
 
@@ -107,8 +104,8 @@ test('client: send promise rejection on closed socket', async (t) => {
 });
 
 test('client: async/await usage', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
 
   t.plan(1);
 
@@ -124,7 +121,7 @@ test('client: async/await usage', async (t) => {
 });
 
 test('server: close with promise', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const oscServer = new Server(0, '127.0.0.1');
   
   t.plan(1);
 
@@ -135,7 +132,7 @@ test('server: close with promise', async (t) => {
 });
 
 test('server: no callback still emits listening event', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const oscServer = new Server(0, '127.0.0.1');
   
   t.plan(1);
 
@@ -146,8 +143,8 @@ test('server: no callback still emits listening event', async (t) => {
 });
 
 test('client and server: full async/await workflow', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
 
   t.plan(2);
 
@@ -169,8 +166,8 @@ test('client and server: full async/await workflow', async (t) => {
 });
 
 test('client: multiple sends with promises', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  const client = new Client('127.0.0.1', 0);
 
   t.plan(3);
 
@@ -195,7 +192,7 @@ test('client: multiple sends with promises', async (t) => {
 });
 
 test('client: close promise rejection on error', async (t) => {
-  const client = new Client('127.0.0.1', t.context.port);
+  const client = new Client('127.0.0.1', 0);
 
   t.plan(1);
 
@@ -232,7 +229,7 @@ test('client: close promise rejection on error', async (t) => {
 });
 
 test('server: close promise rejection on error', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const oscServer = new Server(0, '127.0.0.1');
 
   t.plan(1);
 
