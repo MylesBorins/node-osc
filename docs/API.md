@@ -18,12 +18,12 @@ For usage guides, best practices, and troubleshooting, see the **[Guide](./GUIDE
   - [Constructor](#client-constructor)
   - [close()](#client-close)
   - [send()](#client-send)
-- [Bundle](#bundle)
-  - [Constructor](#bundle-constructor)
-  - [append()](#bundle-append)
 - [Message](#message)
   - [Constructor](#message-constructor)
   - [append()](#message-append)
+- [Bundle](#bundle)
+  - [Constructor](#bundle-constructor)
+  - [append()](#bundle-append)
 - [Low Level Functions](#low-level-functions)
   - [encode()](#encode)
   - [decode()](#decode)
@@ -36,7 +36,7 @@ For usage guides, best practices, and troubleshooting, see the **[Guide](./GUIDE
 
 OSC Server for receiving messages and bundles over UDP.
 
-Extends EventEmitter and emits the following events:
+Emits the following events:
 - 'listening': Emitted when the server starts listening
 - 'message': Emitted when an OSC message is received (receives msg array and rinfo object)
 - 'bundle': Emitted when an OSC bundle is received (receives bundle object and rinfo object)
@@ -68,12 +68,11 @@ server.on('message', (msg, rinfo) => {
 ```
 
 ```javascript
-// Using async/await
-const server = new Server(3333, '0.0.0.0');
+// Using async/await with events.once
+import { once } from 'node:events';
 
-await new Promise((resolve) => {
-  server.on('listening', resolve);
-});
+const server = new Server(3333, '0.0.0.0');
+await once(server, 'listening');
 
 server.on('message', (msg) => {
   console.log('Message:', msg);
@@ -237,70 +236,6 @@ await client.send(bundle);
 
 ---
 
-## Bundle
-
-Represents an OSC bundle containing multiple messages or nested bundles.
-
-OSC bundles allow multiple messages to be sent together, optionally with
-a timetag indicating when the bundle should be processed.
-
-### Bundle Constructor
-
-Creates a new Bundle instance.
-
-**Parameters:**
-
-- `timetagOrElement` *{number | Message | Bundle | Array}* (optional) - Timetag, or if not a number, the first element and timetag will default to 0.
-- `elements` *{Message | Bundle | Array}* - Messages or bundles to include.
-  Arrays will be automatically converted to Message objects.
-
-**Examples:**
-
-```javascript
-// Create a bundle without a timetag
-const bundle = new Bundle(['/one', 1], ['/two', 2]);
-```
-
-```javascript
-// Create a bundle with a timetag
-const bundle = new Bundle(10, ['/one', 1], ['/two', 2]);
-```
-
-```javascript
-// Nest bundles
-const bundle1 = new Bundle(['/one', 1]);
-const bundle2 = new Bundle(['/two', 2]);
-bundle1.append(bundle2);
-```
-
-
-### Bundle.append()
-
-Append a message or bundle to this bundle.
-
-**Parameters:**
-
-- `element` *{Message | Bundle | Array}* - The message or bundle to append.
-  Arrays will be automatically converted to Message objects.
-
-**Examples:**
-
-```javascript
-const bundle = new Bundle();
-bundle.append(['/test', 1]);
-bundle.append(new Message('/test2', 2));
-```
-
-```javascript
-// Append a nested bundle
-const bundle1 = new Bundle(['/one', 1]);
-const bundle2 = new Bundle(['/two', 2]);
-bundle1.append(bundle2);
-```
-
-
----
-
 ## Message
 
 Represents an OSC message with an address and arguments.
@@ -383,6 +318,70 @@ msg.append({ type: 'blob', value: Buffer.from('data') });
 // MIDI messages (4 bytes: port, status, data1, data2)
 msg.append({ type: 'midi', value: { port: 0, status: 144, data1: 60, data2: 127 } });
 msg.append({ type: 'm', value: Buffer.from([0, 144, 60, 127]) });
+```
+
+
+---
+
+## Bundle
+
+Represents an OSC bundle containing multiple messages or nested bundles.
+
+OSC bundles allow multiple messages to be sent together, optionally with
+a timetag indicating when the bundle should be processed.
+
+### Bundle Constructor
+
+Creates a new Bundle instance.
+
+**Parameters:**
+
+- `timetagOrElement` *{number | Message | Bundle | Array}* (optional) - Timetag, or if not a number, the first element and timetag will default to 0.
+- `elements` *{Message | Bundle | Array}* - Messages or bundles to include.
+  Arrays will be automatically converted to Message objects.
+
+**Examples:**
+
+```javascript
+// Create a bundle without a timetag
+const bundle = new Bundle(['/one', 1], ['/two', 2]);
+```
+
+```javascript
+// Create a bundle with a timetag
+const bundle = new Bundle(10, ['/one', 1], ['/two', 2]);
+```
+
+```javascript
+// Nest bundles
+const bundle1 = new Bundle(['/one', 1]);
+const bundle2 = new Bundle(['/two', 2]);
+bundle1.append(bundle2);
+```
+
+
+### Bundle.append()
+
+Append a message or bundle to this bundle.
+
+**Parameters:**
+
+- `element` *{Message | Bundle | Array}* - The message or bundle to append.
+  Arrays will be automatically converted to Message objects.
+
+**Examples:**
+
+```javascript
+const bundle = new Bundle();
+bundle.append(['/test', 1]);
+bundle.append(new Message('/test2', 2));
+```
+
+```javascript
+// Append a nested bundle
+const bundle1 = new Bundle(['/one', 1]);
+const bundle2 = new Bundle(['/two', 2]);
+bundle1.append(bundle2);
 ```
 
 

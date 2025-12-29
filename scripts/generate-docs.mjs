@@ -88,8 +88,8 @@ For usage guides, best practices, and troubleshooting, see the **[Guide](./GUIDE
 
 `;
 
-// Define order: Server → Client → Bundle → Message → Low Level
-const classOrder = ['Server', 'Client', 'Bundle', 'Message'];
+// Define order: Server → Client → Message → Bundle → Low Level
+const classOrder = ['Server', 'Client', 'Message', 'Bundle'];
 const functionOrder = ['encode', 'decode'];
 
 // Add classes to TOC

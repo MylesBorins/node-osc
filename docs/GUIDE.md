@@ -220,6 +220,7 @@ OSC supports several data types. node-osc automatically detects types for common
 | String | `string` | Text values (e.g., "hello") |
 | Boolean | `boolean` | true or false |
 | Buffer | `blob` | Binary data |
+| MIDI object/Buffer | `midi` | MIDI messages (4 bytes: port, status, data1, data2) |
 
 ### Automatic Type Detection
 
@@ -246,6 +247,7 @@ msg.append({ type: 'f', value: 42 });  // 'f' = float
 msg.append({ type: 'i', value: 3.14 }); // 'i' = integer (truncates)
 msg.append({ type: 's', value: 'text' }); // 's' = string
 msg.append({ type: 'b', value: Buffer.from('data') }); // 'b' = blob
+msg.append({ type: 'm', value: { port: 0, status: 144, data1: 60, data2: 127 } }); // 'm' = MIDI
 ```
 
 ### Supported Type Tags
@@ -254,6 +256,7 @@ msg.append({ type: 'b', value: Buffer.from('data') }); // 'b' = blob
 - `'f'` or `'float'` - 32-bit float
 - `'s'` or `'string'` - OSC string
 - `'b'` or `'blob'` - Binary blob
+- `'m'` or `'midi'` - MIDI message (4 bytes)
 - `'boolean'` - Boolean value (true/false)
 - `'T'` - True
 - `'F'` - False
@@ -412,10 +415,12 @@ function sendNote(pitch, velocity) {
 Always wait for the server to be listening before sending messages:
 
 ```javascript
+import { once } from 'node:events';
+
 const server = new Server(3333, '0.0.0.0');
 
 // Wait for server to be ready
-await new Promise(resolve => server.on('listening', resolve));
+await once(server, 'listening');
 
 // Now safe to send messages
 console.log('Server ready!');
