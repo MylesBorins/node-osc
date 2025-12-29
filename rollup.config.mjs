@@ -44,7 +44,11 @@ function walkLib(config) {
 
 function walkTest(config) {
   // Build all test files in a single pass, excluding fixtures
-  const tests = walk('./test/').filter(t => !t.input.includes('/fixtures/'));
+  const tests = walk('./test/').filter(t => {
+    // Normalize path separators to work on both Unix and Windows
+    const normalizedPath = t.input.replace(/\\/g, '/');
+    return !normalizedPath.includes('/fixtures/');
+  });
   config.push({
     input: tests.map(t => t.input),
     plugins: [],

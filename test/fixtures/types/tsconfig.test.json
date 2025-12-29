@@ -2,18 +2,18 @@
   "compilerOptions": {
     "noEmit": true,
     "skipLibCheck": true,
+    "module": "commonjs",
     "esModuleInterop": true,
-    "module": "ES2022",
     "target": "ES2022",
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "../../../lib/*.mjs": [
+      "../../../dist/lib/*.js": [
         "../../../types/*.d.mts"
       ]
     }
   },
   "include": [
-    "test-esm-types.ts"
+    "test-cjs-types.ts"
   ]
 }
