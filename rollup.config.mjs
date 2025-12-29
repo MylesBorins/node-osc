@@ -69,6 +69,7 @@ function walkTest(config) {
       'node:fs',
       'node:path',
       'node:url',
+      'node:timers/promises',
       'node-osc',
       'tap',
       '#decode'
