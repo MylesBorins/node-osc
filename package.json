@@ -23,13 +23,12 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "clean": "node scripts/clean.mjs",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
     "build": "npm run clean && rollup --config rollup.config.mjs && npm run build:types",
     "build:types": "tsc",
     "prepublishOnly": "npm run build",
     "lint": "eslint \"lib/**/*.mjs\" \"test/test-*.mjs\" test/util.mjs examples/*.js examples/*.mjs rollup.config.mjs",
     "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
-    "test:only": "npm run build && npm run test:esm && npm run test:cjs",
     "test:esm": "tap test/test-*.mjs",
     "test:cjs": "tap dist/test/test-*.js"
   },
