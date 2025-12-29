@@ -1,21 +1,21 @@
-import { beforeEach, test } from 'tap';
-import { bootstrap } from './util.mjs';
+import { once } from 'node:events';
+import { test } from 'tap';
 
 import { Server, Client } from 'node-osc';
 
-beforeEach(bootstrap);
-
-test('server: create and close', (t) => {
+test('server: create and close', async (t) => {
   t.plan(1);
-  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
   oscServer.close((err) => {
     t.error(err);
   });
 });
 
-test('server: listen to message', (t) => {
-  const oscServer = new Server(t.context.port);
-  const client = new Client('127.0.0.1', t.context.port);
+test('server: listen to message', async (t) => {
+  const oscServer = new Server(0);
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(3);
 
@@ -37,9 +37,10 @@ test('server: listen to message', (t) => {
   });
 });
 
-test('server: no defined host', (t) => {
-  const oscServer = new Server(t.context.port);
-  const client = new Client('127.0.0.1', t.context.port);
+test('server: no defined host', async (t) => {
+  const oscServer = new Server(0);
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(3);
 
@@ -61,12 +62,13 @@ test('server: no defined host', (t) => {
   });
 });
 
-test('server: callback as second arg', (t) => {
+test('server: callback as second arg', async (t) => {
   t.plan(4);
-  const oscServer = new Server(t.context.port, () => {
+  const oscServer = new Server(0, () => {
     t.ok('callback called');
   });
-  const client = new Client('127.0.0.1', t.context.port);
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.teardown(() => {
     oscServer.close();
@@ -86,9 +88,10 @@ test('server: callback as second arg', (t) => {
   });
 });
 
-test('server: bad message', (t) => {
+test('server: bad message', async (t) => {
   t.plan(2);
-  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
   t.throws(() => {
     oscServer._sock.emit('message', 'whoops');
   }, /can't decode incoming message:/);

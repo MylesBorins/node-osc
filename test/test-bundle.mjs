@@ -1,13 +1,12 @@
-import { beforeEach, test } from 'tap';
+import { once } from 'node:events';
+import { test } from 'tap';
 
 import { Client, Server, Bundle } from 'node-osc';
 
-import { bootstrap } from './util.mjs';
-beforeEach(bootstrap);
-
-test('bundle: verbose bundle', (t) => {
-  const server = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('bundle: verbose bundle', async (t) => {
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+  const client = new Client('127.0.0.1', server.port);
 
   t.plan(2);
 
@@ -34,9 +33,10 @@ test('bundle: verbose bundle', (t) => {
   }));
 });
 
-test('bundle: array syntax', (t) => {
-  const server = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('bundle: array syntax', async (t) => {
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+  const client = new Client('127.0.0.1', server.port);
 
   t.plan(2);
 
@@ -56,9 +56,10 @@ test('bundle: array syntax', (t) => {
   ));
 });
 
-test('bundle: nested bundle', (t) => {
-  const server = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('bundle: nested bundle', async (t) => {
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+  const client = new Client('127.0.0.1', server.port);
 
   t.plan(4);
 
