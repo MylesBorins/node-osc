@@ -8,9 +8,7 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "../../../dist/lib/*.js": [
-        "../../../types/*.d.mts"
-      ]
+      "node-osc": ["../../../types/index.d.mts"]
     }
   },
   "include": [
