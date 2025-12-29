@@ -220,7 +220,7 @@ test('message: Buffer with multiple arguments', (t) => {
   const m = new Message('/address');
   const buf1 = Buffer.from('first');
   const buf2 = Buffer.from('second');
-  
+
   m.append('string');
   m.append(42);
   m.append(buf1);
@@ -272,7 +272,7 @@ test('message: Buffer in array', (t) => {
   const m = new Message('/address');
   const buf1 = Buffer.from('array1');
   const buf2 = Buffer.from('array2');
-  
+
   m.append([buf1, 'string', buf2, 456]);
 
   oscServer.on('message', (msg) => {
