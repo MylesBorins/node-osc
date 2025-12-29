@@ -1,8 +1,5 @@
 import { createServer } from 'node:net';
-
-// Delay in milliseconds for Windows to fully release a port after closing
-// This prevents EACCES errors when immediately rebinding to the same port
-const WINDOWS_PORT_RELEASE_DELAY_MS = 100;
+import { setImmediate } from 'node:timers/promises';
 
 async function bootstrap(t) {
   const port = await getPort();
@@ -11,21 +8,18 @@ async function bootstrap(t) {
   };
 }
 
-function getPort() {
+async function getPort() {
   return new Promise((resolve, reject) => {
     const server = createServer();
     server.unref();
     server.on('error', reject);
     server.listen(() => {
       const { port } = server.address();
-      server.close(() => {
-        // Add a small delay on Windows to allow the OS to fully release the port
+      server.close(async () => {
+        // Allow the event loop to process and ensure port is fully released
         // This prevents EACCES errors when immediately rebinding to the same port
-        if (process.platform === 'win32') {
-          setTimeout(() => resolve(port), WINDOWS_PORT_RELEASE_DELAY_MS);
-        } else {
-          resolve(port);
-        }
+        await setImmediate();
+        resolve(port);
       });
     });
   });
