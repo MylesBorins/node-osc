@@ -23,7 +23,7 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
+    "clean": "node -e \"['dist','types'].forEach(d=>require('fs').rmSync(d,{recursive:true,force:true}))\"",
     "build": "npm run clean && rollup --config rollup.config.mjs && npm run build:types",
     "build:types": "tsc",
     "prepublishOnly": "npm run build",
