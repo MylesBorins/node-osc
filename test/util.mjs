@@ -1,6 +1,5 @@
-import { createServer } from 'node:net';
-import { setImmediate } from 'node:timers/promises';
-import { platform } from 'node:os';
+import { once } from 'node:events';
+import { Server } from '../lib/index.mjs';
 
 async function bootstrap(t) {
   const port = await getPort();
@@ -9,30 +8,24 @@ async function bootstrap(t) {
   };
 }
 
+/**
+ * Get an available port by creating a temporary OSC Server.
+ * This avoids TCP -> UDP binding race conditions by using UDP throughout.
+ * 
+ * @returns {Promise<number>} An available port number
+ */
 async function getPort() {
-  const server = createServer();
-  server.unref();
+  // Create a temporary server on port 0 (let OS assign a free port)
+  const server = new Server(0, '127.0.0.1');
   
-  const port = await new Promise((resolve, reject) => {
-    server.on('error', reject);
-    server.listen(() => {
-      resolve(server.address().port);
-    });
-  });
+  // Wait for the server to be listening
+  await once(server, 'listening');
   
-  await new Promise((resolve) => {
-    server.close(() => resolve());
-  });
+  // Get the assigned port
+  const port = server._sock.address().port;
   
-  // Allow the event loop to process and ensure port is fully released
-  // This prevents EACCES errors when immediately rebinding to the same port
-  await setImmediate();
-  
-  // On Windows, add an additional delay to ensure the port is fully released
-  // Windows can take longer to release ports from TIME_WAIT state
-  if (platform() === 'win32') {
-    await new Promise(resolve => setTimeout(resolve, 100));
-  }
+  // Close the server and wait for it to complete
+  await server.close();
   
   return port;
 }
