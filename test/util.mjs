@@ -1,5 +1,4 @@
 import { createServer } from 'node:net';
-import { promisify } from 'node:util';
 import { setImmediate } from 'node:timers/promises';
 
 async function bootstrap(t) {
@@ -20,7 +19,7 @@ async function getPort() {
     });
   });
   
-  await promisify(server.close.bind(server))();
+  await server.close();
   
   // Allow the event loop to process and ensure port is fully released
   // This prevents EACCES errors when immediately rebinding to the same port
