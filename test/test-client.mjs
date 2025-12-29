@@ -22,6 +22,28 @@ test('client: with array', (t) => {
   });
 });
 
+test('client: array is not mutated when sent', (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+
+  t.plan(3);
+
+  const originalArray = ['/test', 0, 1, 'testing', true];
+  const expectedArray = ['/test', 0, 1, 'testing', true];
+
+  oscServer.on('message', (msg) => {
+    oscServer.close();
+    t.same(msg, ['/test', 0, 1, 'testing', true], 'We should receive expected payload');
+    // Verify the original array was not mutated
+    t.same(originalArray, expectedArray, 'Original array should not be mutated');
+  });
+
+  client.send(originalArray, (err) => {
+    t.error(err, 'there should be no error');
+    client.close();
+  });
+});
+
 test('client: with string', (t) => {
   const oscServer = new Server(t.context.port, '127.0.0.1');
   const client = new Client('127.0.0.1', t.context.port);
