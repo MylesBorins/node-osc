@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "module": "ES2022",
+    "target": "ES2022",
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "../../../lib/*.mjs": [
+        "../../../types/*.d.mts"
+      ]
+    }
+  },
+  "include": [
+    "test-esm-types.ts"
+  ]
+}
