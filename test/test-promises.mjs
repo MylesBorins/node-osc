@@ -21,6 +21,28 @@ test('client: send with promise - array', async (t) => {
   await client.close();
 });
 
+test('client: array is not mutated when sent with promise', async (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+
+  t.plan(2);
+
+  const originalArray = ['/test', 0, 1, 'testing', true];
+  const expectedArray = ['/test', 0, 1, 'testing', true];
+
+  oscServer.on('message', (msg) => {
+    oscServer.close();
+    t.same(msg, ['/test', 0, 1, 'testing', true], 'We should receive expected payload');
+  });
+
+  await client.send(originalArray);
+  
+  // Verify the original array was not mutated
+  t.same(originalArray, expectedArray, 'Original array should not be mutated');
+  
+  await client.close();
+});
+
 test('client: send with promise - string', async (t) => {
   const oscServer = new Server(t.context.port, '127.0.0.1');
   const client = new Client('127.0.0.1', t.context.port);
