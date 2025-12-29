@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": true,
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "ES2022",
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "node-osc": ["../../../types/index.d.mts"]
+    }
+  },
+  "include": [
+    "test-cjs-types.ts"
+  ]
+}
