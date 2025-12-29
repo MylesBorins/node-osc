@@ -97,6 +97,7 @@ npm run clean
 - Uses `tap` test framework
 - Test utilities in `test/util.mjs` provide helpers like `getPort()` for getting available ports
 - Always run `npm run build` before running CJS tests
+- **100% test coverage is required** - All lines, branches, functions, and statements must be covered
 
 ### Build Process
 
@@ -203,7 +204,7 @@ When writing code that needs to work in both ESM and CJS:
 1. **Write ESM source** in `lib/`
 2. **Add JSDoc comments** with types and examples
 3. **Export** from `lib/index.mjs` if it's a public API
-4. **Write tests** in `test/test-*.mjs`
+4. **Write tests** in `test/test-*.mjs` - **must achieve 100% coverage** (lines, branches, functions, statements)
 5. **Run tests**: `npm test` (tests both ESM and CJS)
 6. **Update docs**: `npm run docs` to regenerate API.md
 7. **Update README.md** if adding user-facing functionality
@@ -213,13 +214,14 @@ When writing code that needs to work in both ESM and CJS:
 1. **Write a failing test** that demonstrates the bug
 2. **Fix the bug** in the ESM source files
 3. **Run tests**: `npm test` to verify fix works in both ESM and CJS
-4. **Check no regressions**: Ensure all tests pass
+4. **Verify coverage**: Ensure 100% test coverage is maintained
+5. **Check no regressions**: Ensure all tests pass
 
 ### Modifying the API
 
 1. **Update JSDoc** in source files
 2. **Regenerate types**: `npm run build:types`
-3. **Update tests** to cover new behavior
+3. **Update tests** to cover new behavior - **must maintain 100% coverage**
 4. **Regenerate docs**: `npm run docs`
 5. **Update README.md** and `docs/GUIDE.md` as appropriate
 
