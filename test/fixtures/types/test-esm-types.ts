@@ -1,8 +1,13 @@
 // Test ESM TypeScript imports with Top-Level Await
+import { once } from 'node:events';
 import { Client, Server, Message, Bundle, encode, decode } from '../../../lib/index.mjs';
 
 // Create server first (typical usage pattern)
 const server: Server = new Server(3333, '0.0.0.0');
+
+// Wait for server to be ready (pattern from examples)
+await once(server, 'listening');
+
 server.on('message', (msg) => {
   console.log('Received message:', msg);
 });

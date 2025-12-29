@@ -4,14 +4,8 @@
   "version": "11.1.1",
   "types": "./types/index.d.mts",
   "exports": {
-    "require": {
-      "types": "./types/index.d.mts",
-      "default": "./dist/lib/index.js"
-    },
-    "import": {
-      "types": "./types/index.d.mts",
-      "default": "./lib/index.mjs"
-    },
+    "require": "./dist/lib/index.js",
+    "import": "./lib/index.mjs",
     "default": "./lib/index.mjs"
   },
   "imports": {

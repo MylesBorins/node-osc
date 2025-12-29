@@ -358,8 +358,9 @@ npm uninstall @types/node-osc
 ```typescript
 import { Client, Server, Message, Bundle } from 'node-osc';
 
-const client = new Client('127.0.0.1', 3333);
-await client.send('/test', 1, 2, 3);
+const client: Client = new Client('127.0.0.1', 3333);
+const message: Message = new Message('/test', 1, 2, 3);
+await client.send(message);
 await client.close();
 ```  
 
