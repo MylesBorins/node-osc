@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    // Enable JSDoc type checking
+    "allowJs": true,
+    "checkJs": false,
+    
+    // Generate declaration files only
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": true,
+    
+    // Output directory for declarations
+    "outDir": "./types",
+    
+    // Module settings for ESM (will generate .d.mts files)
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "target": "ES2022",
+    
+    // Allow default imports from modules with no default export
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    
+    // Strict options for better type inference
+    "strict": false,
+    "skipLibCheck": true,
+    
+    // Resolve JSON modules
+    "resolveJsonModule": true,
+    
+    // Base URL for paths
+    "baseUrl": ".",
+    "paths": {
+      "#decode": ["./lib/internal/decode.mjs"]
+    }
+  },
+  "include": [
+    "lib/**/*.mjs"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test"
+  ]
+}
