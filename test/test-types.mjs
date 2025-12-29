@@ -5,27 +5,32 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
-// Only run in CJS mode (when transpiled to CJS in dist/)
+// Only run in ESM mode (not when transpiled to CJS in dist/)
 // Normalize path separators for cross-platform compatibility
 const normalizedPath = __dirname.replace(/\\/g, '/');
-const isCJS = normalizedPath.includes('/dist/');
+const isESM = !normalizedPath.includes('/dist/');
 
-test('types: TypeScript compilation with CJS types', { skip: !isCJS }, (t) => {
-  // Always write to the source test directory, not dist
-  const testRoot = resolve(__dirname, isCJS ? '../../test' : '.');
-  const tsconfigPath = join(testRoot, 'fixtures', 'types', 'tsconfig-cjs.test.json');
+test('types: TypeScript compilation with ESM types', (t) => {
+  let tsconfigPath;
+  const testRoot = resolve(__dirname, isESM ?  '.': '../../test');
+  if (!isESM) {
+    tsconfigPath = join(testRoot, 'fixtures', 'types', 'tsconfig-esm.test.json');
+  }
+  else {
+    tsconfigPath = join(testRoot, 'fixtures', 'types', 'tsconfig-cjs.test.json');
+  }
   
   try {
-    // Run TypeScript compiler in noEmit mode to check types only
+    // Run TypeScript compiler with Top-Level Await support
     const cmd = 'npx tsc --project "' + tsconfigPath + '"';
     execSync(cmd, { 
       encoding: 'utf-8',
       stdio: 'pipe',
       cwd: join(testRoot, 'fixtures', 'types')
     });
-    t.pass('CJS TypeScript types compile successfully');
+    t.pass('TypeScript types compile successfully with Top-Level Await');
   } catch (error) {
-    t.fail('CJS TypeScript compilation failed: ' + error.message);
+    t.fail('TypeScript compilation failed: ' + error.message);
     if (error.stdout) console.log('STDOUT:', error.stdout);
     if (error.stderr) console.log('STDERR:', error.stderr);
   }
