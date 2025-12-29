@@ -172,6 +172,29 @@ test('message: blob', (t) => {
   });
 });
 
+test('message: Buffer as blob', (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+  const m = new Message('/address');
+  const buf = Buffer.from('test buffer data');
+  // Directly append Buffer without wrapping in object
+  m.append(buf);
+
+  oscServer.on('message', (msg) => {
+    const expected = [
+      '/address',
+      buf
+    ];
+    t.same(msg, expected, `We received the buffer payload: ${msg}`);
+    oscServer.close();
+    t.end();
+  });
+
+  client.send(m, () => {
+    client.close();
+  });
+});
+
 // test('message: timetag', (t) => {
 //   const oscServer = new osc.Server(3333, '127.0.0.1');
 //   const client = new osc.Client('127.0.0.1', 3333);
@@ -190,6 +213,130 @@ test('message: blob', (t) => {
 //     client.close();
 //   });
 // });
+
+test('message: Buffer with multiple arguments', (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+  const m = new Message('/address');
+  const buf1 = Buffer.from('first');
+  const buf2 = Buffer.from('second');
+  
+  m.append('string');
+  m.append(42);
+  m.append(buf1);
+  m.append(3.14);
+  m.append(buf2);
+
+  oscServer.on('message', (msg) => {
+    t.equal(msg[0], '/address', 'Address matches');
+    t.equal(msg[1], 'string', 'String matches');
+    t.equal(msg[2], 42, 'Integer matches');
+    t.same(msg[3], buf1, 'First buffer matches');
+    t.equal(round(msg[4]), 3.14, 'Float matches');
+    t.same(msg[5], buf2, 'Second buffer matches');
+    oscServer.close();
+    t.end();
+  });
+
+  client.send(m, () => {
+    client.close();
+  });
+});
+
+test('message: Buffer in constructor', (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+  const buf = Buffer.from('constructor buffer');
+  const m = new Message('/address', 'test', buf, 123);
+
+  oscServer.on('message', (msg) => {
+    const expected = [
+      '/address',
+      'test',
+      buf,
+      123
+    ];
+    t.same(msg, expected, `We received the constructor buffer payload: ${msg}`);
+    oscServer.close();
+    t.end();
+  });
+
+  client.send(m, () => {
+    client.close();
+  });
+});
+
+test('message: Buffer in array', (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+  const m = new Message('/address');
+  const buf1 = Buffer.from('array1');
+  const buf2 = Buffer.from('array2');
+  
+  m.append([buf1, 'string', buf2, 456]);
+
+  oscServer.on('message', (msg) => {
+    const expected = [
+      '/address',
+      buf1,
+      'string',
+      buf2,
+      456
+    ];
+    t.same(msg, expected, `We received the array with buffers: ${msg}`);
+    oscServer.close();
+    t.end();
+  });
+
+  client.send(m, () => {
+    client.close();
+  });
+});
+
+test('message: empty Buffer', (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+  const m = new Message('/address');
+  const buf = Buffer.from('');
+  
+  m.append(buf);
+
+  oscServer.on('message', (msg) => {
+    const expected = [
+      '/address',
+      buf
+    ];
+    t.same(msg, expected, `We received the empty buffer: ${msg}`);
+    oscServer.close();
+    t.end();
+  });
+
+  client.send(m, () => {
+    client.close();
+  });
+});
+
+test('message: large Buffer', (t) => {
+  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const client = new Client('127.0.0.1', t.context.port);
+  const m = new Message('/address');
+  const buf = Buffer.alloc(1024, 'x');
+  
+  m.append(buf);
+
+  oscServer.on('message', (msg) => {
+    t.equal(msg[0], '/address', 'Address matches');
+    t.ok(Buffer.isBuffer(msg[1]), 'Second element is a Buffer');
+    t.equal(msg[1].length, 1024, 'Buffer size matches');
+    t.same(msg[1], buf, 'Buffer content matches');
+    oscServer.close();
+    t.end();
+  });
+
+  client.send(m, () => {
+    client.close();
+  });
+});
 
 test('message: error', (t) => {
   const m = new Message('/address');
