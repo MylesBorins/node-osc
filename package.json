@@ -24,9 +24,9 @@
   "license": "Apache-2.0",
   "scripts": {
     "clean": "node -e \"['dist','types'].forEach(d=>require('fs').rmSync(d,{recursive:true,force:true}))\"",
-    "build": "rollup --config rollup.config.mjs && npm run build:types",
+    "build": "npm run clean && rollup --config rollup.config.mjs && npm run build:types",
     "build:types": "tsc",
-    "prepublishOnly": "npm run clean && npm run build",
+    "prepublishOnly": "npm run build",
     "lint": "eslint \"lib/**/*.mjs\" \"test/test-*.mjs\" test/util.mjs examples/*.js examples/*.mjs rollup.config.mjs",
     "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
     "test:esm": "tap --jobs=4 test/test-*.mjs",
