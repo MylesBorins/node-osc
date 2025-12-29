@@ -21,8 +21,8 @@ async function getPort() {
   // Wait for the server to be listening
   await once(server, 'listening');
   
-  // Get the assigned port
-  const port = server._sock.address().port;
+  // Get the assigned port (server.port is updated after binding completes)
+  const port = server.port;
   
   // Close the server and wait for it to complete
   await server.close();
