@@ -7,7 +7,9 @@ import { writeFileSync } from 'node:fs';
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 // Only run in CJS mode (when transpiled to CJS in dist/)
-const isCJS = __dirname.includes('/dist/');
+// Normalize path separators for cross-platform compatibility
+const normalizedPath = __dirname.replace(/\\/g, '/');
+const isCJS = normalizedPath.includes('/dist/');
 
 test('types: TypeScript compilation with CJS types', { skip: !isCJS }, (t) => {
   // Always write to the source test directory, not dist

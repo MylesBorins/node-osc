@@ -7,7 +7,9 @@ import { writeFileSync } from 'node:fs';
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 // Only run in ESM mode (not when transpiled to CJS in dist/)
-const isESM = !__dirname.includes('/dist/');
+// Normalize path separators for cross-platform compatibility
+const normalizedPath = __dirname.replace(/\\/g, '/');
+const isESM = !normalizedPath.includes('/dist/');
 
 test('types: TypeScript compilation with ESM types', { skip: !isESM }, (t) => {
   const tsconfigPath = join(__dirname, 'fixtures', 'types', 'tsconfig.test.json');
