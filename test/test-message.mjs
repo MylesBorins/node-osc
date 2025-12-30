@@ -1,54 +1,67 @@
-import { beforeEach, test } from 'tap';
-import { bootstrap } from './util.mjs';
-
+import { once } from 'node:events';
+import { test } from 'tap';
 import { Server, Client, Message } from 'node-osc';
 
 function round(num) {
   return Math.round(num * 100) / 100;
 }
 
-beforeEach(bootstrap);
+test('message: basic usage', async (t) => {
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+  const client = new Client('127.0.0.1', server.port);
 
-test('message: basic usage', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  t.plan(1);
+  t.teardown(async () => {
+    await server.close();
+    await client.close();
+  });
+
   const m = new Message('/address');
   m.append('testing');
   m.append(123);
   m.append([456, 789]);
   
-  oscServer.on('message', (msg) => {
+  server.on('message', (msg) => {
     const expected = ['/address', 'testing', 123, 456, 789];
     t.same(msg, expected, `We reveived the payload: ${msg}`);
-    oscServer.close();
-    t.end();
   });
 
-  client.send(m, () => {
-    client.close();
-  });
+  client.send(m);
 });
 
-test('message: multiple args', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('message: multiple args', async (t) => {
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+  const client = new Client('127.0.0.1', server.port);
+  
+  t.plan(1);
+  t.teardown(async () => {
+    await server.close();
+    await client.close();
+  });
+  
   const m = new Message('/address', 'testing', 123, true);
 
-  oscServer.on('message', (msg) => {
+  server.on('message', (msg) => {
     const expected = ['/address', 'testing', 123, true];
     t.same(msg, expected, `We reveived the payload: ${msg}`);
-    oscServer.close();
-    t.end();
   });
 
-  client.send(m, () => {
-    client.close();
-  });
+  client.send(m);
 });
 
-test('message: object', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('message: object', async (t) => {
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+  const client = new Client('127.0.0.1', server.port);
+
+  t.plan(1);
+  t.teardown(async () => {
+    await server.close();
+    await client.close();
+  });
+
   const m = new Message('/address');
   m.append({
     type: 'string',
@@ -59,43 +72,51 @@ test('message: object', (t) => {
     value: 100
   });
 
-  oscServer.on('message', (msg) => {
+  server.on('message', (msg) => {
     const expected = ['/address', 'test', 100];
     t.same(msg, expected, `We reveived the payload: ${msg}`);
-    oscServer.close();
-    t.end();
   });
 
-  client.send(m, () => {
-    client.close();
-  });
+  client.send(m);
 });
 
-test('message: float', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('message: float', async (t) => {
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+  const client = new Client('127.0.0.1', server.port);
+
+  t.plan(2);
+  t.teardown(async () => {
+    await server.close();
+    await client.close();
+  });
+
   const m = new Message('/address');
   m.append(3.14);
 
-  oscServer.on('message', (msg) => {
+  server.on('message', (msg) => {
     const expected = [
       '/address',
       3.14
     ];
     t.equal(msg[0], expected[0], `We reveived the payload: ${msg}`);
     t.equal(round(msg[1]), expected[1], 'pie please');
-    oscServer.close();
-    t.end();
   });
 
-  client.send(m, () => {
-    client.close();
-  });
+  client.send(m);
 });
 
-test('message: alias messages', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('message: alias messages', async (t) => {
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+  const client = new Client('127.0.0.1', server.port);
+
+  t.plan(5);
+  t.teardown(async () => {
+    await server.close();
+    await client.close();
+  });
+
   const m = new Message('/address');
   m.append({
     type: 'i',
@@ -106,7 +127,7 @@ test('message: alias messages', (t) => {
     value: 3.14
   });
 
-  oscServer.on('message', (msg) => {
+  server.on('message', (msg) => {
     const expected = [
       '/address',
       123,
@@ -117,39 +138,47 @@ test('message: alias messages', (t) => {
     t.ok(Number.isInteger(msg[1]), 'the first value is an int');
     t.equal(round(msg[2]), expected[2], 'pie please');
     t.ok(msg[2] % 1 !== 0, 'the second value is a float');
-    oscServer.close();
-    t.end();
   });
 
-  client.send(m, () => {
-    client.close();
-  });
+  client.send(m);
 });
 
-test('message: boolean', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('message: boolean', async (t) => {
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+
+  t.plan(1);
+  t.teardown(async () => {
+    await server.close();
+    await client.close();
+  });
+
+  const client = new Client('127.0.0.1', server.port);
   const m = new Message('/address');
   m.append(true);
 
-  oscServer.on('message', (msg) => {
+  server.on('message', (msg) => {
     const expected = [
       '/address',
       true
     ];
     t.same(msg, expected, `We reveived the payload: ${msg}`);
-    oscServer.close();
-    t.end();
   });
 
-  client.send(m, () => {
-    client.close();
-  });
+  client.send(m);
 });
 
-test('message: blob', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('message: blob', async (t) => {
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+  const client = new Client('127.0.0.1', server.port);
+
+  t.plan(1);
+  t.teardown(async () => {
+    await server.close();
+    await client.close();
+  });
+
   const m = new Message('/address');
   const buf = Buffer.from('test');
   m.append({
@@ -157,42 +186,42 @@ test('message: blob', (t) => {
     value: buf
   });
 
-  oscServer.on('message', (msg) => {
+  server.on('message', (msg) => {
     const expected = [
       '/address',
       buf
     ];
     t.same(msg, expected, `We reveived the payload: ${msg}`);
-    oscServer.close();
-    t.end();
   });
 
-  client.send(m, () => {
-    client.close();
-  });
+  client.send(m);
 });
 
-test('message: Buffer as blob', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('message: Buffer as blob', async (t) => {
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+  const client = new Client('127.0.0.1', server.port);
+
+  t.plan(1);
+  t.teardown(async () => {
+    await server.close();
+    await client.close();
+  });
+
   const m = new Message('/address');
   const buf = Buffer.from('test buffer data');
   // Directly append Buffer without wrapping in object
   m.append(buf);
 
-  oscServer.on('message', (msg) => {
+  server.on('message', (msg) => {
     const expected = [
       '/address',
       buf
     ];
     t.same(msg, expected, `We received the buffer payload: ${msg}`);
-    oscServer.close();
-    t.end();
   });
 
-  client.send(m, () => {
-    client.close();
-  });
+  client.send(m);
 });
 
 // test('message: timetag', (t) => {
@@ -214,9 +243,17 @@ test('message: Buffer as blob', (t) => {
 //   });
 // });
 
-test('message: Buffer with multiple arguments', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('message: Buffer with multiple arguments', async (t) => {
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+  const client = new Client('127.0.0.1', server.port);
+
+  t.plan(6);
+  t.teardown(async () => {
+    await server.close();
+    await client.close();
+  });
+
   const m = new Message('/address');
   const buf1 = Buffer.from('first');
   const buf2 = Buffer.from('second');
@@ -227,29 +264,33 @@ test('message: Buffer with multiple arguments', (t) => {
   m.append(3.14);
   m.append(buf2);
 
-  oscServer.on('message', (msg) => {
+  server.on('message', (msg) => {
     t.equal(msg[0], '/address', 'Address matches');
     t.equal(msg[1], 'string', 'String matches');
     t.equal(msg[2], 42, 'Integer matches');
     t.same(msg[3], buf1, 'First buffer matches');
     t.equal(round(msg[4]), 3.14, 'Float matches');
-    t.same(msg[5], buf2, 'Second buffer matches');
-    oscServer.close();
-    t.end();
+    t.same(msg[5], buf2, 'Second buffer matches')
   });
 
-  client.send(m, () => {
-    client.close();
-  });
+  client.send(m);
 });
 
-test('message: Buffer in constructor', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('message: Buffer in constructor', async (t) => {
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+  const client = new Client('127.0.0.1', server.port);
+
+  t.plan(1);
+  t.teardown(async () => {
+    await server.close();
+    await client.close();
+  });
+
   const buf = Buffer.from('constructor buffer');
   const m = new Message('/address', 'test', buf, 123);
 
-  oscServer.on('message', (msg) => {
+  server.on('message', (msg) => {
     const expected = [
       '/address',
       'test',
@@ -257,25 +298,29 @@ test('message: Buffer in constructor', (t) => {
       123
     ];
     t.same(msg, expected, `We received the constructor buffer payload: ${msg}`);
-    oscServer.close();
-    t.end();
   });
 
-  client.send(m, () => {
-    client.close();
-  });
+  client.send(m);
 });
 
-test('message: Buffer in array', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('message: Buffer in array', async (t) => {
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+  const client = new Client('127.0.0.1', server.port);
+
+  t.plan(1);
+  t.teardown(async () => {
+    await server.close();
+    await client.close();
+  });
+
   const m = new Message('/address');
   const buf1 = Buffer.from('array1');
   const buf2 = Buffer.from('array2');
 
   m.append([buf1, 'string', buf2, 456]);
 
-  oscServer.on('message', (msg) => {
+  server.on('message', (msg) => {
     const expected = [
       '/address',
       buf1,
@@ -284,58 +329,62 @@ test('message: Buffer in array', (t) => {
       456
     ];
     t.same(msg, expected, `We received the array with buffers: ${msg}`);
-    oscServer.close();
-    t.end();
   });
 
-  client.send(m, () => {
-    client.close();
-  });
+  client.send(m);
 });
 
-test('message: empty Buffer', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('message: empty Buffer', async (t) => {
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+  const client = new Client('127.0.0.1', server.port);
+
+  t.plan(1);
+  t.teardown(async () => {
+    await server.close();
+    await client.close();
+  });
+
   const m = new Message('/address');
   const buf = Buffer.from('');
   
   m.append(buf);
 
-  oscServer.on('message', (msg) => {
+  server.on('message', (msg) => {
     const expected = [
       '/address',
       buf
     ];
     t.same(msg, expected, `We received the empty buffer: ${msg}`);
-    oscServer.close();
-    t.end();
   });
 
-  client.send(m, () => {
-    client.close();
-  });
+  client.send(m);
 });
 
-test('message: large Buffer', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('message: large Buffer', async (t) => {
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+  const client = new Client('127.0.0.1', server.port);
+
+  t.plan(4);
+  t.teardown(async () => {
+    await server.close();
+    await client.close();
+  });
+
   const m = new Message('/address');
   const buf = Buffer.alloc(1024, 'x');
   
   m.append(buf);
 
-  oscServer.on('message', (msg) => {
+  server.on('message', (msg) => {
     t.equal(msg[0], '/address', 'Address matches');
     t.ok(Buffer.isBuffer(msg[1]), 'Second element is a Buffer');
     t.equal(msg[1].length, 1024, 'Buffer size matches');
     t.same(msg[1], buf, 'Buffer content matches');
-    oscServer.close();
-    t.end();
   });
 
-  client.send(m, () => {
-    client.close();
-  });
+  client.send(m);
 });
 
 test('message: error', (t) => {
