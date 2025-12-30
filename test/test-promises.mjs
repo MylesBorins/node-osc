@@ -1,19 +1,17 @@
 import { once } from 'node:events';
-import { beforeEach, test } from 'tap';
-import { bootstrap } from './util.mjs';
+import { test } from 'tap';
 
 import { Server, Client } from 'node-osc';
 
-beforeEach(bootstrap);
-
 test('client: send with promise - array', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+  const client = new Client('127.0.0.1', server.port);
 
   t.plan(1);
 
-  oscServer.on('message', (msg) => {
-    oscServer.close();
+  server.on('message', (msg) => {
+    server.close();
     t.same(msg, ['/test', 0, 1, 'testing', true], 'We should receive expected payload');
   });
 
@@ -22,8 +20,9 @@ test('client: send with promise - array', async (t) => {
 });
 
 test('client: array is not mutated when sent with promise', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(2);
 
@@ -44,8 +43,9 @@ test('client: array is not mutated when sent with promise', async (t) => {
 });
 
 test('client: send with promise - string', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(1);
 
@@ -59,8 +59,9 @@ test('client: send with promise - string', async (t) => {
 });
 
 test('client: send with promise - message object', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(1);
 
@@ -77,8 +78,9 @@ test('client: send with promise - message object', async (t) => {
 });
 
 test('client: send with promise - multiple args', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(1);
 
@@ -92,12 +94,15 @@ test('client: send with promise - multiple args', async (t) => {
 });
 
 test('client: send promise rejection on closed socket', async (t) => {
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(1);
 
   await client.close();
-  
+  await oscServer.close();
+
   try {
     await client.send('/boom');
     t.fail('Should have thrown an error');
@@ -107,8 +112,9 @@ test('client: send promise rejection on closed socket', async (t) => {
 });
 
 test('client: async/await usage', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(1);
 
@@ -124,7 +130,7 @@ test('client: async/await usage', async (t) => {
 });
 
 test('server: close with promise', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const oscServer = new Server(0, '127.0.0.1');
   
   t.plan(1);
 
@@ -135,7 +141,7 @@ test('server: close with promise', async (t) => {
 });
 
 test('server: no callback still emits listening event', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const oscServer = new Server(0, '127.0.0.1');
   
   t.plan(1);
 
@@ -146,14 +152,15 @@ test('server: no callback still emits listening event', async (t) => {
 });
 
 test('client and server: full async/await workflow', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
-
-  t.plan(2);
+  t.plan(3);
+  const oscServer = new Server(0, '127.0.0.1');
 
   // Wait for server to be ready
   await once(oscServer, 'listening');
   t.pass('Server started');
+
+  const client = new Client('127.0.0.1', oscServer.port);
+  t.pass('Client created');
 
   // Set up message handler
   const messageReceived = once(oscServer, 'message');
@@ -169,9 +176,9 @@ test('client and server: full async/await workflow', async (t) => {
 });
 
 test('client: multiple sends with promises', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
-
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
   t.plan(3);
 
   const messages = [];
@@ -195,6 +202,8 @@ test('client: multiple sends with promises', async (t) => {
 });
 
 test('client: close promise rejection on error', async (t) => {
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
   const client = new Client('127.0.0.1', t.context.port);
 
   t.plan(1);
@@ -224,6 +233,7 @@ test('client: close promise rejection on error', async (t) => {
   };
 
   try {
+    await oscServer.close();
     await client.close();
     t.fail('Should have thrown an error');
   } catch (err) {
@@ -232,7 +242,7 @@ test('client: close promise rejection on error', async (t) => {
 });
 
 test('server: close promise rejection on error', async (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
+  const oscServer = new Server(0, '127.0.0.1');
 
   t.plan(1);
 
@@ -267,5 +277,37 @@ test('server: close promise rejection on error', async (t) => {
     t.fail('Should have thrown an error');
   } catch (err) {
     t.equal(err.code, 'MOCK_ERROR', 'Should reject with mock error');
+  }
+});
+
+test('client: send promise rejection on send error', async (t) => {
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
+
+  t.plan(1);
+
+  // Mock the socket's send method to simulate an error
+  const originalSend = client._sock.send;
+  client._sock.send = function(msg, offset, length, port, address, callback) {
+    // Simulate an error being passed to callback
+    const err = new Error('Mock send error');
+    err.code = 'MOCK_SEND_ERROR';
+    if (callback) {
+      setImmediate(() => callback(err));
+    }
+  };
+
+  t.teardown(async () => {
+    client._sock.send = originalSend;
+    await client.close();
+    await oscServer.close();
+  });
+
+  try {
+    await client.send('/test', 'data');
+    t.fail('Should have thrown an error');
+  } catch (err) {
+    t.equal(err.code, 'MOCK_SEND_ERROR', 'Should reject with mock send error');
   }
 });

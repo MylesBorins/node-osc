@@ -1,13 +1,12 @@
-import { beforeEach, test } from 'tap';
-import { bootstrap } from './util.mjs';
+import { once } from 'node:events';
+import { test } from 'tap';
 
 import { Server, Client } from 'node-osc';
 
-beforeEach(bootstrap);
-
-test('client: with array', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('client: with array', async (t) => {
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(2);
 
@@ -22,9 +21,10 @@ test('client: with array', (t) => {
   });
 });
 
-test('client: array is not mutated when sent', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('client: array is not mutated when sent', async (t) => {
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(3);
 
@@ -44,9 +44,10 @@ test('client: array is not mutated when sent', (t) => {
   });
 });
 
-test('client: with string', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('client: with string', async (t) => {
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(2);
 
@@ -61,9 +62,10 @@ test('client: with string', (t) => {
   });
 });
 
-test('client: with Message object', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('client: with Message object', async (t) => {
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(2);
 
@@ -87,9 +89,10 @@ test('client: with Message object', (t) => {
   });
 });
 
-test('client: with Bundle object', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('client: with Bundle object', async (t) => {
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(2);
 
@@ -113,8 +116,8 @@ test('client: with Bundle object', (t) => {
   });
 });
 
-test('client: failure', (t) => {
-  const client = new Client('127.0.0.1', t.context.port);
+test('client: failure', async (t) => {
+  const client = new Client('127.0.0.1', 9999);
 
   t.plan(2);
 
@@ -129,8 +132,8 @@ test('client: failure', (t) => {
   });
 });
 
-test('client: close with callback', (t) => {
-  const client = new Client('127.0.0.1', t.context.port);
+test('client: close with callback', async (t) => {
+  const client = new Client('127.0.0.1', 9999);
 
   t.plan(1);
 
@@ -139,9 +142,10 @@ test('client: close with callback', (t) => {
   });
 });
 
-test('client: send bundle with non-numeric timetag', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('client: send bundle with non-numeric timetag', async (t) => {
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(2);
 
@@ -168,9 +172,10 @@ test('client: send bundle with non-numeric timetag', (t) => {
   client.send(bundle);
 });
 
-test('client: send bundle with null timetag', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('client: send bundle with null timetag', async (t) => {
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(2);
 
@@ -197,9 +202,10 @@ test('client: send bundle with null timetag', (t) => {
   client.send(bundle);
 });
 
-test('client: send message with float type arg', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('client: send message with float type arg', async (t) => {
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(2);
 
@@ -218,9 +224,10 @@ test('client: send message with float type arg', (t) => {
   });
 });
 
-test('client: send message with blob type arg', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('client: send message with blob type arg', async (t) => {
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(2);
 
@@ -239,9 +246,10 @@ test('client: send message with blob type arg', (t) => {
   });
 });
 
-test('client: send message with double type arg', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('client: send message with double type arg', async (t) => {
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(2);
 
@@ -260,9 +268,10 @@ test('client: send message with double type arg', (t) => {
   });
 });
 
-test('client: send message with midi type arg', (t) => {
-  const oscServer = new Server(t.context.port, '127.0.0.1');
-  const client = new Client('127.0.0.1', t.context.port);
+test('client: send message with midi type arg', async (t) => {
+  const oscServer = new Server(0, '127.0.0.1');
+  await once(oscServer, 'listening');
+  const client = new Client('127.0.0.1', oscServer.port);
 
   t.plan(2);
 
