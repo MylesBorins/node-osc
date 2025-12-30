@@ -1,23 +1,34 @@
-import { once } from 'node:events';
-import { platform } from 'node:os';
-import { Server } from '../lib/index.mjs';
+import { createServer } from 'node:net';
+import { setImmediate } from 'node:timers/promises';
 
 async function bootstrap(t) {
-  const server = new Server(0, '127.0.0.1');
-  await once(server, 'listening');
-  const port = server.port;
-  await server.close();
-  
-  // On Windows, add a small delay to ensure port is released
-  if (platform() === 'win32') {
-    await new Promise(resolve => setTimeout(resolve, 100));
-  }
-  
+  const port = await getPort();
   t.context = {
     port
   };
 }
 
+async function getPort() {
+  const server = createServer();
+  server.unref();
+  
+  const port = await new Promise((resolve, reject) => {
+    server.on('error', reject);
+    server.listen(() => {
+      resolve(server.address().port);
+    });
+  });
+  
+  await server.close();
+  
+  // Allow the event loop to process and ensure port is fully released
+  // This prevents EACCES errors when immediately rebinding to the same port
+  await setImmediate();
+  
+  return port;
+}
+
 export {
-  bootstrap
+  bootstrap,
+  getPort
 };
