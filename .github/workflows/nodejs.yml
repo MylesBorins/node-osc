@@ -26,7 +26,7 @@ jobs:
       uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+        cache: ${{ runner.os != 'Windows' && 'npm' || '' }}
 
     - name: Install Dependencies
       run: npm ci
