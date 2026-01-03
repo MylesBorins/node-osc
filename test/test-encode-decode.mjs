@@ -377,6 +377,18 @@ test('decode: error on bundle element size overflow', (t) => {
   t.end();
 });
 
+test('decode: error on truncated bundle timetag', (t) => {
+  const bundleHeader = Buffer.from('#bundle\0', 'ascii');
+  const timetag = Buffer.alloc(4);
+  const buffer = Buffer.concat([bundleHeader, timetag]);
+
+  t.throws(() => {
+    decode(buffer);
+  }, /Malformed Packet: Not enough bytes for timetag/, 'should throw when timetag is truncated');
+
+  t.end();
+});
+
 test('encode and decode: nested bundle with message and bundle elements', (t) => {
   // Test the else branch in encodeBundleToBuffer for message elements
   const innerBundle = new Bundle(['/inner/message', 123]);
