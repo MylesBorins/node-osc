@@ -765,6 +765,106 @@ test('osc: explicit double type name', (t) => {
   t.end();
 });
 
+test('osc: malformed packet with missing string terminator', (t) => {
+  const buffer = Buffer.from('/test', 'utf8');
+
+  t.throws(() => {
+    decode(buffer);
+  }, /Malformed Packet: Missing null terminator for string/, 'should throw on unterminated string');
+  t.end();
+});
+
+test('osc: malformed packet with truncated int32 argument', (t) => {
+  const address = Buffer.from('/i\0\0', 'ascii');
+  const typeTags = Buffer.from(',i\0\0', 'ascii');
+  const truncated = Buffer.from([0x00, 0x01]);
+  const buffer = Buffer.concat([address, typeTags, truncated]);
+
+  t.throws(() => {
+    decode(buffer);
+  }, /Malformed Packet: Not enough bytes for int32/, 'should throw on truncated int32');
+  t.end();
+});
+
+test('osc: malformed packet with truncated float32 argument', (t) => {
+  const address = Buffer.from('/f\0\0', 'ascii');
+  const typeTags = Buffer.from(',f\0\0', 'ascii');
+  const truncated = Buffer.from([0x3f, 0x80, 0x00]);
+  const buffer = Buffer.concat([address, typeTags, truncated]);
+
+  t.throws(() => {
+    decode(buffer);
+  }, /Malformed Packet: Not enough bytes for float32/, 'should throw on truncated float32');
+  t.end();
+});
+
+test('osc: malformed packet with invalid blob length', (t) => {
+  const address = Buffer.from('/b\0\0', 'ascii');
+  const typeTags = Buffer.from(',b\0\0', 'ascii');
+  const length = Buffer.alloc(4);
+  length.writeInt32BE(-1, 0);
+  const buffer = Buffer.concat([address, typeTags, length]);
+
+  t.throws(() => {
+    decode(buffer);
+  }, /Malformed Packet: Invalid blob length/, 'should throw on negative blob length');
+  t.end();
+});
+
+test('osc: malformed packet with truncated blob data', (t) => {
+  const address = Buffer.from('/b\0\0', 'ascii');
+  const typeTags = Buffer.from(',b\0\0', 'ascii');
+  const length = Buffer.alloc(4);
+  length.writeInt32BE(4, 0);
+  const data = Buffer.from([0x01, 0x02]);
+  const buffer = Buffer.concat([address, typeTags, length, data]);
+
+  t.throws(() => {
+    decode(buffer);
+  }, /Malformed Packet: Not enough bytes for blob/, 'should throw on truncated blob data');
+  t.end();
+});
+
+test('osc: malformed packet with missing blob padding', (t) => {
+  const address = Buffer.from('/b\0\0', 'ascii');
+  const typeTags = Buffer.from(',b\0\0', 'ascii');
+  const length = Buffer.alloc(4);
+  length.writeInt32BE(3, 0);
+  const data = Buffer.from([0x01, 0x02, 0x03]);
+  const buffer = Buffer.concat([address, typeTags, length, data]);
+
+  t.throws(() => {
+    decode(buffer);
+  }, /Malformed Packet: Not enough bytes for blob padding/, 'should throw on missing blob padding');
+  t.end();
+});
+
+test('osc: malformed bundle with invalid element size', (t) => {
+  const bundleHeader = Buffer.from('#bundle\0', 'ascii');
+  const timetag = Buffer.alloc(8);
+  const size = Buffer.alloc(4);
+  size.writeInt32BE(0, 0);
+  const buffer = Buffer.concat([bundleHeader, timetag, size]);
+
+  t.throws(() => {
+    decode(buffer);
+  }, /Malformed Packet/, 'should throw on invalid bundle element size');
+  t.end();
+});
+
+test('osc: malformed bundle with oversized element size', (t) => {
+  const bundleHeader = Buffer.from('#bundle\0', 'ascii');
+  const timetag = Buffer.alloc(8);
+  const size = Buffer.alloc(4);
+  size.writeInt32BE(12, 0);
+  const buffer = Buffer.concat([bundleHeader, timetag, size, Buffer.from([0x01, 0x02])]);
+
+  t.throws(() => {
+    decode(buffer);
+  }, /Malformed Packet/, 'should throw on oversized bundle element size');
+  t.end();
+});
+
 test('osc: blob padding when length is multiple of 4', (t) => {
   // Test writeBlob line 52: padding === 4 branch (should use 0)
   const message = {
