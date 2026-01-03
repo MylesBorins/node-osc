@@ -879,6 +879,17 @@ test('osc: malformed packet with missing blob padding', (t) => {
   t.end();
 });
 
+test('osc: malformed bundle with truncated timetag', (t) => {
+  const bundleHeader = Buffer.from('#bundle\0', 'ascii');
+  const timetag = Buffer.alloc(4);
+  const buffer = Buffer.concat([bundleHeader, timetag]);
+
+  t.throws(() => {
+    decode(buffer);
+  }, /Malformed Packet: Not enough bytes for timetag/, 'should throw on truncated timetag');
+  t.end();
+});
+
 test('osc: malformed bundle with invalid element size', (t) => {
   const bundleHeader = Buffer.from('#bundle\0', 'ascii');
   const timetag = Buffer.alloc(8);
