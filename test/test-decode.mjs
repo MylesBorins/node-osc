@@ -106,3 +106,38 @@ test('decode: malformed structure with unexpected oscType', async (t) => {
   
   t.end();
 });
+
+test('decode: message without args defaults to empty array', (t) => {
+  const mockFromBuffer = () => ({
+    oscType: 'message',
+    address: '/test'
+  });
+
+  t.same(
+    decode(Buffer.from('test'), mockFromBuffer),
+    ['/test'],
+    'should default args to empty array'
+  );
+  t.end();
+});
+
+test('decode: bundle element must be message or bundle', (t) => {
+  const mockFromBuffer = () => ({
+    oscType: 'bundle',
+    elements: [
+      {
+        oscType: 'message',
+        address: '/ok',
+        args: []
+      },
+      {
+        oscType: 'nope'
+      }
+    ]
+  });
+
+  t.throws(() => {
+    decode(Buffer.from('test'), mockFromBuffer);
+  }, /Malformed Packet/, 'should throw for invalid bundle element');
+  t.end();
+});
