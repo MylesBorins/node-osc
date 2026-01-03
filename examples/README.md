@@ -115,5 +115,7 @@ Demonstrates:
 ## Further Reading
 
 - [Main README](../README.md) - Quick start guide
-- [API Documentation](../docs/API.md) - Complete API reference
+- [Documentation Hub](../docs/) - Complete documentation with navigation guide
+- [API Reference](../docs/API.md) - Complete API reference
+- [Usage Guide](../docs/GUIDE.md) - Best practices and troubleshooting
 - [OSC Specification](http://opensoundcontrol.org/spec-1_0) - Learn about the OSC protocol
