@@ -293,6 +293,90 @@ test('decode: error on malformed type tags (no leading comma)', (t) => {
   t.end();
 });
 
+test('decode: error on truncated blob data', (t) => {
+  const addressBuf = Buffer.from('/b\0\0', 'ascii');
+  const typeTagsBuf = Buffer.from(',b\0\0', 'ascii');
+  const lengthBuf = Buffer.alloc(4);
+  lengthBuf.writeInt32BE(4, 0);
+  const dataBuf = Buffer.from([0x01, 0x02]);
+  const buffer = Buffer.concat([addressBuf, typeTagsBuf, lengthBuf, dataBuf]);
+
+  t.throws(() => {
+    decode(buffer);
+  }, /Malformed Packet: Not enough bytes for blob/, 'should throw when blob data is truncated');
+
+  t.end();
+});
+
+test('decode: error on missing blob padding', (t) => {
+  const addressBuf = Buffer.from('/b\0\0', 'ascii');
+  const typeTagsBuf = Buffer.from(',b\0\0', 'ascii');
+  const lengthBuf = Buffer.alloc(4);
+  lengthBuf.writeInt32BE(3, 0);
+  const dataBuf = Buffer.from([0x01, 0x02, 0x03]);
+  const buffer = Buffer.concat([addressBuf, typeTagsBuf, lengthBuf, dataBuf]);
+
+  t.throws(() => {
+    decode(buffer);
+  }, /Malformed Packet: Not enough bytes for blob padding/, 'should throw when blob padding is missing');
+
+  t.end();
+});
+
+test('decode: error on truncated float32', (t) => {
+  const addressBuf = Buffer.from('/f\0\0', 'ascii');
+  const typeTagsBuf = Buffer.from(',f\0\0', 'ascii');
+  const dataBuf = Buffer.from([0x3f, 0x80, 0x00]);
+  const buffer = Buffer.concat([addressBuf, typeTagsBuf, dataBuf]);
+
+  t.throws(() => {
+    decode(buffer);
+  }, /Malformed Packet: Not enough bytes for float32/, 'should throw when float32 data is truncated');
+
+  t.end();
+});
+
+test('decode: error on truncated int32', (t) => {
+  const addressBuf = Buffer.from('/i\0\0', 'ascii');
+  const typeTagsBuf = Buffer.from(',i\0\0', 'ascii');
+  const dataBuf = Buffer.from([0x00, 0x01]);
+  const buffer = Buffer.concat([addressBuf, typeTagsBuf, dataBuf]);
+
+  t.throws(() => {
+    decode(buffer);
+  }, /Malformed Packet: Not enough bytes for int32/, 'should throw when int32 data is truncated');
+
+  t.end();
+});
+
+test('decode: error on negative blob length', (t) => {
+  const addressBuf = Buffer.from('/b\0\0', 'ascii');
+  const typeTagsBuf = Buffer.from(',b\0\0', 'ascii');
+  const lengthBuf = Buffer.alloc(4);
+  lengthBuf.writeInt32BE(-1, 0);
+  const buffer = Buffer.concat([addressBuf, typeTagsBuf, lengthBuf]);
+
+  t.throws(() => {
+    decode(buffer);
+  }, /Malformed Packet: Invalid blob length/, 'should throw when blob length is negative');
+
+  t.end();
+});
+
+test('decode: error on bundle element size overflow', (t) => {
+  const bundleHeader = Buffer.from('#bundle\0', 'ascii');
+  const timetag = Buffer.alloc(8);
+  const sizeBuf = Buffer.alloc(4);
+  sizeBuf.writeInt32BE(0, 0);
+  const buffer = Buffer.concat([bundleHeader, timetag, sizeBuf]);
+
+  t.throws(() => {
+    decode(buffer);
+  }, /Malformed Packet/, 'should throw when bundle element size is invalid');
+
+  t.end();
+});
+
 test('encode and decode: nested bundle with message and bundle elements', (t) => {
   // Test the else branch in encodeBundleToBuffer for message elements
   const innerBundle = new Bundle(['/inner/message', 123]);
