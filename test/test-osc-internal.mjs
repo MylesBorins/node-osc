@@ -23,6 +23,46 @@ test('osc: timetag encoding with non-number value', (t) => {
   t.end();
 });
 
+test('osc: timetag encoding with zero value', (t) => {
+  const bundle = {
+    oscType: 'bundle',
+    timetag: 0,
+    elements: [
+      {
+        oscType: 'message',
+        address: '/test',
+        args: []
+      }
+    ]
+  };
+
+  const buffer = encode(bundle);
+  const decoded = decode(buffer);
+
+  t.equal(decoded.timetag, 0, 'should encode 0 as immediate execution');
+  t.end();
+});
+
+test('osc: timetag encoding with numeric epoch value', (t) => {
+  const bundle = {
+    oscType: 'bundle',
+    timetag: 42,
+    elements: [
+      {
+        oscType: 'message',
+        address: '/test',
+        args: []
+      }
+    ]
+  };
+
+  const buffer = encode(bundle);
+  const decoded = decode(buffer);
+
+  t.equal(decoded.timetag, 42, 'should preserve numeric timetag values');
+  t.end();
+});
+
 test('osc: timetag with immediate execution values', (t) => {
   // Test readTimeTag with seconds === 0 && fraction === 1
   const bundle = {
