@@ -4,6 +4,7 @@ const osc = require('node-osc');
 
 // Create server first (typical usage pattern)
 const server: Server = new osc.Server(3333, '0.0.0.0');
+server.send(['/server-test', 1], 3334, '127.0.0.1', () => {});
 
 // Create client after server
 const client: Client = new osc.Client('127.0.0.1', 3333);
