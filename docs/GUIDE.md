@@ -9,6 +9,8 @@ This guide provides best practices, patterns, and detailed information for using
 - [Type System](#type-system)
 - [Best Practices](#best-practices)
 - [Troubleshooting](#troubleshooting)
+- [Advanced Topics](#advanced-topics)
+- [Further Reading](#further-reading)
 
 ## Events
 
@@ -483,10 +485,12 @@ await client.close();
 Ensure you wait for the server to start before sending messages:
 
 ```javascript
+import { once } from 'node:events';
+
 const server = new Server(3333, '0.0.0.0');
 
 // Wait for server to be ready
-await new Promise(resolve => server.on('listening', resolve));
+await once(server, 'listening');
 
 // Now safe to send messages
 console.log('Server ready!');

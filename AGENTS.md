@@ -12,7 +12,7 @@ This document provides context and instructions for AI agents (GitHub Copilot, C
 - Both callback and async/await APIs
 - TypeScript type definitions generated from JSDoc
 - Well-tested with comprehensive test coverage
-- Supports Node.js 20, 22, and 24
+- Supports Node.js 20, 22, and 24+
 
 ## Architecture
 
@@ -43,9 +43,9 @@ This document provides context and instructions for AI agents (GitHub Copilot, C
 The project uses **ESM as the source format** but provides **dual ESM/CommonJS support**:
 - Source files: `lib/**/*.mjs` (ESM)
 - Built CommonJS files: `dist/lib/**/*.js` (transpiled via Rollup)
-- TypeScript definitions: `types/index.d.mts` (generated from JSDoc)
+- Generated TypeScript definitions: `types/*.d.mts` (with `types/index.d.mts` as the package entry point)
 
-**Important:** The single `.d.mts` type definition file works for both ESM and CommonJS consumers.
+**Important:** `types/index.d.mts` is the exported type entry point for both ESM and CommonJS consumers, and the supporting `.d.mts` files in `types/` are generated artifacts.
 
 ### Package Exports
 
@@ -95,7 +95,7 @@ npm run clean
 - Tests are written in ESM format in `test/test-*.mjs`
 - Tests are run against both ESM source (`lib/`) and transpiled CJS (`dist/`)
 - Uses `tap` test framework
-- Test utilities in `test/util.mjs` provide helpers like `getPort()` for getting available ports
+- Tests typically use ephemeral ports via `new Server(0, ...)` and wait for readiness with `once(server, 'listening')`
 - Always run `npm run build` before running CJS tests
 - **100% test coverage is required** - All lines, branches, functions, and statements must be covered
 
@@ -122,7 +122,7 @@ The build is automatically run before publishing (`prepublishOnly` script).
 - **JSDoc comments**: All public APIs must have JSDoc comments
 - **Type annotations**: Use JSDoc types for TypeScript generation
 - **Examples**: Include code examples in JSDoc comments
-- **Auto-generated docs**: Run `npm run docs` after changing JSDoc comments
+- **Auto-generated docs**: Run `npm run docs` after changing JSDoc comments; update `scripts/generate-docs.mjs` if the API doc layout or anchor generation needs to change
 
 Example JSDoc pattern:
 ```javascript
@@ -181,21 +181,24 @@ When writing code that needs to work in both ESM and CJS:
 
 ### Tests
 - `test/test-*.mjs` - Test files using tap framework
-- `test/util.mjs` - Test utilities and helpers
 - `test/fixtures/` - Test data and fixtures
 
 ### Documentation
 - `README.md` - Main documentation with quick start guide
 - `docs/API.md` - Auto-generated API reference (do not edit manually)
 - `docs/GUIDE.md` - Best practices, error handling, troubleshooting
+- `docs/README.md` - Documentation hub and maintenance notes
 - `examples/` - Working example code for various use cases
 
 ### Configuration
+- `.github/workflows/` - CI, release, and automation workflows
+- `.github/dependabot.yml` - Dependabot configuration for npm and GitHub Actions updates
 - `package.json` - Package configuration, scripts, exports
 - `eslint.config.mjs` - ESLint configuration
 - `rollup.config.mjs` - Rollup build configuration (ESM to CJS)
 - `tsconfig.json` - TypeScript compiler options for type generation
 - `jsdoc.json` - JSDoc configuration for documentation generation
+- `scripts/generate-docs.mjs` - Regenerates API documentation and handles API doc anchor/link formatting logic
 
 ## Making Changes
 
@@ -206,7 +209,7 @@ When writing code that needs to work in both ESM and CJS:
 3. **Export** from `lib/index.mjs` if it's a public API
 4. **Write tests** in `test/test-*.mjs` - **must achieve 100% coverage** (lines, branches, functions, statements)
 5. **Run tests**: `npm test` (tests both ESM and CJS)
-6. **Update docs**: `npm run docs` to regenerate API.md
+6. **Update docs**: `npm run docs` to regenerate `docs/API.md`
 7. **Update README.md** if adding user-facing functionality
 
 ### Fixing a Bug
@@ -273,7 +276,7 @@ const decoded = decode(buffer);
 
 ### Test Issues
 
-- **Port conflicts**: Tests use dynamic port allocation via `getPort()` utility
+- **Port conflicts**: Tests usually avoid conflicts by binding servers to port `0` and reading back the assigned port after the `'listening'` event
 - **Timing issues**: Use async/await and proper event handling
 - **ESM/CJS differences**: Ensure code works in both environments
 
