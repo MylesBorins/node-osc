@@ -26,7 +26,7 @@ function runJsdoc() {
       maxBuffer: 10 * 1024 * 1024
     });
   } catch (error) {
-    throw new Error(`Failed to run JSDoc: ${error.message}`);
+    throw new Error(`Failed to run JSDoc: ${error.message}`, { cause: error });
   }
 }
 
@@ -34,7 +34,7 @@ function parseJsdocJson(jsdocJson) {
   try {
     return JSON.parse(jsdocJson);
   } catch (error) {
-    throw new Error(`Failed to parse JSDoc JSON output: ${error.message}`);
+    throw new Error(`Failed to parse JSDoc JSON output: ${error.message}`, { cause: error });
   }
 }
 
