@@ -56,7 +56,7 @@ A comprehensive guide covering:
 
 The API documentation is automatically generated from JSDoc comments:
 
-1. Edit JSDoc comments in the source files (`lib/**/*.mjs`)
+1. Edit JSDoc comments in the source files (`lib/**/*.mjs`). If the docs layout or anchor generation needs to change, update `scripts/generate-docs.mjs`.
 2. Run `npm run docs` to regenerate `API.md`
 3. Review the changes and commit
 

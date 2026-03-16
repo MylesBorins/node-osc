@@ -52,11 +52,13 @@ server.on('message', (msg) => {
 - 📘 **[Usage Guide](./docs/GUIDE.md)** - Best practices, error handling, and troubleshooting
 - 📖 **[Examples](./examples/)** - Working examples for various use cases
 
+The API reference is generated from the source JSDoc comments. If you change a public API or its JSDoc, run `npm run docs` and review `docs/API.md`.
+
 ## Compatibility
 
-Written using ESM, supports CJS.
+Written as ESM and published with both ESM and CommonJS entry points.
 
-Supports the latest versions of Node.js 20, 22, and 24 in both ESM + CJS.
+Supports Node.js 20, 22, and 24+ in both ESM and CJS environments.
 
 ## TypeScript
 
