@@ -7,6 +7,7 @@ const server: Server = new Server(3333, '0.0.0.0');
 
 // Wait for server to be ready (pattern from examples)
 await once(server, 'listening');
+await server.send(['/server-test', 1], 3334, '127.0.0.1');
 
 server.on('message', (msg) => {
   console.log('Received message:', msg);

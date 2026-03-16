@@ -140,6 +140,22 @@ test('server: close with promise', async (t) => {
   t.pass('Server closed successfully with promise');
 });
 
+test('server: send promise rejection on closed socket', async (t) => {
+  const oscServer = new Server(0, '127.0.0.1');
+
+  t.plan(1);
+
+  await once(oscServer, 'listening');
+  await oscServer.close();
+
+  try {
+    await oscServer.send('/boom', 3333, '127.0.0.1');
+    t.fail('Should have thrown an error');
+  } catch (err) {
+    t.equal(err.code, 'ERR_SOCKET_DGRAM_NOT_RUNNING', 'Should reject with correct error code');
+  }
+});
+
 test('server: no callback still emits listening event', async (t) => {
   const oscServer = new Server(0, '127.0.0.1');
   
