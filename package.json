@@ -53,6 +53,6 @@
     "jsdoc": "^4.0.5",
     "rollup": "^4.46.2",
     "tap": "^21.1.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   }
 }
