@@ -14,7 +14,7 @@
     
     // Module settings for ESM (will generate .d.mts files)
     "module": "ES2022",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "target": "ES2022",
     
     // Allow default imports from modules with no default export
@@ -24,12 +24,17 @@
     // Strict options for better type inference
     "strict": false,
     "skipLibCheck": true,
+
+    // Include Node.js types so EventEmitter inheritance is resolved in generated declarations
+    "types": ["node"],
     
     // Resolve JSON modules
     "resolveJsonModule": true,
     
-    // Base URL for paths
-    "baseUrl": ".",
+    // Explicit rootDir since TypeScript 6.0 no longer infers it
+    "rootDir": "./lib",
+    
+    // Use explicit paths relative to root (no baseUrl needed in TS 6.0)
     "paths": {
       "#decode": ["./lib/internal/decode.mjs"]
     }
