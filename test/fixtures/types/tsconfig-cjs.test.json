@@ -2,11 +2,11 @@
   "compilerOptions": {
     "noEmit": true,
     "skipLibCheck": true,
-    "module": "commonjs",
+    "module": "preserve",
     "esModuleInterop": true,
     "target": "ES2022",
-    "moduleResolution": "node",
-    "baseUrl": ".",
+    "moduleResolution": "bundler",
+    "types": ["node"],
     "paths": {
       "node-osc": ["../../../types/index.d.mts"]
     }

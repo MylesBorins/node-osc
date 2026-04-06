@@ -5,8 +5,9 @@
     "esModuleInterop": true,
     "module": "ES2022",
     "target": "ES2022",
-    "moduleResolution": "node",
-    "baseUrl": ".",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "rootDir": ".",
     "paths": {
       "node-osc": ["../../../types/index.d.mts"]
     }
