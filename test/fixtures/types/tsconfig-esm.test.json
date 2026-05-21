@@ -2,17 +2,13 @@
   "compilerOptions": {
     "noEmit": true,
     "skipLibCheck": true,
-    "esModuleInterop": true,
-    "module": "ES2022",
+    "module": "NodeNext",
     "target": "ES2022",
-    "moduleResolution": "bundler",
+    "moduleResolution": "NodeNext",
     "types": ["node"],
-    "rootDir": ".",
-    "paths": {
-      "node-osc": ["../../../types/index.d.mts"]
-    }
+    "rootDir": "."
   },
   "include": [
-    "test-esm-types.ts"
+    "test-esm-types.mts"
   ]
 }

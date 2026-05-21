@@ -43,19 +43,31 @@ This document provides context and instructions for AI agents (GitHub Copilot, C
 The project uses **ESM as the source format** but provides **dual ESM/CommonJS support**:
 - Source files: `lib/**/*.mjs` (ESM)
 - Built CommonJS files: `dist/lib/**/*.js` (transpiled via Rollup)
-- Generated TypeScript definitions: `types/*.d.mts` (with `types/index.d.mts` as the package entry point)
+- Generated ESM TypeScript definitions: `types/*.d.mts` (with `types/index.d.mts` as the ESM type entry point)
+- Generated CommonJS TypeScript definitions: `dist/types/*.d.ts` (generated from the Rollup CommonJS output, with `dist/types/index.d.ts` as the CJS type entry point)
 
-**Important:** `types/index.d.mts` is the exported type entry point for both ESM and CommonJS consumers, and the supporting `.d.mts` files in `types/` are generated artifacts.
+**Important:**
+- `types/` contains generated declarations for the ESM source tree in `lib/`
+- `dist/types/` contains generated declarations for the CommonJS build in `dist/lib/`
+- Do not manually edit generated declaration files in either location
 
 ### Package Exports
 
 ```json
 {
+  "types": "./types/index.d.mts",
   "exports": {
-    "types": "./types/index.d.mts",
-    "require": "./dist/lib/index.js",
-    "import": "./lib/index.mjs",
-    "default": "./lib/index.mjs"
+    ".": {
+      "import": {
+        "types": "./types/index.d.mts",
+        "default": "./lib/index.mjs"
+      },
+      "require": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/lib/index.js"
+      },
+      "default": "./lib/index.mjs"
+    }
   }
 }
 ```
@@ -103,7 +115,8 @@ npm run clean
 
 1. **Clean**: Removes `dist/` and `types/` directories
 2. **Rollup**: Transpiles ESM to CommonJS in `dist/` directory
-3. **TypeScript**: Generates type definitions from JSDoc in `types/` directory
+3. **TypeScript (ESM declarations)**: Generates `.d.mts` type definitions from JSDoc in `types/` using the ESM source tree in `lib/`
+4. **TypeScript (CJS declarations)**: Generates `.d.ts` type definitions in `dist/types/` from the Rollup-generated CommonJS tree in `dist/lib/`
 
 The build is automatically run before publishing (`prepublishOnly` script).
 
@@ -146,9 +159,11 @@ async send(msg, ...args) { ... }
 ### Type System
 
 - TypeScript definitions are **generated** from JSDoc comments
-- Do not manually edit `types/*.d.mts` files
+- ESM declarations are generated from `lib/**/*.mjs` into `types/*.d.mts`
+- CJS declarations are generated from `dist/lib/**/*.js` into `dist/types/*.d.ts`
+- Do not manually edit generated declaration files in `types/` or `dist/types/`
 - Update JSDoc comments in source files instead
-- Run `npm run build:types` to regenerate types
+- Run `npm run build:types` to regenerate both ESM and CJS declarations
 
 ### Naming Conventions
 
@@ -176,8 +191,9 @@ When writing code that needs to work in both ESM and CJS:
 - `lib/osc.mjs` - Low-level encode/decode functions
 
 ### Build Artifacts
-- `dist/` - Transpiled CommonJS files (generated, do not edit)
-- `types/` - TypeScript type definitions (generated, do not edit)
+- `dist/lib/` - Transpiled CommonJS runtime files (generated, do not edit)
+- `dist/types/` - CommonJS TypeScript declarations generated from `dist/lib/` (generated, do not edit)
+- `types/` - ESM TypeScript declarations generated from `lib/` (generated, do not edit)
 
 ### Tests
 - `test/test-*.mjs` - Test files using tap framework
@@ -196,7 +212,8 @@ When writing code that needs to work in both ESM and CJS:
 - `package.json` - Package configuration, scripts, exports
 - `eslint.config.mjs` - ESLint configuration
 - `rollup.config.mjs` - Rollup build configuration (ESM to CJS)
-- `tsconfig.json` - TypeScript compiler options for type generation
+- `tsconfig.json` - TypeScript compiler options for ESM type generation from `lib/`
+- `tsconfig.cjs.json` - TypeScript compiler options for CJS type generation from `dist/lib/`
 - `jsdoc.json` - JSDoc configuration for documentation generation
 - `scripts/generate-docs.mjs` - Regenerates API documentation and handles API doc anchor/link formatting logic
 
@@ -283,7 +300,7 @@ const decoded = decode(buffer);
 ### Module Resolution
 
 - **Dual package hazard**: The package exports both ESM and CJS - don't mix them
-- **Type imports**: TypeScript consumers get types automatically from `types/index.d.mts`
+- **Type imports**: ESM consumers resolve types from `types/index.d.mts`; CJS consumers resolve types from `dist/types/index.d.ts`
 - **Internal imports**: Use `#decode` subpath for internal modules
 
 ## Dependencies
