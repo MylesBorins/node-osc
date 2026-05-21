@@ -1,6 +1,6 @@
 // Test ESM TypeScript imports with Top-Level Await
 import { once } from 'node:events';
-import { Client, Server, Message, Bundle, encode, decode } from 'node-osc';
+import { Message, Bundle, Server, Client, encode, decode } from 'node-osc';
 
 // Create server first (typical usage pattern)
 const server: Server = new Server(3333, '0.0.0.0');
@@ -34,3 +34,4 @@ bundle.append(['/three', 3]);
 // Test encode/decode with consistent type annotations
 const encoded: Buffer = encode(message);
 const decoded: Object = decode(encoded);
+void decoded;

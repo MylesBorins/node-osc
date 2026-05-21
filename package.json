@@ -2,11 +2,19 @@
   "name": "node-osc",
   "description": "pyOSC inspired library for sending and receiving OSC messages",
   "version": "11.4.0",
+  "types": "./types/index.d.mts",
   "exports": {
-    "types": "./types/index.d.mts",
-    "require": "./dist/lib/index.js",
-    "import": "./lib/index.mjs",
-    "default": "./lib/index.mjs"
+    ".": {
+      "import": {
+        "types": "./types/index.d.mts",
+        "default": "./lib/index.mjs"
+      },
+      "require": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/lib/index.js"
+      },
+      "default": "./lib/index.mjs"
+    }
   },
   "imports": {
     "#decode": {
@@ -25,7 +33,7 @@
   "scripts": {
     "clean": "rm -rf dist/ types/",
     "build": "npm run clean && rollup --config rollup.config.mjs && npm run build:types",
-    "build:types": "tsc",
+    "build:types": "tsc && tsc -p tsconfig.cjs.json",
     "docs": "node scripts/generate-docs.mjs",
     "prepublishOnly": "npm run build",
     "lint": "eslint \"lib/**/*.mjs\" \"test/test-*.mjs\" \"examples/*.js\" \"examples/*.mjs\" \"scripts/*.mjs\" rollup.config.mjs",
@@ -46,6 +54,17 @@
     "type": "git",
     "url": "git+https://github.com/MylesBorins/node-osc.git"
   },
+  "files": [
+    "lib/",
+    "dist/lib/",
+    "dist/types/",
+    "types/",
+    "docs/",
+    "examples/",
+    "README.md",
+    "LICENSE",
+    "SECURITY.md"
+  ],
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.0.3",

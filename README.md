@@ -64,7 +64,11 @@ Supports Node.js 20, 22, and 24+ in both ESM and CJS environments.
 
 TypeScript type definitions are included! No need to install `@types/node-osc`.
 
-The types are automatically generated from JSDoc comments during the build process and included with the package. A single `.d.mts` type definition format is provided that works for both ESM and CommonJS consumers.
+The types are automatically generated from JSDoc comments during the build process and included with the package:
+- ESM consumers resolve declarations from `types/*.d.mts`
+- CommonJS consumers resolve declarations from `dist/types/*.d.ts`
+
+This package publishes separate generated declaration outputs for the ESM source tree and the CommonJS build so TypeScript can resolve the correct types for each entry point.
 
 **Note:** If you previously installed `@types/node-osc`, you should uninstall it to avoid conflicts:
 ```bash

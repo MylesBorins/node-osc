@@ -4,3 +4,4 @@ coverage/
 dist/
 types/
 .tap/
+types-cjs

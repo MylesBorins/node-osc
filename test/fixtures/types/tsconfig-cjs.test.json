@@ -2,14 +2,10 @@
   "compilerOptions": {
     "noEmit": true,
     "skipLibCheck": true,
-    "module": "preserve",
-    "esModuleInterop": true,
+    "module": "Node16",
     "target": "ES2022",
-    "moduleResolution": "bundler",
-    "types": ["node"],
-    "paths": {
-      "node-osc": ["../../../types/index.d.mts"]
-    }
+    "moduleResolution": "Node16",
+    "types": ["node"]
   },
   "include": [
     "test-cjs-types.ts"
