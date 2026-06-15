@@ -224,6 +224,33 @@ test('message: Buffer as blob', async (t) => {
   client.send(m);
 });
 
+test('message: null', async (t) => {
+  const server = new Server(0, '127.0.0.1');
+  await once(server, 'listening');
+  const client = new Client('127.0.0.1', server.port);
+
+  t.plan(1);
+  t.teardown(async () => {
+    await server.close();
+    await client.close();
+  });
+
+  const m = new Message('/address');
+  m.append(null);
+  m.append({type: "null", value: null});
+
+  server.on('message', (msg) => {
+    const expected = [
+      '/address',
+      null,
+      null
+    ];
+    t.same(msg, expected, `We reveived the payload: ${msg}`);
+  });
+
+  client.send(m);
+});
+
 // test('message: timetag', (t) => {
 //   const oscServer = new osc.Server(3333, '127.0.0.1');
 //   const client = new osc.Client('127.0.0.1', 3333);
