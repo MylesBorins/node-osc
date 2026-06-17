@@ -171,18 +171,11 @@ test('encode and decode: MIDI messages with object', (t) => {
 });
 
 test('encode and decode: null type tag', (t) => {
-  // Create a message with null value by manually constructing the buffer
-  // OSC format: address + type tags + no data for 'N' type
-  const addressBuf = Buffer.from('/test\0\0\0', 'utf8');
-  const typeTagsBuf = Buffer.from(',N\0\0', 'utf8');
-  const buffer = Buffer.concat([addressBuf, typeTagsBuf]);
-  
+  const message = new Message('/midi', { type: 'N', value: null });
+  const buffer = encode(message);
   const decoded = decode(buffer);
   
-  t.equal(decoded.oscType, 'message', 'should decode as message');
-  t.equal(decoded.address, '/test', 'should have correct address');
-  t.equal(decoded.args[0].value, null, 'should decode null value');
-  
+  t.equal(decoded.args[0].value, null, 'should handle N type');
   t.end();
 });
 

@@ -1003,3 +1003,31 @@ test('osc: explicit F type', (t) => {
   t.equal(decoded.args[0].value, false);
   t.end();
 });
+
+test('osc: null type', (t) => {
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [{type: 'null', value: null}]
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, null);
+  t.end();
+});
+
+test('osc: N type', (t) => {
+  const message = {
+    oscType: 'message',
+    address: '/test',
+    args: [{ type: 'N', value: null }]
+  };
+  
+  const buffer = encode(message);
+  const decoded = decode(buffer);
+  
+  t.equal(decoded.args[0].value, null);
+  t.end();
+});
