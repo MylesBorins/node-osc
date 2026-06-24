@@ -40,7 +40,7 @@
     "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
     "test:esm": "tap test/test-*.mjs",
     "test:cjs": "tap dist/test/test-*.js",
-    "test:docs": "npm run docs && git diff --exit-code docs/API.md"
+    "test:docs": "npm run docs && git diff --exit-code docs/API.md && git ls-files --error-unmatch docs/API.md"
   },
   "contributors": [
     "Hans Hübner <hans.huebner@gmail.com>",
