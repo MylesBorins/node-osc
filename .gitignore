@@ -2,6 +2,6 @@ node_modules
 .nyc_output/
 coverage/
 dist/
-types/
+/types/
 .tap/
 types-cjs
