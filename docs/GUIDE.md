@@ -221,6 +221,7 @@ OSC supports several data types. node-osc automatically detects types for common
 | Float number | `float` | Decimal numbers (e.g., 3.14, -0.5) |
 | String | `string` | Text values (e.g., "hello") |
 | Boolean | `boolean` | true or false |
+| Null | `nil` | null |
 | Buffer | `blob` | Binary data |
 | MIDI object/Buffer | `midi` | MIDI messages (4 bytes: port, status, data1, data2) |
 
@@ -248,6 +249,7 @@ msg.append({ type: 'float', value: 42 });
 msg.append({ type: 'f', value: 42 });  // 'f' = float
 msg.append({ type: 'i', value: 3.14 }); // 'i' = integer (truncates)
 msg.append({ type: 's', value: 'text' }); // 's' = string
+msg.append({ type: 'n', value: null }); // 'n' = null
 msg.append({ type: 'b', value: Buffer.from('data') }); // 'b' = blob
 msg.append({ type: 'm', value: { port: 0, status: 144, data1: 60, data2: 127 } }); // 'm' = MIDI
 ```
@@ -257,6 +259,7 @@ msg.append({ type: 'm', value: { port: 0, status: 144, data1: 60, data2: 127 } }
 - `'i'` or `'integer'` - 32-bit integer
 - `'f'` or `'float'` - 32-bit float
 - `'s'` or `'string'` - OSC string
+- `'n'` or `'null'` - Null
 - `'b'` or `'blob'` - Binary blob
 - `'m'` or `'midi'` - MIDI message (4 bytes)
 - `'boolean'` - Boolean value (true/false)
