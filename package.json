@@ -39,7 +39,8 @@
     "lint": "eslint \"lib/**/*.mjs\" \"test/test-*.mjs\" \"examples/*.js\" \"examples/*.mjs\" \"scripts/*.mjs\" rollup.config.mjs",
     "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
     "test:esm": "tap test/test-*.mjs",
-    "test:cjs": "tap dist/test/test-*.js"
+    "test:cjs": "tap dist/test/test-*.js",
+    "test:docs": "npm run docs && git diff --exit-code docs/API.md"
   },
   "contributors": [
     "Hans Hübner <hans.huebner@gmail.com>",
