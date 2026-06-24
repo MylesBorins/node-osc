@@ -13,6 +13,7 @@ For usage guides, best practices, and troubleshooting, see the **[Guide](./GUIDE
 
 - [Server](#server)
   - [Constructor](#server-constructor)
+  - [send()](#serversend)
   - [close()](#serverclose)
 - [Client](#client)
   - [Constructor](#client-constructor)
@@ -84,6 +85,42 @@ server.on('message', (msg) => {
 server.on('/note', (msg) => {
   const [address, pitch, velocity] = msg;
   console.log(`Note: ${pitch}, Velocity: ${velocity}`);
+});
+```
+
+
+### Server.send()
+
+Send an OSC message or bundle from the server's bound socket.
+
+This method can be used with either a callback or as a Promise.
+
+**Parameters:**
+
+- `message` *{Message | Bundle | Array | string}* - The message, bundle, address, or array to send.
+- `port` *{number}* - The remote port to send to.
+- `host` *{string}* - The remote host to send to.
+- `cb` *{function}* (optional) - Optional callback function called when send completes.
+
+**Returns:** *{Promise.<void> | undefined}* - Returns a Promise if no callback is provided.
+
+**Throws:**
+
+- *{Error}* - If the server socket is not yet listening.
+- *{TypeError}* - If the message format is invalid.
+- *{ReferenceError}* - If attempting to send on a closed socket.
+
+**Examples:**
+
+```javascript
+// Send an address-only message
+await server.send('/ping', 9000, '127.0.0.1');
+```
+
+```javascript
+// Send an array message
+server.send(['/ack', 1], 9000, '192.168.1.42', (err) => {
+  if (err) console.error(err);
 });
 ```
 
