@@ -314,6 +314,7 @@ Automatically detects the type based on the JavaScript type:
 - Floats are encoded as OSC floats
 - Strings are encoded as OSC strings
 - Booleans are encoded as OSC booleans
+- Null values are encoded as OSC nils
 - Buffers are encoded as OSC blobs
 - Arrays are recursively appended
 - Objects with a 'type' property are used as-is
@@ -338,6 +339,7 @@ msg.append(42);           // Integer
 msg.append(3.14);         // Float
 msg.append('hello');      // String
 msg.append(true);         // Boolean
+msg.append(null);         // Nil
 ```
 
 ```javascript
