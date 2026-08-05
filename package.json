@@ -38,6 +38,7 @@
     "prepublishOnly": "npm run build",
     "lint": "eslint \"lib/**/*.mjs\" \"test/test-*.mjs\" \"examples/*.js\" \"examples/*.mjs\" \"scripts/*.mjs\" rollup.config.mjs",
     "test": "npm run lint && npm run build && npm run test:esm && npm run test:cjs",
+    "pretest:esm": "npx tap build",
     "test:esm": "tap test/test-*.mjs",
     "test:cjs": "tap dist/test/test-*.js",
     "test:docs": "npm run docs && git diff --exit-code docs/API.md && git ls-files --error-unmatch docs/API.md"
@@ -74,6 +75,6 @@
     "jsdoc": "^4.0.5",
     "rollup": "^4.46.2",
     "tap": "^21.1.0",
-    "typescript": "^6.0.2"
+    "typescript": "^7.0.2"
   }
 }
