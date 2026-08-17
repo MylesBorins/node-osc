@@ -70,7 +70,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.0.3",
-    "eslint-plugin-jsdoc": "^63.0.7",
+    "eslint-plugin-jsdoc": "^64.1.0",
     "globals": "^17.4.0",
     "jsdoc": "^4.0.5",
     "rollup": "^4.46.2",
